@@ -76,6 +76,20 @@
       z-index: 10;
       pointer-events: none;
     }
+
+    @keyframes lotusSpin {
+      from {
+        transform: rotate(0deg);
+      }
+      to {
+        transform: rotate(360deg);
+      }
+    }
+    .animate-lotus-spin {
+      animation: lotusSpin 35s linear infinite;
+      transform-origin: center center;
+      will-change: transform;
+    }
   </style>
 </head>
 <body class="flex flex-col min-h-screen">
@@ -130,10 +144,20 @@
        Sri Adi Sankaracharya, Sacred Peetham Seal & 48th Peetadhipatulu
        ======================================================== -->
   <div class="w-full bg-[#120603] border-b border-[var(--border-strong)] relative overflow-hidden shadow-2xl">
-    <div class="w-full relative flex justify-center bg-[#120603]">
-      <img src="images/WhatsApp-Image-2026-10-08-at-22.06.58.jpeg" 
-           alt="Sri Jagadguru Pushpagiri Sankaracharya Mahasamsthanam - Adi Sankaracharya, Sacred Seal & 48th Peetadhipathi Sri Vidya Sankara Bharati Swamiji" 
-           class="w-full h-auto max-h-[580px] object-cover sm:object-contain 2xl:object-cover mx-auto block shadow-inner">
+    <div class="w-full max-w-[1600px] mx-auto relative flex justify-center bg-[#120603]">
+      <div class="relative w-full overflow-hidden" style="aspect-ratio: 1600 / 695;">
+        <img src="images/WhatsApp-Image-2026-10-08-at-22.06.58.jpeg" 
+             alt="Sri Jagadguru Pushpagiri Sankaracharya Mahasamsthanam - Adi Sankaracharya, Sacred Seal & 48th Peetadhipathi Sri Vidya Sankara Bharati Swamiji" 
+             class="w-full h-full object-contain block shadow-inner select-none pointer-events-none">
+
+        <!-- Sacred Golden Lotus Mandala Rotating Around Peetham Seal -->
+        <div class="absolute left-1/2 top-[41.37%] -translate-x-1/2 -translate-y-1/2 pointer-events-none flex items-center justify-center z-20"
+             style="width: 29.15%; aspect-ratio: 1 / 1;">
+          <img src="images/gold-lotus-mandala.png" 
+               alt="Rotating Sacred Golden Lotus Mandala" 
+               class="w-full h-full object-contain animate-lotus-spin drop-shadow-[0_0_18px_rgba(245,158,11,0.85)] filter select-none">
+        </div>
+      </div>
     </div>
     <!-- Sacred Auspicious Ribbon Trim -->
     <div class="h-1.5 w-full bg-gradient-to-r from-amber-700 via-amber-400 to-orange-700"></div>
