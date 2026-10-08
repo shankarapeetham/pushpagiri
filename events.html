@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="orange">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Events & Annual Festivals | Sri Pushpagiri Sankara Peetham</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Tiro+Telugu:ital@0;1&display=swap" rel="stylesheet">
+
+  <style>
+    :root, [data-theme="orange"] {
+      --primary: #c2410c;
+      --primary-dark: #7c2d12;
+      --primary-light: #ea580c;
+      --secondary: #f97316;
+      --accent-gold: #d97706;
+      --bg-base: #fffbf7;
+      --bg-surface: #ffffff;
+      --bg-subtle: #fff7ed;
+      --card-bg: #ffffff;
+      --border-color: #fed7aa;
+      --border-strong: #fdba74;
+      --text-main: #271b12;
+      --text-muted: #6c5a4d;
+      --hero-grad: radial-gradient(circle at 65% 30%, #ffedd5 0%, #fff7ed 50%, #fffbf7 100%);
+      --aura-glow: rgba(249, 115, 22, 0.12);
+      --pill-bg: #ffedd5;
+      --pill-text: #9a3412;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      background-color: var(--bg-base);
+      color: var(--text-main);
+      overflow-x: hidden;
+    }
+
+    .font-cinzel { font-family: 'Cinzel', serif; }
+    .font-playfair { font-family: 'Playfair Display', serif; }
+    .font-telugu { font-family: 'Tiro Telugu', serif; }
+
+    .sanctum-card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border-color);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .sanctum-card:hover {
+      border-color: var(--border-strong);
+      transform: translateY(-4px);
+      box-shadow: 0 16px 32px -10px var(--aura-glow);
+    }
+
+    .sacred-footer {
+      background: #5D000F;
+      position: relative;
+      padding-top: 85px;
+      padding-bottom: 35px;
+    }
+    .sacred-footer::before {
+      content: "";
+      position: absolute;
+      top: -24px;
+      left: 0;
+      width: 100%;
+      height: 48px;
+      background-image: url('images/banner-header2.png');
+      background-repeat: repeat-x;
+      background-size: auto 48px;
+      background-position: center top;
+      z-index: 10;
+      pointer-events: none;
+    }
+
+    .modal-active { display: flex !important; }
+  </style>
+</head>
+<body class="flex flex-col min-h-screen">
+
+  <!-- ========================================================
+       MAIN HEADER & NAVBAR
+       ======================================================== -->
+  <header class="bg-[var(--bg-surface)] border-b border-[var(--border-color)] sticky top-0 z-40 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 py-3.5 flex items-center justify-between gap-4">
+      
+      <!-- Brand Identity -->
+      <a href="index.html" class="flex items-center gap-3 group">
+        <div class="w-11 h-11 rounded-full flex items-center justify-center text-white font-bold text-xl shadow-md transition-transform group-hover:scale-105"
+             style="background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);">
+          ॐ
+        </div>
+        <div>
+          <h1 class="text-base sm:text-lg font-bold font-cinzel tracking-wide text-[var(--primary)] group-hover:opacity-90">
+            PUSHPAGIRI SANKARA PEETHAM
+          </h1>
+          <p class="text-[11px] text-[var(--text-muted)] font-telugu -mt-0.5">
+            శ్రీ జగద్గురు పుష్పగిరి శంకరాచార్య మహాసంస్థానం
+          </p>
+        </div>
+      </a>
+
+      <!-- Navigation Links (Exact 8 Requested) -->
+      <nav class="hidden lg:flex items-center space-x-6 text-xs font-bold uppercase tracking-wider text-[var(--text-muted)]">
+        <a href="index.html" class="hover:text-[var(--primary)] transition-colors">Home</a>
+        <a href="about-us.html" class="hover:text-[var(--primary)] transition-colors">About Us</a>
+        <a href="48th-peetadhipatulu.html" class="hover:text-[var(--primary)] transition-colors">48th Peetadhipatulu</a>
+        <a href="mutt-activities.html" class="hover:text-[var(--primary)] transition-colors">Mutt Activities</a>
+        <a href="events.html" class="text-[var(--primary)] hover:opacity-80 transition-colors">Events</a>
+        <a href="gallery.html" class="hover:text-[var(--primary)] transition-colors">Gallery</a>
+        <a href="contact.html" class="hover:text-[var(--primary)] transition-colors">Contact</a>
+        <a href="donate.html" class="px-4 py-2 rounded-xl text-white font-bold shadow-md hover:brightness-110 transition-all"
+           style="background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);">
+          Donate
+        </a>
+      </nav>
+
+      <!-- Mobile Menu Trigger -->
+      <div class="lg:hidden flex items-center gap-2">
+        <a href="donate.html" class="px-3 py-1.5 rounded-lg text-white font-bold text-xs shadow" style="background-color: var(--primary);">Donate</a>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ========================================================
+       PAGE CONTENT: EVENTS & ANNUAL FESTIVALS
+       ======================================================== -->
+  <main class="flex-grow py-12 sm:py-16 px-4 max-w-7xl mx-auto w-full">
+    
+    <!-- Page Header -->
+    <div class="text-center max-w-3xl mx-auto mb-12">
+      <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider shadow-sm border border-[var(--border-color)] mb-3"
+           style="background-color: var(--pill-bg); color: var(--pill-text);">
+        <span>✦</span>
+        <span>వార్షికోత్సవాలు &amp; విశేష పర్వదినాలు • EVENTS</span>
+      </div>
+      <h2 class="text-3xl sm:text-5xl font-bold font-telugu text-[var(--primary)]">
+        వార్షిక పర్వదినాలు &amp; ఉత్సవాలు
+      </h2>
+      <p class="text-xs sm:text-sm font-cinzel font-semibold text-[var(--text-muted)] mt-1.5 tracking-wider">
+        Annual Sacred Festivals, Vedic Celebrations &amp; Pravachanams
+      </p>
+      <div class="w-20 h-1 rounded-full mx-auto my-3" style="background-color: var(--primary);"></div>
+    </div>
+
+    <!-- Festivals Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
+      
+      <!-- Maha Shivaratri -->
+      <div class="sanctum-card rounded-3xl p-7 bg-white shadow-md border border-[var(--border-color)]">
+        <div class="w-14 h-14 rounded-2xl flex items-center justify-center text-3xl mb-4 bg-amber-50 border border-amber-200 text-amber-800">
+          🔱
+        </div>
+        <h3 class="text-xl font-bold font-telugu text-[var(--primary)] mb-1">మహా శివరాత్రి మహోత్సవం</h3>
+        <p class="text-xs font-cinzel font-semibold text-[var(--text-muted)] mb-3">Maha Shivaratri Mahotsavam</p>
+        <p class="text-sm text-gray-700 leading-relaxed mb-4">
+          శాంతాన మల్లేశ్వర స్వామి, వైద్యానాథేశ్వర స్వామి సన్నిధిలో చతుర్యామ రుద్రాభిషేకాలు, విశేష బిల్వార్చనలు, నిద్రా జాగరణ భజనలు మరియు వైభవ రథోత్సవం.
+        </p>
+        <div class="pt-3 border-t border-gray-100 flex items-center justify-between text-xs text-amber-800 font-semibold">
+          <span>మాఘ బహుళ చతుర్దశి</span>
+          <span>Grand Celebrations</span>
+        </div>
+      </div>
+
+      <!-- Devi Sharannavaratras -->
+      <div class="sanctum-card rounded-3xl p-7 bg-white shadow-md border border-[var(--border-color)]">
+        <div class="w-14 h-14 rounded-2xl flex items-center justify-center text-3xl mb-4 bg-orange-50 border border-orange-200 text-orange-800">
+          🌸
+        </div>
+        <h3 class="text-xl font-bold font-telugu text-[var(--primary)] mb-1">దేవీ శరన్నవరాత్రులు</h3>
+        <p class="text-xs font-cinzel font-semibold text-[var(--text-muted)] mb-3">Devi Sharannavaratri Celebrations</p>
+        <p class="text-sm text-gray-700 leading-relaxed mb-4">
+          శ్రీ శారదా దేవి సన్నిధిలో నవరాత్రి పూజలు, శ్రీచక్ర నవావరణార్చనలు, లలితా త్రిశతీ-సహస్రనామ కుంకుమార్చనలు, చండీ మహాయాగం మరియు విజయదశమి పారువేట.
+        </p>
+        <div class="pt-3 border-t border-gray-100 flex items-center justify-between text-xs text-orange-800 font-semibold">
+          <span>ఆశ్వయుజ శుద్ధ పాడ్యమి – దశమి</span>
+          <span>9 Days Festivities</span>
+        </div>
+      </div>
+
+      <!-- Sri Adi Sankara Jayanti -->
+      <div class="sanctum-card rounded-3xl p-7 bg-white shadow-md border border-[var(--border-color)]">
+        <div class="w-14 h-14 rounded-2xl flex items-center justify-center text-3xl mb-4 bg-amber-50 border border-amber-200 text-amber-800">
+          🪔
+        </div>
+        <h3 class="text-xl font-bold font-telugu text-[var(--primary)] mb-1">శ్రీ ఆది శంకర జయంతి</h3>
+        <p class="text-xs font-cinzel font-semibold text-[var(--text-muted)] mb-3">Sri Adi Sankaracharya Jayanti</p>
+        <p class="text-sm text-gray-700 leading-relaxed mb-4">
+          ఆది జగద్గురు శంకరాచార్యుల జయంతి మహోత్సవాలు, అద్వైత భాష్య పారాయణాలు, విద్వత్ సదస్సులు, వేద పండిత సత్కారాలు మరియు స్వామివారి విశేష అనుగ్రహ భాషణం.
+        </p>
+        <div class="pt-3 border-t border-gray-100 flex items-center justify-between text-xs text-amber-800 font-semibold">
+          <span>వైశాఖ శుద్ధ పంచమి</span>
+          <span>Vedic Assembly</span>
+        </div>
+      </div>
+
+      <!-- Guru Purnima & Vyasa Puja -->
+      <div class="sanctum-card rounded-3xl p-7 bg-white shadow-md border border-[var(--border-color)]">
+        <div class="w-14 h-14 rounded-2xl flex items-center justify-center text-3xl mb-4 bg-amber-50 border border-amber-200 text-amber-800">
+          🙏
+        </div>
+        <h3 class="text-xl font-bold font-telugu text-[var(--primary)] mb-1">గురు పూర్ణిమ &amp; వ్యాస పూజ</h3>
+        <p class="text-xs font-cinzel font-semibold text-[var(--text-muted)] mb-3">Guru Purnima &amp; Chaturmasya Vrata</p>
+        <p class="text-sm text-gray-700 leading-relaxed mb-4">
+          శ్రీ వ్యాస భగవానుని పూజ, గురు పరంపరా ఆరాధన, స్వామివారి పవిత్ర చాతుర్మాస్య దీక్షా సంకల్పం మరియు భక్తులకు గురు చరణ పూజా భాగ్యం.
+        </p>
+        <div class="pt-3 border-t border-gray-100 flex items-center justify-between text-xs text-amber-800 font-semibold">
+          <span>ఆషాఢ పూర్ణిమ</span>
+          <span>Chaturmasya Initiation</span>
+        </div>
+      </div>
+
+      <!-- Sri Lakshmi Narasimha Jayanti -->
+      <div class="sanctum-card rounded-3xl p-7 bg-white shadow-md border border-[var(--border-color)]">
+        <div class="w-14 h-14 rounded-2xl flex items-center justify-center text-3xl mb-4 bg-orange-50 border border-orange-200 text-orange-800">
+          🦁
+        </div>
+        <h3 class="text-xl font-bold font-telugu text-[var(--primary)] mb-1">శ్రీ లక్ష్మీ నృసింహ జయంతి</h3>
+        <p class="text-xs font-cinzel font-semibold text-[var(--text-muted)] mb-3">Sri Lakshmi Narasimha Jayanti</p>
+        <p class="text-sm text-gray-700 leading-relaxed mb-4">
+          పీఠంలోని శ్రీ లక్ష్మీ నృసింహ స్వామికి విశేష పంచామృతాభిషేకాలు, నారసింహ హోమం, సహస్ర నామార్చన మరియు పానక ప్రసాద వితరణ.
+        </p>
+        <div class="pt-3 border-t border-gray-100 flex items-center justify-between text-xs text-orange-800 font-semibold">
+          <span>వైశాఖ శుద్ధ చతుర్దశి</span>
+          <span>Special Homam</span>
+        </div>
+      </div>
+
+      <!-- Kartika Deepotsavam -->
+      <div class="sanctum-card rounded-3xl p-7 bg-white shadow-md border border-[var(--border-color)]">
+        <div class="w-14 h-14 rounded-2xl flex items-center justify-center text-3xl mb-4 bg-amber-50 border border-amber-200 text-amber-800">
+          ✨
+        </div>
+        <h3 class="text-xl font-bold font-telugu text-[var(--primary)] mb-1">కార్తిక మాసోత్సవాలు &amp; దీపోత్సవం</h3>
+        <p class="text-xs font-cinzel font-semibold text-[var(--text-muted)] mb-3">Kartika Deepotsavam &amp; Koti Deepam</p>
+        <p class="text-sm text-gray-700 leading-relaxed mb-4">
+          నెల పొడవునా స్పటిక లింగానికి ఏకాదశ రుద్రాభిషేకాలు, కార్తిక సోమవారాల విశేష పూజలు, జ్వాలా తోరణం మరియు క్షేత్రం అంతటా దివ్య దీపాలంకరణ.
+        </p>
+        <div class="pt-3 border-t border-gray-100 flex items-center justify-between text-xs text-amber-800 font-semibold">
+          <span>కార్తిక మాసం పౌర్ణమి</span>
+          <span>Festival of Lights</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Section: Swamiji Discourses & Videos -->
+    <div class="sanctum-card rounded-3xl p-8 sm:p-12 shadow-xl bg-white border border-[var(--border-color)]">
+      <div class="text-center max-w-2xl mx-auto mb-10">
+        <span class="text-xs font-bold uppercase tracking-widest text-[var(--primary)]">PRAVACHANAMS &amp; MEDIA</span>
+        <h3 class="text-2xl sm:text-3xl font-bold font-telugu text-[var(--primary)] mt-1">
+          స్వామివారి అనుగ్రహ భాషణం (Discourses)
+        </h3>
+        <p class="text-xs sm:text-sm text-gray-500 mt-1">Listen to divine discourses on Sanatana Dharma and Vedanta</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+        <div class="sanctum-card rounded-2xl overflow-hidden shadow group cursor-pointer" onclick="openVideo('OrHLNSxigoQ', 'Swamiji Anugraha Bhashanam')">
+          <div class="relative aspect-video bg-black flex items-center justify-center">
+            <img src="https://img.youtube.com/vi/OrHLNSxigoQ/hqdefault.jpg" alt="Video" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 opacity-90">
+            <div class="absolute inset-0 bg-black/30 flex items-center justify-center">
+              <div class="w-12 h-12 rounded-full bg-red-600 text-white flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                ▶
+              </div>
+            </div>
+          </div>
+          <div class="p-4 bg-white">
+            <h4 class="font-bold text-sm text-[var(--primary)] font-telugu">అనుగ్రహ భాషణం - జగద్గురు స్వామివారు</h4>
+            <p class="text-xs text-[var(--text-muted)]">Anugraha Bhashanam Series</p>
+          </div>
+        </div>
+
+        <div class="sanctum-card rounded-2xl overflow-hidden shadow group cursor-pointer" onclick="openVideo('bHXehVJb_UE', 'Sanathanam Teachings')">
+          <div class="relative aspect-video bg-black flex items-center justify-center">
+            <img src="https://img.youtube.com/vi/bHXehVJb_UE/hqdefault.jpg" alt="Video" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 opacity-90">
+            <div class="absolute inset-0 bg-black/30 flex items-center justify-center">
+              <div class="w-12 h-12 rounded-full bg-red-600 text-white flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                ▶
+              </div>
+            </div>
+          </div>
+          <div class="p-4 bg-white">
+            <h4 class="font-bold text-sm text-[var(--primary)] font-telugu">సనాతనం - ధర్మ ప్రవచనం</h4>
+            <p class="text-xs text-[var(--text-muted)]">Sanathanam Pravachanam Series</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Video Modal -->
+  <div id="videoModal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden items-center justify-center p-4" onclick="closeVideo()">
+    <div class="bg-[#1c1a24] rounded-2xl overflow-hidden max-w-3xl w-full border border-gray-700 shadow-2xl relative" onclick="event.stopPropagation()">
+      <div class="p-3 bg-black/60 border-b border-gray-700 flex items-center justify-between text-xs text-white">
+        <span id="videoTitle">Swamiji Discourse</span>
+        <button onclick="closeVideo()" class="p-1 hover:text-amber-400 text-lg">✕</button>
+      </div>
+      <div class="aspect-video w-full bg-black">
+        <iframe id="videoFrame" class="w-full h-full" src="" frameborder="0" allowfullscreen></iframe>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       FOOTER
+       ======================================================== -->
+  <footer class="sacred-footer mt-auto px-4 sm:px-6 lg:px-8">
+    <div class="max-w-7xl mx-auto">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12 mb-10 text-white">
+        <div>
+          <h3 class="font-bold text-white text-xl mb-4 font-sans tracking-wide">Quick Links</h3>
+          <ul class="space-y-2.5 text-sm text-white/90">
+            <li><a href="index.html" class="hover:text-amber-300 transition-colors">Home</a></li>
+            <li><a href="about-us.html" class="hover:text-amber-300 transition-colors">About Us</a></li>
+            <li><a href="48th-peetadhipatulu.html" class="hover:text-amber-300 transition-colors">48th Peetadhipatulu</a></li>
+            <li><a href="mutt-activities.html" class="hover:text-amber-300 transition-colors">Mutt Activities</a></li>
+            <li><a href="events.html" class="hover:text-amber-300 transition-colors font-medium text-amber-200">Events</a></li>
+            <li><a href="gallery.html" class="hover:text-amber-300 transition-colors">Gallery</a></li>
+            <li><a href="contact.html" class="hover:text-amber-300 transition-colors">Contact</a></li>
+            <li><a href="donate.html" class="hover:text-amber-300 transition-colors">Donate</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="font-bold text-white text-xl mb-4 font-sans tracking-wide">About Temple</h3>
+          <ul class="space-y-2.5 text-sm text-white/90">
+            <li><a href="about-us.html" class="hover:text-amber-300 transition-colors">History of Pushpagiri</a></li>
+            <li><a href="about-us.html" class="hover:text-amber-300 transition-colors">The Rise of Pushpagiri Peetham</a></li>
+            <li><a href="about-us.html" class="hover:text-amber-300 transition-colors">Vande Guru Paramparam</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="font-bold text-white text-xl mb-4 font-sans tracking-wide">Contact Us</h3>
+          <div class="space-y-4 text-sm text-white/90 leading-relaxed">
+            <p>CFR5+HH6, Beside Maruti Suzuki ARENA (Varun Motors, Hyderabad, Begumpet), Mayur Marg, Begumpet, Hyderabad, Telangana 500016</p>
+            <div class="space-y-1">
+              <p>Phone – <a href="tel:+919849530641" class="hover:text-amber-300 font-semibold transition-colors">+91 9849530641</a></p>
+              <p>Email – <a href="mailto:pushpagirisankarapeetham.org" class="hover:text-amber-300 transition-colors">pushpagirisankarapeetham.org</a></p>
+            </div>
+          </div>
+        </div>
+        <div>
+          <h3 class="font-bold text-white text-xl mb-4 font-sans tracking-wide">Timing</h3>
+          <div class="space-y-2 text-sm text-white/90 leading-relaxed">
+            <p class="font-semibold text-white">Mon–Sun:</p>
+            <p>8:00 AM – 12:30 PM</p>
+            <p>6:00 PM – 9:00 PM</p>
+          </div>
+        </div>
+      </div>
+      <div class="pt-8 border-t border-white/20 flex flex-col sm:flex-row items-center justify-between text-xs text-white/80 gap-3">
+        <p>Copyright © 2024 Pushpagiri Sankara Peetham, All Rights Reserved.</p>
+        <p class="text-[11px] text-white/60 font-telugu">శ్రీ జగద్గురు పుష్పగిరి శంకరాచార్య మహాసంస్థానం • అవిచ్ఛిన్న శంకర పరంపర</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    function openVideo(id, title) {
+      document.getElementById('videoTitle').textContent = title;
+      document.getElementById('videoFrame').src = `https://www.youtube.com/embed/${id}?autoplay=1`;
+      document.getElementById('videoModal').classList.add('modal-active');
+    }
+    function closeVideo() {
+      document.getElementById('videoFrame').src = '';
+      document.getElementById('videoModal').classList.remove('modal-active');
+    }
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeVideo();
+    });
+  </script>
+</body>
+</html>

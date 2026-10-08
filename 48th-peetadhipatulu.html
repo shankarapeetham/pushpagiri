@@ -167,55 +167,8 @@
 <body class="antialiased min-h-screen flex flex-col selection:bg-orange-300 selection:text-orange-950">
 
   <!-- ========================================================
-       TOP ANNOUNCEMENT BAR & THEME SWITCHER
-       ======================================================== -->
-  <div class="relative z-50 text-white text-xs px-4 py-2 border-b border-black/10 transition-colors"
-       style="background: linear-gradient(90deg, var(--primary-dark) 0%, var(--primary) 50%, var(--primary-dark) 100%);">
-    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
-      
-      <div class="flex items-center gap-2">
-        <span class="inline-flex items-center justify-center px-2 py-0.5 rounded text-[10px] font-bold tracking-wider uppercase bg-white/20 text-white">
-          సనాతన ధర్మం
-        </span>
-        <span class="text-white/90 truncate hidden sm:inline">
-          శ్రీ జగద్గురు పుష్పగిరి శంకరాచార్య మహాసంస్థానం • 48వ పీఠాధిపతులు
-        </span>
-      </div>
-
-      <!-- Multi-Theme Selector (Orange, Blue, Red, Gold) -->
-      <div class="flex items-center gap-2">
-        <span class="text-[11px] text-white/70 font-semibold uppercase tracking-wider hidden md:inline">
-          థీమ్:
-        </span>
-        <div class="inline-flex items-center p-1 rounded-xl bg-black/25 border border-white/20 gap-1 shadow-inner">
-          <button onclick="setTheme('orange')" id="btn-theme-orange" 
-                  class="flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-bold transition-all bg-white text-orange-900 shadow">
-            <span class="w-2.5 h-2.5 rounded-full bg-orange-500 shadow-sm"></span>
-            <span>Orange</span>
-          </button>
-          <button onclick="setTheme('blue')" id="btn-theme-blue" 
-                  class="flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-semibold transition-all text-white/80 hover:text-white">
-            <span class="w-2.5 h-2.5 rounded-full bg-blue-500 shadow-sm"></span>
-            <span>Blue</span>
-          </button>
-          <button onclick="setTheme('red')" id="btn-theme-red" 
-                  class="flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-semibold transition-all text-white/80 hover:text-white">
-            <span class="w-2.5 h-2.5 rounded-full bg-red-600 shadow-sm"></span>
-            <span>Red</span>
-          </button>
-          <button onclick="setTheme('gold')" id="btn-theme-gold" 
-                  class="flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-semibold transition-all text-white/80 hover:text-white">
-            <span class="w-2.5 h-2.5 rounded-full bg-amber-400 shadow-sm"></span>
-            <span>Gold</span>
-          </button>
-        </div>
-      </div>
-
-    </div>
-  </div>
-
   <!-- ========================================================
-       MAIN HEADER
+       MAIN HEADER & NAVBAR
        ======================================================== -->
   <header class="bg-[var(--bg-surface)] border-b border-[var(--border-color)] sticky top-0 z-40 shadow-sm transition-colors">
     <div class="max-w-7xl mx-auto px-4 py-3.5 flex items-center justify-between gap-4">
@@ -235,29 +188,24 @@
         </div>
       </a>
 
-      <!-- Desktop Navigation Links -->
+      <!-- Desktop Navigation Links (Exact 8 Requested) -->
       <nav class="hidden lg:flex items-center space-x-6 text-xs font-bold uppercase tracking-wider text-[var(--text-muted)]">
         <a href="index.html" class="hover:text-[var(--primary)] transition-colors">Home</a>
-        <a href="48th-peetadhipatulu.html" class="text-[var(--primary)] border-b-2 border-[var(--primary)] pb-0.5 transition-colors">48th Peetadhipatulu</a>
-        <a href="index.html#activities" class="hover:text-[var(--primary)] transition-colors">Activities</a>
-        <a href="index.html#history" class="hover:text-[var(--primary)] transition-colors">History</a>
-        <a href="index.html#festivals" class="hover:text-[var(--primary)] transition-colors">Festivals</a>
-        <a href="index.html#discourses" class="hover:text-[var(--primary)] transition-colors">Discourses</a>
-        <a href="index.html#gallery" class="hover:text-[var(--primary)] transition-colors">Gallery</a>
-        <a href="#contact" class="hover:text-[var(--primary)] transition-colors">Contact</a>
+        <a href="about-us.html" class="hover:text-[var(--primary)] transition-colors">About Us</a>
+        <a href="48th-peetadhipatulu.html" class="text-[var(--primary)] font-bold transition-colors">48th Peetadhipatulu</a>
+        <a href="mutt-activities.html" class="hover:text-[var(--primary)] transition-colors">Mutt Activities</a>
+        <a href="events.html" class="hover:text-[var(--primary)] transition-colors">Events</a>
+        <a href="gallery.html" class="hover:text-[var(--primary)] transition-colors">Gallery</a>
+        <a href="contact.html" class="hover:text-[var(--primary)] transition-colors">Contact</a>
+        <a href="donate.html" class="px-4 py-2 rounded-xl text-white font-bold shadow-md hover:brightness-110 transition-all"
+           style="background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);">
+          Donate
+        </a>
       </nav>
 
-      <!-- Action Buttons -->
-      <div class="flex items-center gap-2 sm:gap-3">
-        <a href="dashboard.html" 
-           class="px-3 py-2 rounded-xl border border-[var(--border-strong)] text-[var(--primary)] font-bold text-xs uppercase tracking-wider hover:bg-[var(--bg-subtle)] transition-all flex items-center gap-1.5 shadow-sm">
-          <span>⚙ Admin Dashboard</span>
-        </a>
-        <button onclick="openDonationModal()" 
-                class="px-4 py-2.5 rounded-xl text-white font-bold text-xs uppercase tracking-wider shadow-md hover:brightness-110 transition-all transform hover:scale-105"
-                style="background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);">
-          Donate / కానుకలు
-        </button>
+      <!-- Mobile Trigger -->
+      <div class="lg:hidden flex items-center gap-2">
+        <a href="donate.html" class="px-3 py-1.5 rounded-lg text-white font-bold text-xs shadow" style="background-color: var(--primary);">Donate</a>
       </div>
 
     </div>

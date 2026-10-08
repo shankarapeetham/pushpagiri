@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="orange">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About Us | History & Lineage | Sri Pushpagiri Sankara Peetham</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Tiro+Telugu:ital@0;1&display=swap" rel="stylesheet">
+
+  <style>
+    :root, [data-theme="orange"] {
+      --primary: #c2410c;
+      --primary-dark: #7c2d12;
+      --primary-light: #ea580c;
+      --secondary: #f97316;
+      --accent-gold: #d97706;
+      --bg-base: #fffbf7;
+      --bg-surface: #ffffff;
+      --bg-subtle: #fff7ed;
+      --card-bg: #ffffff;
+      --border-color: #fed7aa;
+      --border-strong: #fdba74;
+      --text-main: #271b12;
+      --text-muted: #6c5a4d;
+      --hero-grad: radial-gradient(circle at 65% 30%, #ffedd5 0%, #fff7ed 50%, #fffbf7 100%);
+      --aura-glow: rgba(249, 115, 22, 0.12);
+      --pill-bg: #ffedd5;
+      --pill-text: #9a3412;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      background-color: var(--bg-base);
+      color: var(--text-main);
+      overflow-x: hidden;
+    }
+
+    .font-cinzel { font-family: 'Cinzel', serif; }
+    .font-playfair { font-family: 'Playfair Display', serif; }
+    .font-telugu { font-family: 'Tiro Telugu', serif; }
+
+    .sanctum-card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border-color);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .sanctum-card:hover {
+      border-color: var(--border-strong);
+      transform: translateY(-4px);
+      box-shadow: 0 16px 32px -10px var(--aura-glow);
+    }
+
+    .sacred-footer {
+      background: #5D000F;
+      position: relative;
+      padding-top: 85px;
+      padding-bottom: 35px;
+    }
+    .sacred-footer::before {
+      content: "";
+      position: absolute;
+      top: -24px;
+      left: 0;
+      width: 100%;
+      height: 48px;
+      background-image: url('images/banner-header2.png');
+      background-repeat: repeat-x;
+      background-size: auto 48px;
+      background-position: center top;
+      z-index: 10;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body class="flex flex-col min-h-screen">
+
+  <!-- ========================================================
+       MAIN HEADER & NAVBAR
+       ======================================================== -->
+  <header class="bg-[var(--bg-surface)] border-b border-[var(--border-color)] sticky top-0 z-40 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 py-3.5 flex items-center justify-between gap-4">
+      
+      <!-- Brand Identity -->
+      <a href="index.html" class="flex items-center gap-3 group">
+        <div class="w-11 h-11 rounded-full flex items-center justify-center text-white font-bold text-xl shadow-md transition-transform group-hover:scale-105"
+             style="background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);">
+          ॐ
+        </div>
+        <div>
+          <h1 class="text-base sm:text-lg font-bold font-cinzel tracking-wide text-[var(--primary)] group-hover:opacity-90">
+            PUSHPAGIRI SANKARA PEETHAM
+          </h1>
+          <p class="text-[11px] text-[var(--text-muted)] font-telugu -mt-0.5">
+            శ్రీ జగద్గురు పుష్పగిరి శంకరాచార్య మహాసంస్థానం
+          </p>
+        </div>
+      </a>
+
+      <!-- Navigation Links (Exact 8 Requested) -->
+      <nav class="hidden lg:flex items-center space-x-6 text-xs font-bold uppercase tracking-wider text-[var(--text-muted)]">
+        <a href="index.html" class="hover:text-[var(--primary)] transition-colors">Home</a>
+        <a href="about-us.html" class="text-[var(--primary)] hover:opacity-80 transition-colors">About Us</a>
+        <a href="48th-peetadhipatulu.html" class="hover:text-[var(--primary)] transition-colors">48th Peetadhipatulu</a>
+        <a href="mutt-activities.html" class="hover:text-[var(--primary)] transition-colors">Mutt Activities</a>
+        <a href="events.html" class="hover:text-[var(--primary)] transition-colors">Events</a>
+        <a href="gallery.html" class="hover:text-[var(--primary)] transition-colors">Gallery</a>
+        <a href="contact.html" class="hover:text-[var(--primary)] transition-colors">Contact</a>
+        <a href="donate.html" class="px-4 py-2 rounded-xl text-white font-bold shadow-md hover:brightness-110 transition-all"
+           style="background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);">
+          Donate
+        </a>
+      </nav>
+
+      <!-- Mobile Menu Trigger -->
+      <div class="lg:hidden flex items-center gap-2">
+        <a href="donate.html" class="px-3 py-1.5 rounded-lg text-white font-bold text-xs shadow" style="background-color: var(--primary);">Donate</a>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ========================================================
+       PAGE CONTENT: ABOUT US
+       ======================================================== -->
+  <main class="flex-grow py-12 sm:py-16 px-4 max-w-7xl mx-auto w-full">
+    
+    <!-- Page Header -->
+    <div class="text-center max-w-3xl mx-auto mb-12">
+      <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider shadow-sm border border-[var(--border-color)] mb-3"
+           style="background-color: var(--pill-bg); color: var(--pill-text);">
+        <span>✦</span>
+        <span>పుష్పగిరి క్షేత్ర పీఠోదయ చరిత్ర • ABOUT US</span>
+      </div>
+      <h2 class="text-3xl sm:text-5xl font-bold font-telugu text-[var(--primary)]">
+        శ్రీ పుష్పగిరి శంకర పీఠం చరిత్ర
+      </h2>
+      <p class="text-xs sm:text-sm font-cinzel font-semibold text-[var(--text-muted)] mt-1.5 tracking-wider">
+        History, Spiritual Roots &amp; Sacred Guru Parampara
+      </p>
+      <div class="w-20 h-1 rounded-full mx-auto my-3" style="background-color: var(--primary);"></div>
+    </div>
+
+    <!-- Section 1: Sacred History of Pushpagiri -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center mb-16">
+      <div class="lg:col-span-7 space-y-5">
+        <h3 class="text-2xl sm:text-3xl font-bold font-telugu text-[var(--primary)]">
+          పుష్పగిరి క్షేత్ర మహాత్మ్యం (Treta Yuga & Antiquity)
+        </h3>
+        <p class="text-sm sm:text-base leading-relaxed text-gray-800">
+          Pushpagiri is situated along the banks of the sacred Penna River in Cuddapah (YSR Kadapa) District, Andhra Pradesh. Its sacred roots reach back into Treta Yuga and Vedic antiquity.
+        </p>
+
+        <div class="p-5 rounded-2xl border border-[var(--border-strong)] bg-amber-50/70">
+          <h5 class="text-sm font-bold text-[var(--primary)] mb-1 font-telugu">🌸 సంజీవని పర్వత దివ్య గాథ (Sanjeevani Parvat Legend):</h5>
+          <p class="text-xs sm:text-sm text-gray-700 leading-relaxed italic">
+            When Lord Hanuman carried the sacred Sanjeevani Parvat from the Himalayas to revive Lakshmana during the epic battle of Lanka, a holy flower fragment fell from the celestial mountain and blessed this sacred earth. Hence, this blessed hill became eternally renowned as <strong>Pushpagiri</strong> ("The Hill of Flowers").
+          </p>
+        </div>
+
+        <p class="text-sm sm:text-base leading-relaxed text-gray-800">
+          Revered across centuries as <strong>Pancha Nadi Kshetram</strong> (the confluence of five sacred rivers: Penna, Papaghni, Kumudvati, Varkala, and Mandavi), Pushpagiri uniquely hosts <strong>Sri Chennakesava Swamy</strong> (Vaishnava) and <strong>Sri Santaana Malleshwara Swamy</strong> (Shaiva) side-by-side on the same sacred hill, earning it the celebrated reverence of <strong>Dakshina Kashi</strong> (The Kashi of the South).
+        </p>
+      </div>
+
+      <div class="lg:col-span-5">
+        <div class="sanctum-card rounded-3xl overflow-hidden shadow-xl p-2 bg-white">
+          <img src="https://pushpagirisankarapeetham.org/wp-content/uploads/2024/02/history.jpg" 
+               alt="Historical Pushpagiri Kshetram" 
+               class="w-full h-80 object-cover rounded-2xl">
+          <div class="p-3 text-center text-xs text-[var(--text-muted)] font-medium font-telugu">
+            పుష్పగిరి క్షేత్ర దేవాలయ దృశ్యం • పెన్నా నదీ తీరం
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 2: The Rise of Pushpagiri Peetham (Sri Vidyaranya Swami) -->
+    <div class="mb-16 sanctum-card rounded-3xl p-8 sm:p-12 shadow-xl bg-white border border-[var(--border-color)]">
+      <div class="max-w-4xl mx-auto space-y-6">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-orange-100 text-orange-900 border border-orange-200">
+          <span>👑</span>
+          <span>రాజ పీఠం • THE RISE OF PUSHPAGIRI PEETHAM</span>
+        </div>
+        <h3 class="text-2xl sm:text-3xl font-bold font-telugu text-[var(--primary)]">
+          శ్రీ విద్యారణ్య స్వామి వారి దివ్య పరివర్తన
+        </h3>
+
+        <div class="space-y-4 text-sm sm:text-base text-gray-800 leading-relaxed font-sans">
+          <p>
+            For thousands of years, Pushpagiri was a powerful spiritual centre known as a prominent Shaiva Peetham throughout the entire Telugu-speaking region. His Holiness Sri Sri Sri Jagadguru Vidyaranya Swami transformed Pushpagiri Shaiva Peetham into Pushpagiri Sankaracharya Peetham.
+          </p>
+          <p>
+            Having realized the unique spiritual power embedded in the holy soil of Pushpagiri, His Holiness Sri Vidyaranya brought Pushpagiri into the eternal fold of Jagadguru Sankaracharya Peethams. This monumental spiritual transition took place as part of Sri Vidyaranya Swami's spiritual journey when he was the 12th Jagadguru of Sri Sringeri Sharada Peetham during the 14th Century.
+          </p>
+
+          <div class="p-5 rounded-2xl border border-amber-300 bg-amber-50 text-center my-6">
+            <p class="font-bold text-amber-950 text-sm sm:text-base font-cinzel">
+              For its unique significance as Raja Peetham, Pushpagiri was consecrated as:
+            </p>
+            <h4 class="text-xl sm:text-2xl font-bold text-[var(--primary)] font-telugu my-2">
+              ‘శ్రీ శ్రీ శ్రీ జగద్గురు పుష్పగిరి శంకరాచార్య మహా సంస్థానం’
+            </h4>
+            <p class="text-xs text-amber-900 font-cinzel">
+              (Sri Sri Sri Jagadguru Pushpagiri Sankaracharya Maha Samsthanam)
+            </p>
+          </div>
+
+          <p>
+            Pushpagiri Peetham stands as an unbroken Vedic bastion, spreading Advaita Vedanta, patronizing Vedic pathashalas, protecting holy cows (Go Samrakshana), and guiding millions of seekers on the Sanatana Dharma path.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 3: Vande Guru Paramparam (Lineage) -->
+    <div class="sanctum-card rounded-3xl p-8 sm:p-12 shadow-xl bg-white border border-[var(--border-color)]">
+      <div class="text-center max-w-3xl mx-auto mb-10">
+        <h3 class="text-2xl sm:text-4xl font-bold font-cinzel text-[var(--primary)]">
+          VANDE GURU PARAMPARAM
+        </h3>
+        <p class="text-base sm:text-lg font-telugu font-semibold text-[var(--text-muted)] mt-1">
+          వందే గురు పరంపరామ్ • అవిచ్ఛిన్న శంకర పరంపర
+        </p>
+        <div class="w-20 h-1 rounded-full mx-auto my-3" style="background-color: var(--primary);"></div>
+      </div>
+
+      <!-- Sacred Sloka -->
+      <div class="p-6 rounded-2xl border border-[var(--border-strong)] text-center max-w-2xl mx-auto mb-10"
+           style="background-color: var(--bg-subtle);">
+        <p class="text-lg sm:text-xl font-bold font-serif text-[var(--primary)] leading-relaxed">
+          || నారసింహస్య తత్వజ్ఞం నానా శాస్త్రార్థ కోవిదమ్ ।<br>
+          నౌమ్యహం నైష్ఠికం నిత్యం విద్యా శంకర భారతీ ||
+        </p>
+        <p class="text-xs text-gray-500 mt-2 font-mono">
+          || नारसिंहस्य तत्वज्ञं नाना शास्त्रार्थ कोविदम् । नोव्यहं नैष्ठिकं नित्यं विद्या शङ्कर भारती ||
+        </p>
+      </div>
+
+      <!-- Guru Parampara Gallery Grid -->
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+        <div class="rounded-2xl overflow-hidden border border-gray-200 bg-gray-50 shadow-sm group">
+          <img src="https://pushpagirisankarapeetham.org/wp-content/gallery/vande-guru-paramparam/Vande-Guru-Paramparam-4.jpg" 
+               alt="Guru Parampara" class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-500">
+        </div>
+        <div class="rounded-2xl overflow-hidden border border-gray-200 bg-gray-50 shadow-sm group">
+          <img src="https://pushpagirisankarapeetham.org/wp-content/gallery/vande-guru-paramparam/Vande-Guru-Paramparam-3.jpg" 
+               alt="Guru Parampara" class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-500">
+        </div>
+        <div class="rounded-2xl overflow-hidden border border-gray-200 bg-gray-50 shadow-sm group">
+          <img src="https://pushpagirisankarapeetham.org/wp-content/gallery/vande-guru-paramparam/Vande-Guru-Paramparam-1.jpg" 
+               alt="Guru Parampara" class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-500">
+        </div>
+        <div class="rounded-2xl overflow-hidden border border-gray-200 bg-gray-50 shadow-sm group">
+          <img src="https://pushpagirisankarapeetham.org/wp-content/gallery/vande-guru-paramparam/Vande-Guru-Paramparam-2.jpg" 
+               alt="Guru Parampara" class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-500">
+        </div>
+        <div class="rounded-2xl overflow-hidden border border-gray-200 bg-gray-50 shadow-sm group">
+          <img src="https://pushpagirisankarapeetham.org/wp-content/gallery/vande-guru-paramparam/Vande-Guru-Paramparam-7.jpg" 
+               alt="Guru Parampara" class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-500">
+        </div>
+        <div class="rounded-2xl overflow-hidden border border-gray-200 bg-gray-50 shadow-sm group">
+          <img src="https://pushpagirisankarapeetham.org/wp-content/gallery/vande-guru-paramparam/Vande-Guru-Paramparam-6.jpg" 
+               alt="Guru Parampara" class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-500">
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- ========================================================
+       FOOTER
+       ======================================================== -->
+  <footer class="sacred-footer mt-auto px-4 sm:px-6 lg:px-8">
+    <div class="max-w-7xl mx-auto">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12 mb-10 text-white">
+        <div>
+          <h3 class="font-bold text-white text-xl mb-4 font-sans tracking-wide">Quick Links</h3>
+          <ul class="space-y-2.5 text-sm text-white/90">
+            <li><a href="index.html" class="hover:text-amber-300 transition-colors">Home</a></li>
+            <li><a href="about-us.html" class="hover:text-amber-300 transition-colors font-medium text-amber-200">About Us</a></li>
+            <li><a href="48th-peetadhipatulu.html" class="hover:text-amber-300 transition-colors">48th Peetadhipatulu</a></li>
+            <li><a href="mutt-activities.html" class="hover:text-amber-300 transition-colors">Mutt Activities</a></li>
+            <li><a href="events.html" class="hover:text-amber-300 transition-colors">Events</a></li>
+            <li><a href="gallery.html" class="hover:text-amber-300 transition-colors">Gallery</a></li>
+            <li><a href="contact.html" class="hover:text-amber-300 transition-colors">Contact</a></li>
+            <li><a href="donate.html" class="hover:text-amber-300 transition-colors">Donate</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="font-bold text-white text-xl mb-4 font-sans tracking-wide">About Temple</h3>
+          <ul class="space-y-2.5 text-sm text-white/90">
+            <li><a href="about-us.html" class="hover:text-amber-300 transition-colors">History of Pushpagiri</a></li>
+            <li><a href="about-us.html" class="hover:text-amber-300 transition-colors">The Rise of Pushpagiri Peetham</a></li>
+            <li><a href="about-us.html" class="hover:text-amber-300 transition-colors">Vande Guru Paramparam</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="font-bold text-white text-xl mb-4 font-sans tracking-wide">Contact Us</h3>
+          <div class="space-y-4 text-sm text-white/90 leading-relaxed">
+            <p>CFR5+HH6, Beside Maruti Suzuki ARENA (Varun Motors, Hyderabad, Begumpet), Mayur Marg, Begumpet, Hyderabad, Telangana 500016</p>
+            <div class="space-y-1">
+              <p>Phone – <a href="tel:+919849530641" class="hover:text-amber-300 font-semibold transition-colors">+91 9849530641</a></p>
+              <p>Email – <a href="mailto:pushpagirisankarapeetham.org" class="hover:text-amber-300 transition-colors">pushpagirisankarapeetham.org</a></p>
+            </div>
+          </div>
+        </div>
+        <div>
+          <h3 class="font-bold text-white text-xl mb-4 font-sans tracking-wide">Timing</h3>
+          <div class="space-y-2 text-sm text-white/90 leading-relaxed">
+            <p class="font-semibold text-white">Mon–Sun:</p>
+            <p>8:00 AM – 12:30 PM</p>
+            <p>6:00 PM – 9:00 PM</p>
+          </div>
+        </div>
+      </div>
+      <div class="pt-8 border-t border-white/20 flex flex-col sm:flex-row items-center justify-between text-xs text-white/80 gap-3">
+        <p>Copyright © 2024 Pushpagiri Sankara Peetham, All Rights Reserved.</p>
+        <p class="text-[11px] text-white/60 font-telugu">శ్రీ జగద్గురు పుష్పగిరి శంకరాచార్య మహాసంస్థానం • అవిచ్ఛిన్న శంకర పరంపర</p>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

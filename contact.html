@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="orange">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact Us | Ashram & Temple Information | Sri Pushpagiri Sankara Peetham</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Tiro+Telugu:ital@0;1&display=swap" rel="stylesheet">
+
+  <style>
+    :root, [data-theme="orange"] {
+      --primary: #c2410c;
+      --primary-dark: #7c2d12;
+      --primary-light: #ea580c;
+      --secondary: #f97316;
+      --accent-gold: #d97706;
+      --bg-base: #fffbf7;
+      --bg-surface: #ffffff;
+      --bg-subtle: #fff7ed;
+      --card-bg: #ffffff;
+      --border-color: #fed7aa;
+      --border-strong: #fdba74;
+      --text-main: #271b12;
+      --text-muted: #6c5a4d;
+      --hero-grad: radial-gradient(circle at 65% 30%, #ffedd5 0%, #fff7ed 50%, #fffbf7 100%);
+      --aura-glow: rgba(249, 115, 22, 0.12);
+      --pill-bg: #ffedd5;
+      --pill-text: #9a3412;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      background-color: var(--bg-base);
+      color: var(--text-main);
+      overflow-x: hidden;
+    }
+
+    .font-cinzel { font-family: 'Cinzel', serif; }
+    .font-playfair { font-family: 'Playfair Display', serif; }
+    .font-telugu { font-family: 'Tiro Telugu', serif; }
+
+    .sanctum-card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border-color);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .sanctum-card:hover {
+      border-color: var(--border-strong);
+      transform: translateY(-4px);
+      box-shadow: 0 16px 32px -10px var(--aura-glow);
+    }
+
+    .sacred-footer {
+      background: #5D000F;
+      position: relative;
+      padding-top: 85px;
+      padding-bottom: 35px;
+    }
+    .sacred-footer::before {
+      content: "";
+      position: absolute;
+      top: -24px;
+      left: 0;
+      width: 100%;
+      height: 48px;
+      background-image: url('images/banner-header2.png');
+      background-repeat: repeat-x;
+      background-size: auto 48px;
+      background-position: center top;
+      z-index: 10;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body class="flex flex-col min-h-screen">
+
+  <!-- ========================================================
+       MAIN HEADER & NAVBAR
+       ======================================================== -->
+  <header class="bg-[var(--bg-surface)] border-b border-[var(--border-color)] sticky top-0 z-40 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 py-3.5 flex items-center justify-between gap-4">
+      
+      <!-- Brand Identity -->
+      <a href="index.html" class="flex items-center gap-3 group">
+        <div class="w-11 h-11 rounded-full flex items-center justify-center text-white font-bold text-xl shadow-md transition-transform group-hover:scale-105"
+             style="background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);">
+          ॐ
+        </div>
+        <div>
+          <h1 class="text-base sm:text-lg font-bold font-cinzel tracking-wide text-[var(--primary)] group-hover:opacity-90">
+            PUSHPAGIRI SANKARA PEETHAM
+          </h1>
+          <p class="text-[11px] text-[var(--text-muted)] font-telugu -mt-0.5">
+            శ్రీ జగద్గురు పుష్పగిరి శంకరాచార్య మహాసంస్థానం
+          </p>
+        </div>
+      </a>
+
+      <!-- Navigation Links (Exact 8 Requested) -->
+      <nav class="hidden lg:flex items-center space-x-6 text-xs font-bold uppercase tracking-wider text-[var(--text-muted)]">
+        <a href="index.html" class="hover:text-[var(--primary)] transition-colors">Home</a>
+        <a href="about-us.html" class="hover:text-[var(--primary)] transition-colors">About Us</a>
+        <a href="48th-peetadhipatulu.html" class="hover:text-[var(--primary)] transition-colors">48th Peetadhipatulu</a>
+        <a href="mutt-activities.html" class="hover:text-[var(--primary)] transition-colors">Mutt Activities</a>
+        <a href="events.html" class="hover:text-[var(--primary)] transition-colors">Events</a>
+        <a href="gallery.html" class="hover:text-[var(--primary)] transition-colors">Gallery</a>
+        <a href="contact.html" class="text-[var(--primary)] hover:opacity-80 transition-colors">Contact</a>
+        <a href="donate.html" class="px-4 py-2 rounded-xl text-white font-bold shadow-md hover:brightness-110 transition-all"
+           style="background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);">
+          Donate
+        </a>
+      </nav>
+
+      <!-- Mobile Menu Trigger -->
+      <div class="lg:hidden flex items-center gap-2">
+        <a href="donate.html" class="px-3 py-1.5 rounded-lg text-white font-bold text-xs shadow" style="background-color: var(--primary);">Donate</a>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ========================================================
+       PAGE CONTENT: CONTACT US
+       ======================================================== -->
+  <main class="flex-grow py-12 sm:py-16 px-4 max-w-7xl mx-auto w-full">
+    
+    <!-- Page Header -->
+    <div class="text-center max-w-3xl mx-auto mb-12">
+      <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider shadow-sm border border-[var(--border-color)] mb-3"
+           style="background-color: var(--pill-bg); color: var(--pill-text);">
+        <span>✦</span>
+        <span>మఠం సంప్రదింపులు &amp; దర్శన సమాచారం • CONTACT US</span>
+      </div>
+      <h2 class="text-3xl sm:text-5xl font-bold font-telugu text-[var(--primary)]">
+        ఆశ్రమ &amp; క్షేత్ర సంప్రదింపులు
+      </h2>
+      <p class="text-xs sm:text-sm font-cinzel font-semibold text-[var(--text-muted)] mt-1.5 tracking-wider">
+        Begumpet Ashram, Hyderabad &amp; Pushpagiri Moola Samsthanam, Kadapa
+      </p>
+      <div class="w-20 h-1 rounded-full mx-auto my-3" style="background-color: var(--primary);"></div>
+    </div>
+
+    <!-- Contact Cards Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
+      
+      <!-- Card 1: Hyderabad Begumpet Ashram -->
+      <div class="sanctum-card rounded-3xl p-8 bg-white shadow-md border border-[var(--border-color)]">
+        <div class="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl mb-4 bg-orange-50 border border-orange-200 text-orange-800">
+          📍
+        </div>
+        <h3 class="text-lg font-bold font-telugu text-[var(--primary)] mb-1">హైదరాబాద్ ఆశ్రమం (Begumpet)</h3>
+        <p class="text-xs font-cinzel font-semibold text-[var(--text-muted)] mb-4">Hyderabad Ashram Branch</p>
+        <p class="text-sm text-gray-700 leading-relaxed">
+          CFR5+HH6, Beside Maruti Suzuki ARENA (Varun Motors), Mayur Marg, Begumpet, Hyderabad, Telangana 500016
+        </p>
+        <div class="mt-4 pt-4 border-t border-gray-100 flex items-center gap-2">
+          <a href="https://maps.google.com/?q=CFR5+HH6,+Begumpet,+Hyderabad" target="_blank" 
+             class="text-xs font-bold text-[var(--primary)] hover:underline flex items-center gap-1">
+            <span>📍 Google Maps లో చూడండి</span> &rarr;
+          </a>
+        </div>
+      </div>
+
+      <!-- Card 2: Contact Details -->
+      <div class="sanctum-card rounded-3xl p-8 bg-white shadow-md border border-[var(--border-color)]">
+        <div class="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl mb-4 bg-amber-50 border border-amber-200 text-amber-800">
+          📞
+        </div>
+        <h3 class="text-lg font-bold font-telugu text-[var(--primary)] mb-1">ఫోన్ &amp; ఈమెయిల్</h3>
+        <p class="text-xs font-cinzel font-semibold text-[var(--text-muted)] mb-4">Phone &amp; Direct Communication</p>
+        <div class="space-y-3 text-sm text-gray-700">
+          <p>
+            <strong class="text-gray-900 block text-xs uppercase tracking-wider text-[var(--text-muted)]">ఫోన్ నంబర్:</strong>
+            <a href="tel:+919849530641" class="text-base font-bold text-[var(--primary)] hover:underline">+91 9849530641</a>
+          </p>
+          <p>
+            <strong class="text-gray-900 block text-xs uppercase tracking-wider text-[var(--text-muted)]">ఈమెయిల్:</strong>
+            <a href="mailto:pushpagirisankarapeetham.org" class="font-semibold text-gray-900 hover:text-[var(--primary)]">pushpagirisankarapeetham.org</a>
+          </p>
+          <p>
+            <a href="https://wa.me/919849530641" target="_blank" 
+               class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-green-600 text-white font-bold text-xs shadow hover:bg-green-700 transition-colors">
+              <span>💬 WhatsApp సందేశం పంపండి</span>
+            </a>
+          </p>
+        </div>
+      </div>
+
+      <!-- Card 3: Darshan Timings -->
+      <div class="sanctum-card rounded-3xl p-8 bg-white shadow-md border border-[var(--border-color)]">
+        <div class="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl mb-4 bg-amber-50 border border-amber-200 text-amber-800">
+          ⏰
+        </div>
+        <h3 class="text-lg font-bold font-telugu text-[var(--primary)] mb-1">నిత్య దర్శన వేళలు</h3>
+        <p class="text-xs font-cinzel font-semibold text-[var(--text-muted)] mb-4">Temple Darshan Timings</p>
+        <div class="space-y-3 text-sm text-gray-700">
+          <div class="p-3 rounded-xl bg-amber-50/70 border border-amber-200">
+            <p class="text-xs font-bold text-amber-950 uppercase tracking-wider font-telugu">🌅 ఉదయం వేళలు:</p>
+            <p class="text-sm font-semibold text-gray-900">8:00 AM – 12:30 PM</p>
+            <p class="text-[11px] text-gray-600">అభిషేకం &amp; తీర్థ ప్రసాదం: 10:00 AM – 12:00 PM</p>
+          </div>
+          <div class="p-3 rounded-xl bg-orange-50/70 border border-orange-200">
+            <p class="text-xs font-bold text-orange-950 uppercase tracking-wider font-telugu">🌆 సాయంత్రం వేళలు:</p>
+            <p class="text-sm font-semibold text-gray-900">6:00 PM – 9:00 PM</p>
+            <p class="text-[11px] text-gray-600">శ్రీచక్ర పూజ &amp; కుంకుమార్చన: 6:30 PM – 8:30 PM</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Moola Samsthanam Kadapa Info & Inquiry Form -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start mb-14">
+      
+      <!-- Left: Moola Samsthanam -->
+      <div class="lg:col-span-5 sanctum-card rounded-3xl p-8 bg-white border border-[var(--border-color)] space-y-4">
+        <span class="text-xs font-bold uppercase tracking-wider text-[var(--primary)]">మూల సంస్థానం</span>
+        <h3 class="text-xl font-bold font-telugu text-[var(--primary)]">
+          పుష్పగిరి మూల మహా సంస్థానం (కడప)
+        </h3>
+        <p class="text-sm text-gray-700 leading-relaxed">
+          శ్రీ జగద్గురు పుష్పగిరి శంకరాచార్య మహాసంస్థానం, పుష్పగిరి క్షేత్రం, వల్లూరు మండలం, వై.యస్.ఆర్. కడప జిల్లా, ఆంధ్రప్రదేశ్.
+        </p>
+        <div class="p-4 rounded-2xl bg-amber-50 border border-amber-200 text-xs text-amber-950 leading-relaxed">
+          పెన్నా నదీ తీరాన వెలసిన ఈ పంచనదీ క్షేత్రం దక్షిణ కాశీగా ప్రసిద్ధి. ఆది శంకరాచార్యులు స్వయంగా ఇక్కడ శ్రీచక్రాన్ని ప్రతిష్ఠించారు.
+        </div>
+        <div class="pt-2">
+          <a href="about-us.html" class="text-xs font-bold text-[var(--primary)] hover:underline">
+            పుష్పగిరి సమగ్ర చరిత్ర చదవండి &rarr;
+          </a>
+        </div>
+      </div>
+
+      <!-- Right: Message Form -->
+      <div class="lg:col-span-7 sanctum-card rounded-3xl p-8 bg-white border border-[var(--border-color)]">
+        <h3 class="text-xl font-bold font-telugu text-[var(--primary)] mb-1">
+          భక్తుల సందేశం / సంప్రదింపు ఫారం
+        </h3>
+        <p class="text-xs text-gray-500 mb-6">Send an inquiry for Seva registration, Sankalpam or Ashram visit.</p>
+
+        <form onsubmit="event.preventDefault(); alert('ధన్యవాదాలు! మీ సందేశం మఠం కార్యాలయానికి చేరింది.');" class="space-y-4">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-bold uppercase text-gray-700 mb-1">భక్తుని పేరు (Name)</label>
+              <input type="text" required placeholder="మీ పేరు" 
+                     class="w-full px-4 py-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-orange-500 outline-none text-sm">
+            </div>
+            <div>
+              <label class="block text-xs font-bold uppercase text-gray-700 mb-1">ఫోన్ నంబర్ (Phone)</label>
+              <input type="tel" required placeholder="+91 9876543210" 
+                     class="w-full px-4 py-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-orange-500 outline-none text-sm">
+            </div>
+          </div>
+          <div>
+            <label class="block text-xs font-bold uppercase text-gray-700 mb-1">ఈమెయిల్ (Email)</label>
+            <input type="email" placeholder="devotee@example.com" 
+                   class="w-full px-4 py-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-orange-500 outline-none text-sm">
+          </div>
+          <div>
+            <label class="block text-xs font-bold uppercase text-gray-700 mb-1">విషయం / సందేశం (Message / Seva Details)</label>
+            <textarea rows="3" required placeholder="సేవా వివరాలు లేదా సందర్శన వివరాలు తెలియజేయండి..." 
+                      class="w-full px-4 py-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-orange-500 outline-none text-sm"></textarea>
+          </div>
+          <button type="submit" 
+                  class="px-8 py-3 rounded-xl text-white font-bold text-xs uppercase tracking-wider shadow-md hover:brightness-110 transition-all"
+                  style="background-color: var(--primary);">
+            సందేశం పంపండి (Submit Message) &rarr;
+          </button>
+        </form>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- ========================================================
+       FOOTER
+       ======================================================== -->
+  <footer class="sacred-footer mt-auto px-4 sm:px-6 lg:px-8">
+    <div class="max-w-7xl mx-auto">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12 mb-10 text-white">
+        <div>
+          <h3 class="font-bold text-white text-xl mb-4 font-sans tracking-wide">Quick Links</h3>
+          <ul class="space-y-2.5 text-sm text-white/90">
+            <li><a href="index.html" class="hover:text-amber-300 transition-colors">Home</a></li>
+            <li><a href="about-us.html" class="hover:text-amber-300 transition-colors">About Us</a></li>
+            <li><a href="48th-peetadhipatulu.html" class="hover:text-amber-300 transition-colors">48th Peetadhipatulu</a></li>
+            <li><a href="mutt-activities.html" class="hover:text-amber-300 transition-colors">Mutt Activities</a></li>
+            <li><a href="events.html" class="hover:text-amber-300 transition-colors">Events</a></li>
+            <li><a href="gallery.html" class="hover:text-amber-300 transition-colors">Gallery</a></li>
+            <li><a href="contact.html" class="hover:text-amber-300 transition-colors font-medium text-amber-200">Contact</a></li>
+            <li><a href="donate.html" class="hover:text-amber-300 transition-colors">Donate</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="font-bold text-white text-xl mb-4 font-sans tracking-wide">About Temple</h3>
+          <ul class="space-y-2.5 text-sm text-white/90">
+            <li><a href="about-us.html" class="hover:text-amber-300 transition-colors">History of Pushpagiri</a></li>
+            <li><a href="about-us.html" class="hover:text-amber-300 transition-colors">The Rise of Pushpagiri Peetham</a></li>
+            <li><a href="about-us.html" class="hover:text-amber-300 transition-colors">Vande Guru Paramparam</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="font-bold text-white text-xl mb-4 font-sans tracking-wide">Contact Us</h3>
+          <div class="space-y-4 text-sm text-white/90 leading-relaxed">
+            <p>CFR5+HH6, Beside Maruti Suzuki ARENA (Varun Motors, Hyderabad, Begumpet), Mayur Marg, Begumpet, Hyderabad, Telangana 500016</p>
+            <div class="space-y-1">
+              <p>Phone – <a href="tel:+919849530641" class="hover:text-amber-300 font-semibold transition-colors">+91 9849530641</a></p>
+              <p>Email – <a href="mailto:pushpagirisankarapeetham.org" class="hover:text-amber-300 transition-colors">pushpagirisankarapeetham.org</a></p>
+            </div>
+          </div>
+        </div>
+        <div>
+          <h3 class="font-bold text-white text-xl mb-4 font-sans tracking-wide">Timing</h3>
+          <div class="space-y-2 text-sm text-white/90 leading-relaxed">
+            <p class="font-semibold text-white">Mon–Sun:</p>
+            <p>8:00 AM – 12:30 PM</p>
+            <p>6:00 PM – 9:00 PM</p>
+          </div>
+        </div>
+      </div>
+      <div class="pt-8 border-t border-white/20 flex flex-col sm:flex-row items-center justify-between text-xs text-white/80 gap-3">
+        <p>Copyright © 2024 Pushpagiri Sankara Peetham, All Rights Reserved.</p>
+        <p class="text-[11px] text-white/60 font-telugu">శ్రీ జగద్గురు పుష్పగిరి శంకరాచార్య మహాసంస్థానం • అవిచ్ఛిన్న శంకర పరంపర</p>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>
