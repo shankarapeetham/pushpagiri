@@ -296,7 +296,7 @@
         <!-- Desktop Navigation Links -->
         <nav class="hidden lg:flex items-center space-x-6 text-xs font-bold uppercase tracking-wider text-[var(--text-muted)]">
           <a href="#home" class="text-[var(--primary)] hover:opacity-80 transition-colors">Home</a>
-          <a href="#peethadhipatulu" class="hover:text-[var(--primary)] transition-colors">48th Peetadhipatulu</a>
+          <a href="48th-peetadhipatulu.html" class="hover:text-[var(--primary)] transition-colors">48th Peetadhipatulu</a>
           <a href="#activities" class="hover:text-[var(--primary)] transition-colors">Activities</a>
           <a href="#history" class="hover:text-[var(--primary)] transition-colors">History</a>
           <a href="#festivals" class="hover:text-[var(--primary)] transition-colors">Festivals</a>
@@ -305,8 +305,12 @@
           <a href="#contact" class="hover:text-[var(--primary)] transition-colors">Contact</a>
         </nav>
 
-        <!-- Donate Button -->
-        <div class="flex items-center gap-3">
+        <!-- Header Actions: Admin Portal & Donate -->
+        <div class="flex items-center gap-2 sm:gap-3">
+          <a href="dashboard.html" 
+             class="px-3 py-2 rounded-xl border border-[var(--border-strong)] text-[var(--primary)] font-bold text-xs uppercase tracking-wider hover:bg-[var(--bg-subtle)] transition-all flex items-center gap-1.5 shadow-sm">
+            <span>⚙ Admin</span>
+          </a>
           <button onclick="openDonationModal()" 
                   class="px-5 py-2.5 rounded-xl text-white font-bold text-xs uppercase tracking-wider shadow-md hover:brightness-110 transition-all transform hover:scale-105"
                   style="background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);">
@@ -399,7 +403,7 @@
     </section>
 
     <!-- ========================================================
-         SECTION: 48TH PEETADHIPATULU (స్వామివారి పరిచయం & విశేషాలు)
+         SECTION: 48TH PEETADHIPATULU (సంగ్రహ పరిచయం & ప్రత్యేక విభాగం)
          ======================================================== -->
     <section id="peethadhipatulu" class="py-16 sm:py-20 px-4 bg-[var(--bg-surface)] border-b border-[var(--border-color)]">
       <div class="max-w-7xl mx-auto">
@@ -420,122 +424,64 @@
           <div class="w-20 h-1 rounded-full mx-auto my-3" style="background-color: var(--primary);"></div>
         </div>
 
-        <!-- Curated Photos Row (4 Authentic Portraits from live site) -->
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6 mb-12 max-w-5xl mx-auto" id="peethadhipati-gallery" data-source="local-storage">
-          
-          <div class="sanctum-card rounded-2xl overflow-hidden shadow-md group cursor-pointer p-1.5 bg-white border border-[var(--border-color)]"
-               onclick="openPhoto('images/peethadipathi/Peethadipathi-3.jpg', 'HH Sri Sri Sri Vidya Sankara Bharati Swamiji in Sanctum Darshan')">
-            <div class="rounded-xl overflow-hidden aspect-[4/5] bg-amber-50">
-              <img src="images/peethadipathi/Peethadipathi-3.jpg" 
-                   onerror="this.src='https://pushpagirisankarapeetham.org/wp-content/gallery/peethadipathi/Peethadipathi-3.jpg'" 
-                   alt="HH Sri Sri Sri Vidya Sankara Bharati Swamiji" 
-                   class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+        <!-- Streamlined Showcase Card -->
+        <div class="max-w-5xl mx-auto sanctum-card rounded-3xl p-6 sm:p-10 shadow-xl bg-white border border-[var(--border-color)]">
+          <div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
+            
+            <!-- Swamiji Divine Portrait -->
+            <div class="md:col-span-5 flex justify-center">
+              <div class="relative w-full max-w-sm rounded-2xl overflow-hidden p-2 bg-gradient-to-br from-amber-100 to-orange-100 shadow-lg border border-[var(--border-color)] group">
+                <div class="rounded-xl overflow-hidden aspect-[4/5] bg-amber-50">
+                  <img src="images/peethadipathi/Peethadipathi-3.jpg" 
+                       onerror="this.src='https://pushpagirisankarapeetham.org/wp-content/gallery/peethadipathi/Peethadipathi-3.jpg'" 
+                       alt="HH Sri Sri Sri Vidya Sankara Bharati Swamiji" 
+                       class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                </div>
+                <div class="p-2 text-center">
+                  <span class="inline-block px-3 py-1 rounded-full text-[10px] font-bold tracking-wider uppercase bg-white text-[var(--primary)] shadow-sm">
+                    దివ్య దర్శనం • అఖండ పీఠాధిపతి
+                  </span>
+                </div>
+              </div>
             </div>
-            <p class="text-[11px] text-center text-[var(--text-muted)] font-medium mt-2 py-1 font-telugu">
-              దివ్య దర్శనం
-            </p>
-          </div>
 
-          <div class="sanctum-card rounded-2xl overflow-hidden shadow-md group cursor-pointer p-1.5 bg-white border border-[var(--border-color)]"
-               onclick="openPhoto('images/peethadipathi/Peethadipathi-2.jpg', 'HH Swamiji in Anugraha Darshan')">
-            <div class="rounded-xl overflow-hidden aspect-[4/5] bg-amber-50">
-              <img src="images/peethadipathi/Peethadipathi-2.jpg" 
-                   onerror="this.src='https://pushpagirisankarapeetham.org/wp-content/gallery/peethadipathi/Peethadipathi-2.jpg'" 
-                   alt="HH Swamiji in Sanctum" 
-                   class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+            <!-- Overview Text & Sanskrit Sloka -->
+            <div class="md:col-span-7 space-y-4">
+              <p class="text-base sm:text-lg font-semibold text-[var(--primary)] leading-relaxed">
+                His Holiness Sri Sri Sri Vidya Sankara Bharathi Swami is the current and 48th Peethadhipathi of Sri Sri Sri Jagadguru Pushpagiri Sankaracharya Maha Samsthanam.
+              </p>
+              
+              <p class="text-sm text-gray-700 leading-relaxed font-sans">
+                Sri Vidya Sankara Bharathi Swami follows the sacred lineage as the 48th Peethadhipathi after his Pujya Guru Sri Sri Sri Vidya Nrusimha Bharathi Swami. Sri Swamiji has been successfully carrying forward Sri Adi Sankara's Vedanta Philosophy and the glorious legacy of Pushpagiri Peetham.
+              </p>
+
+              <!-- Sacred Sloka Box -->
+              <div class="p-4 sm:p-5 rounded-2xl border border-[var(--border-strong)] text-center my-4"
+                   style="background-color: var(--bg-subtle);">
+                <p class="text-base sm:text-lg font-bold font-serif text-[var(--primary)] tracking-wide leading-relaxed">
+                  || नारसिंहस्य तत्वज्ञं नाना शास्त्रार्थ कोविदम् ।<br>
+                  नोव्यहं नैष्ठिकं नित्यं विद्या शङ्कर भारती ||
+                </p>
+                <p class="text-xs sm:text-sm font-telugu font-semibold text-[var(--text-muted)] mt-1.5">
+                  || నారసింహస్య తత్వజ్ఞం నానా శాస్త్రార్థ కోవిదమ్ • నౌమ్యహం నైష్ఠికం నిత్యం విద్యా శంకర భారతీ ||
+                </p>
+              </div>
+
+              <!-- Dedicated Page & Dashboard CTAs -->
+              <div class="pt-2 flex flex-wrap gap-3">
+                <a href="48th-peetadhipatulu.html" 
+                   class="px-6 py-3.5 rounded-xl text-white font-bold text-xs tracking-wider uppercase shadow-md hover:brightness-110 flex items-center gap-2 transition-all"
+                   style="background-color: var(--primary);">
+                  <span>సంపూర్ణ చరిత్ర & దివ్య చిత్రమాలిక (View Dedicated Page) &rarr;</span>
+                </a>
+                <a href="dashboard.html" 
+                   class="px-5 py-3.5 rounded-xl border border-[var(--border-strong)] text-[var(--primary)] font-bold text-xs tracking-wider uppercase hover:bg-[var(--bg-subtle)] transition-all flex items-center gap-1.5 shadow-sm">
+                  <span>⚙ ఫోటోలు / డాష్‌బోర్డ్</span>
+                </a>
+              </div>
             </div>
-            <p class="text-[11px] text-center text-[var(--text-muted)] font-medium mt-2 py-1 font-telugu">
-              అనుగ్రహాశీస్సులు
-            </p>
+
           </div>
-
-          <div class="sanctum-card rounded-2xl overflow-hidden shadow-md group cursor-pointer p-1.5 bg-white border border-[var(--border-color)]"
-               onclick="openPhoto('images/peethadipathi/Peethadipathi-6.jpg', 'HH Swamiji Delivering Dharma Pravachanam')">
-            <div class="rounded-xl overflow-hidden aspect-[4/5] bg-amber-50">
-              <img src="images/peethadipathi/Peethadipathi-6.jpg" 
-                   onerror="this.src='https://pushpagirisankarapeetham.org/wp-content/gallery/peethadipathi/Peethadipathi-6.jpg'" 
-                   alt="HH Swamiji Dharma Pravachanam" 
-                   class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-            </div>
-            <p class="text-[11px] text-center text-[var(--text-muted)] font-medium mt-2 py-1 font-telugu">
-              ధర్మ ప్రవచనం
-            </p>
-          </div>
-
-          <div class="sanctum-card rounded-2xl overflow-hidden shadow-md group cursor-pointer p-1.5 bg-white border border-[var(--border-color)]"
-               onclick="openPhoto('images/peethadipathi/Peethadipathi-1.jpg', 'HH Swamiji Performing Sacred Sanctum Puja')">
-            <div class="rounded-xl overflow-hidden aspect-[4/5] bg-amber-50">
-              <img src="images/peethadipathi/Peethadipathi-1.jpg" 
-                   onerror="this.src='https://pushpagirisankarapeetham.org/wp-content/gallery/peethadipathi/Peethadipathi-1.jpg'" 
-                   alt="HH Swamiji Sacred Puja" 
-                   class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-            </div>
-            <p class="text-[11px] text-center text-[var(--text-muted)] font-medium mt-2 py-1 font-telugu">
-              పూజా కైంకర్యం
-            </p>
-          </div>
-
-        </div>
-
-        <!-- Official Authentic Biography Matter (From 48th-peetadhipatulu) -->
-        <div class="max-w-4xl mx-auto sanctum-card rounded-3xl p-6 sm:p-10 shadow-lg bg-white border border-[var(--border-color)]">
-          
-          <div class="space-y-4 text-sm sm:text-base text-gray-800 leading-relaxed font-sans">
-            <p class="font-semibold text-[var(--primary)] text-base sm:text-lg">
-              His Holiness Sri Sri Sri Vidya Sankara Bharathi Swami is the current and 48th Peethadhipathi of Sri Sri Sri Jagadguru Pushpagiri Sankaracharya Maha Samsthanam.
-            </p>
-
-            <p>
-              Sri Vidya Sankara Bharathi Swami follows the lineage as the 48th Peethadhipathi after his Pujya Guru Sri Sri Sri Vidya Nrusimha Bharathi Swami.
-            </p>
-
-            <p>
-              Sri Vidya Sankara Bharathi Swami has been successfully carrying forward the legacy of Pushpagiri Peetham in lines of the erstwhile Swamijis in the lineage. In fact, the reputation of Peetham has gone to further extent and is in a good form in the reign of present Swamiji.
-            </p>
-
-            <p>
-              His Holiness has been successfully taking forward Sri Adi Sankara's Vedanta Philisophy and its serenity in purifying the life &amp; living. Through Dharma Prachaara Yatras, Sri Swamiji has been extending divine blessings directly and indirectly to the entire Hindu Community in the Telugu-speaking region through active participation in many religious programs like installation of dieties in many new temples, among other activities.
-            </p>
-
-            <p>
-              The entire spiritual community has a deep respect for Sri Vidya Sankara Bharathi Swami for his exceptional intellect, knowledge and firm grip on almost all aspects of Sanathan Dharma like Vedas, Shaastras and Upanishads, among others.
-            </p>
-
-            <p>
-              Sri Swamiji is reverred for his unique and outstanding excellence in Jyotisha, Vyaakarana, Mantra Sastra, among other crucial areas of Vedic world by many prominent scholars and pandits.
-            </p>
-
-            <p class="font-medium text-gray-900">
-              Sri Swamiji has been showing the righteous path to lakhs of devotees, standing as the living form of Jagadguru. Vande Guru Paramparam!
-            </p>
-          </div>
-
-          <!-- Centered Sacred Sanskrit Sloka (As In Official Screenshot) -->
-          <div class="my-8 py-8 px-4 sm:px-6 rounded-2xl text-center border border-[var(--border-strong)]"
-               style="background-color: var(--bg-subtle);">
-            <h4 class="text-xl sm:text-2xl md:text-3xl font-bold font-serif text-[var(--primary)] tracking-wide leading-relaxed">
-              || नारसिंहस्य तत्वज्ञं नाना शास्त्रार्थ कोविदम्<br>
-              नोव्यहं नैष्ठिकं नित्यं विद्या शङ्कर भारती ||
-            </h4>
-            <div class="w-16 h-0.5 rounded-full mx-auto my-3" style="background-color: var(--primary);"></div>
-            <p class="text-sm sm:text-base font-telugu font-semibold text-[var(--text-muted)] mt-2">
-              || నారసింహస్య తత్వజ్ఞం నానా శాస్త్రార్థ కోవిదమ్ • నౌమ్యహం నైష్ఠికం నిత్యం విద్యా శంకర భారతీ ||
-            </p>
-          </div>
-
-          <!-- Quick Action Buttons -->
-          <div class="flex flex-wrap items-center justify-center gap-4 pt-4 border-t border-[var(--border-color)]">
-            <button onclick="openVideo('OrHLNSxigoQ', 'Swamiji Anugraha Bhashanam')" 
-                    class="px-6 py-3 rounded-xl text-white font-bold text-xs uppercase tracking-wider shadow-md hover:brightness-110 flex items-center gap-2 transition-all"
-                    style="background-color: var(--primary);">
-              <span>▶ అనుగ్రహ భాషణం వినండి (Listen to Discourse)</span>
-            </button>
-            <button onclick="openGuruParamparaModal()" 
-                    class="px-6 py-3 rounded-xl bg-[var(--bg-subtle)] border border-[var(--border-strong)] text-[var(--primary)] font-bold text-xs uppercase tracking-wider hover:bg-white transition-all">
-              <span>వందే గురు పరంపరామ్ (Guru Parampara Lineage) &rarr;</span>
-            </button>
-          </div>
-
         </div>
 
       </div>
@@ -928,11 +874,12 @@
           <div>
             <h3 class="font-bold text-white text-xl mb-4 font-sans tracking-wide">Quick Links</h3>
             <ul class="space-y-2.5 text-sm text-white/90">
-              <li><a href="#peethadhipatulu" class="hover:text-amber-300 transition-colors">48th Peetadhipatulu</a></li>
+              <li><a href="48th-peetadhipatulu.html" class="hover:text-amber-300 transition-colors font-medium text-amber-200">48th Peetadhipatulu (ప్రత్యేక విభాగం)</a></li>
               <li><a href="#activities" class="hover:text-amber-300 transition-colors">Mutt Activites</a></li>
               <li><a href="#festivals" class="hover:text-amber-300 transition-colors">Annual Festivals</a></li>
               <li><a href="#gallery" class="hover:text-amber-300 transition-colors">Photos</a></li>
               <li><a href="#discourses" class="hover:text-amber-300 transition-colors">Videos</a></li>
+              <li><a href="dashboard.html" class="hover:text-amber-300 transition-colors text-amber-200/90">⚙ Admin Dashboard</a></li>
               <li><a href="#contact" class="hover:text-amber-300 transition-colors">Contact</a></li>
             </ul>
           </div>

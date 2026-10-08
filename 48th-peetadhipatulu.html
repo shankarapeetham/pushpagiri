@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="orange">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>48th Peetadhipatulu | Sri Sri Sri Vidya Sankara Bharati Swamiji | Pushpagiri Peetham</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Tiro+Telugu:ital@0;1&display=swap" rel="stylesheet">
+
+  <!-- Firebase v10 Compat SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-storage-compat.js"></script>
+  <script src="js/firebase-init.js"></script>
+
+  <style>
+    /* ========================================================
+       DYNAMIC THEME ENGINE (Orange, Blue, Red, Gold)
+       ======================================================== */
+    [data-theme="orange"] {
+      --primary: #c2410c;
+      --primary-dark: #7c2d12;
+      --primary-light: #ea580c;
+      --secondary: #f97316;
+      --accent-gold: #d97706;
+      --bg-base: #fffbf7;
+      --bg-surface: #ffffff;
+      --bg-subtle: #fff7ed;
+      --card-bg: #ffffff;
+      --border-color: #fed7aa;
+      --border-strong: #fdba74;
+      --text-main: #271b12;
+      --text-muted: #6c5a4d;
+      --hero-grad: radial-gradient(circle at 65% 30%, #ffedd5 0%, #fff7ed 50%, #fffbf7 100%);
+      --aura-glow: rgba(249, 115, 22, 0.12);
+      --pill-bg: #ffedd5;
+      --pill-text: #9a3412;
+      --badge-accent: #ea580c;
+    }
+
+    [data-theme="blue"] {
+      --primary: #153969;
+      --primary-dark: #0f294a;
+      --primary-light: #1e40af;
+      --secondary: #2563eb;
+      --accent-gold: #d4af37;
+      --bg-base: #f7faff;
+      --bg-surface: #ffffff;
+      --bg-subtle: #eff6ff;
+      --card-bg: #ffffff;
+      --border-color: #bfdbfe;
+      --border-strong: #93c5fd;
+      --text-main: #141f32;
+      --text-muted: #4b5d78;
+      --hero-grad: radial-gradient(circle at 65% 30%, #e0f2fe 0%, #f0f7ff 50%, #f7faff 100%);
+      --aura-glow: rgba(37, 99, 235, 0.12);
+      --pill-bg: #dbeafe;
+      --pill-text: #1e40af;
+      --badge-accent: #2563eb;
+    }
+
+    [data-theme="red"] {
+      --primary: #7b1e19;
+      --primary-dark: #50130f;
+      --primary-light: #991b1b;
+      --secondary: #c86432;
+      --accent-gold: #d4af37;
+      --bg-base: #fdf8f6;
+      --bg-surface: #ffffff;
+      --bg-subtle: #fef2f2;
+      --card-bg: #ffffff;
+      --border-color: #eed8c9;
+      --border-strong: #e2bca4;
+      --text-main: #1f1b18;
+      --text-muted: #5e5751;
+      --hero-grad: radial-gradient(circle at 65% 30%, #fee2e2 0%, #fff5f5 50%, #fdf8f6 100%);
+      --aura-glow: rgba(185, 28, 28, 0.12);
+      --pill-bg: #fee2e2;
+      --pill-text: #991b1b;
+      --badge-accent: #991b1b;
+    }
+
+    [data-theme="gold"] {
+      --primary: #854d0e;
+      --primary-dark: #583307;
+      --primary-light: #a16207;
+      --secondary: #d97706;
+      --accent-gold: #ca8a04;
+      --bg-base: #fefdf6;
+      --bg-surface: #ffffff;
+      --bg-subtle: #fefce8;
+      --card-bg: #ffffff;
+      --border-color: #fef08a;
+      --border-strong: #fde047;
+      --text-main: #241c09;
+      --text-muted: #64552e;
+      --hero-grad: radial-gradient(circle at 65% 30%, #fef9c3 0%, #fefce8 50%, #fefdf6 100%);
+      --aura-glow: rgba(217, 119, 6, 0.14);
+      --pill-bg: #fef9c3;
+      --pill-text: #854d0e;
+      --badge-accent: #d97706;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      background-color: var(--bg-base);
+      color: var(--text-main);
+      transition: background-color 0.35s ease, color 0.35s ease;
+      overflow-x: hidden;
+    }
+
+    .font-cinzel { font-family: 'Cinzel', serif; }
+    .font-playfair { font-family: 'Playfair Display', serif; }
+    .font-telugu { font-family: 'Tiro Telugu', serif; }
+
+    .sanctum-card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border-color);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .sanctum-card:hover {
+      border-color: var(--border-strong);
+      transform: translateY(-4px);
+      box-shadow: 0 16px 32px -10px var(--aura-glow);
+    }
+
+    .modal-active {
+      display: flex !important;
+      opacity: 1 !important;
+    }
+
+    /* Traditional Sanctum Footer */
+    .sacred-footer {
+      background-color: #5D000F;
+      background-image: url('images/banner-header2.png');
+      background-repeat: repeat-x;
+      background-position: left top;
+      color: #ffffff;
+      padding-top: 85px;
+      padding-bottom: 45px;
+    }
+    .sacred-footer h3 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 1.25rem;
+    }
+    .sacred-footer a {
+      color: #ffffff;
+      opacity: 0.9;
+      transition: all 0.2s ease;
+    }
+    .sacred-footer a:hover {
+      opacity: 1;
+      color: #fef08a;
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body class="antialiased min-h-screen flex flex-col selection:bg-orange-300 selection:text-orange-950">
+
+  <!-- ========================================================
+       TOP ANNOUNCEMENT BAR & THEME SWITCHER
+       ======================================================== -->
+  <div class="relative z-50 text-white text-xs px-4 py-2 border-b border-black/10 transition-colors"
+       style="background: linear-gradient(90deg, var(--primary-dark) 0%, var(--primary) 50%, var(--primary-dark) 100%);">
+    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
+      
+      <div class="flex items-center gap-2">
+        <span class="inline-flex items-center justify-center px-2 py-0.5 rounded text-[10px] font-bold tracking-wider uppercase bg-white/20 text-white">
+          సనాతన ధర్మం
+        </span>
+        <span class="text-white/90 truncate hidden sm:inline">
+          శ్రీ జగద్గురు పుష్పగిరి శంకరాచార్య మహాసంస్థానం • 48వ పీఠాధిపతులు
+        </span>
+      </div>
+
+      <!-- Multi-Theme Selector (Orange, Blue, Red, Gold) -->
+      <div class="flex items-center gap-2">
+        <span class="text-[11px] text-white/70 font-semibold uppercase tracking-wider hidden md:inline">
+          థీమ్:
+        </span>
+        <div class="inline-flex items-center p-1 rounded-xl bg-black/25 border border-white/20 gap-1 shadow-inner">
+          <button onclick="setTheme('orange')" id="btn-theme-orange" 
+                  class="flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-bold transition-all bg-white text-orange-900 shadow">
+            <span class="w-2.5 h-2.5 rounded-full bg-orange-500 shadow-sm"></span>
+            <span>Orange</span>
+          </button>
+          <button onclick="setTheme('blue')" id="btn-theme-blue" 
+                  class="flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-semibold transition-all text-white/80 hover:text-white">
+            <span class="w-2.5 h-2.5 rounded-full bg-blue-500 shadow-sm"></span>
+            <span>Blue</span>
+          </button>
+          <button onclick="setTheme('red')" id="btn-theme-red" 
+                  class="flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-semibold transition-all text-white/80 hover:text-white">
+            <span class="w-2.5 h-2.5 rounded-full bg-red-600 shadow-sm"></span>
+            <span>Red</span>
+          </button>
+          <button onclick="setTheme('gold')" id="btn-theme-gold" 
+                  class="flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-semibold transition-all text-white/80 hover:text-white">
+            <span class="w-2.5 h-2.5 rounded-full bg-amber-400 shadow-sm"></span>
+            <span>Gold</span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ========================================================
+       MAIN HEADER
+       ======================================================== -->
+  <header class="bg-[var(--bg-surface)] border-b border-[var(--border-color)] sticky top-0 z-40 shadow-sm transition-colors">
+    <div class="max-w-7xl mx-auto px-4 py-3.5 flex items-center justify-between gap-4">
+      
+      <a href="index.html" class="flex items-center gap-3 group">
+        <div class="w-11 h-11 rounded-full flex items-center justify-center text-white font-bold text-xl shadow-md transition-transform group-hover:scale-105"
+             style="background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);">
+          ॐ
+        </div>
+        <div>
+          <h1 class="text-base sm:text-lg font-bold font-cinzel tracking-wide text-[var(--primary)] group-hover:opacity-90">
+            PUSHPAGIRI SANKARA PEETHAM
+          </h1>
+          <p class="text-[11px] text-[var(--text-muted)] font-telugu -mt-0.5">
+            శ్రీ జగద్గురు పుష్పగిరి శంకరాచార్య మహాసంస్థానం
+          </p>
+        </div>
+      </a>
+
+      <!-- Desktop Navigation Links -->
+      <nav class="hidden lg:flex items-center space-x-6 text-xs font-bold uppercase tracking-wider text-[var(--text-muted)]">
+        <a href="index.html" class="hover:text-[var(--primary)] transition-colors">Home</a>
+        <a href="48th-peetadhipatulu.html" class="text-[var(--primary)] border-b-2 border-[var(--primary)] pb-0.5 transition-colors">48th Peetadhipatulu</a>
+        <a href="index.html#activities" class="hover:text-[var(--primary)] transition-colors">Activities</a>
+        <a href="index.html#history" class="hover:text-[var(--primary)] transition-colors">History</a>
+        <a href="index.html#festivals" class="hover:text-[var(--primary)] transition-colors">Festivals</a>
+        <a href="index.html#discourses" class="hover:text-[var(--primary)] transition-colors">Discourses</a>
+        <a href="index.html#gallery" class="hover:text-[var(--primary)] transition-colors">Gallery</a>
+        <a href="#contact" class="hover:text-[var(--primary)] transition-colors">Contact</a>
+      </nav>
+
+      <!-- Action Buttons -->
+      <div class="flex items-center gap-2 sm:gap-3">
+        <a href="dashboard.html" 
+           class="px-3 py-2 rounded-xl border border-[var(--border-strong)] text-[var(--primary)] font-bold text-xs uppercase tracking-wider hover:bg-[var(--bg-subtle)] transition-all flex items-center gap-1.5 shadow-sm">
+          <span>⚙ Admin Dashboard</span>
+        </a>
+        <button onclick="openDonationModal()" 
+                class="px-4 py-2.5 rounded-xl text-white font-bold text-xs uppercase tracking-wider shadow-md hover:brightness-110 transition-all transform hover:scale-105"
+                style="background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);">
+          Donate / కానుకలు
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ========================================================
+       PAGE CONTENT: 48TH PEETADHIPATULU
+       ======================================================== -->
+  <main class="flex-grow py-12 sm:py-16 px-4 max-w-7xl mx-auto w-full">
+    
+    <!-- Breadcrumb & Header -->
+    <div class="mb-10 text-center max-w-4xl mx-auto">
+      <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider shadow-sm border border-[var(--border-color)] mb-4"
+           style="background-color: var(--pill-bg); color: var(--pill-text);">
+        <span>✦</span>
+        <span>48వ పీఠాధిపతులు • 48TH PEETADHIPATULU</span>
+      </div>
+      <h2 class="text-3xl sm:text-5xl font-bold font-telugu text-[var(--primary)] mb-2">
+        శ్రీ శ్రీ శ్రీ విద్యా శంకర భారతీ స్వామీజీ
+      </h2>
+      <p class="text-sm sm:text-base font-cinzel font-semibold text-[var(--text-muted)] tracking-wider">
+        His Holiness Sri Sri Sri Vidya Sankara Bharati Swamiji • 48th Jagadguru Peethadhipathi
+      </p>
+      <div class="w-24 h-1 rounded-full mx-auto my-4" style="background-color: var(--primary);"></div>
+    </div>
+
+    <!-- ========================================================
+         1. PHOTOS AT THE TOP (Dynamically Managed from Firebase)
+         ======================================================== -->
+    <div class="mb-14">
+      <div class="flex items-center justify-between mb-4 px-2">
+        <div class="flex items-center gap-2">
+          <span class="text-sm font-bold uppercase tracking-wider text-[var(--primary)] font-cinzel">
+            Divine Gallery / దివ్య చిత్రమాలిక
+          </span>
+          <span id="gallerySourceBadge" class="text-[10px] px-2 py-0.5 rounded-full bg-amber-100 text-amber-900 font-semibold border border-amber-300">
+            Firebase Sync Ready
+          </span>
+        </div>
+        <a href="dashboard.html" class="text-xs font-bold text-[var(--primary)] hover:underline flex items-center gap-1">
+          <span>+ Manage Photos in Dashboard</span> &rarr;
+        </a>
+      </div>
+
+      <!-- Photo Grid Container (Populated via JS / Firebase) -->
+      <div id="peethadipathiPhotosContainer" class="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6">
+        <!-- Loading State Placeholder -->
+        <div class="col-span-full py-12 text-center text-[var(--text-muted)]">
+          <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-[var(--primary)] mb-2"></div>
+          <p class="text-xs">దివ్య చిత్రాలు లోడ్ అవుతున్నాయి...</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================================
+         2. AUTHENTIC BIOGRAPHY MATTER (Exact from Official Site)
+         ======================================================== -->
+    <div class="max-w-4xl mx-auto sanctum-card rounded-3xl p-6 sm:p-12 shadow-xl bg-white border border-[var(--border-color)]">
+      
+      <div class="space-y-6 text-sm sm:text-base text-gray-800 leading-relaxed font-sans">
+        
+        <p class="font-semibold text-[var(--primary)] text-base sm:text-lg leading-relaxed">
+          His Holiness Sri Sri Sri Vidya Sankara Bharathi Swami is the current and 48th Peethadhipathi of Sri Sri Sri Jagadguru Pushpagiri Sankaracharya Maha Samsthanam.
+        </p>
+
+        <p>
+          Sri Vidya Sankara Bharathi Swami follows the lineage as the 48th Peethadhipathi after his Pujya Guru Sri Sri Sri Vidya Nrusimha Bharathi Swami.
+        </p>
+
+        <p>
+          Sri Vidya Sankara Bharathi Swami has been successfully carrying forward the legacy of Pushpagiri Peetham in lines of the erstwhile Swamijis in the lineage. In fact, the reputation of Peetham has gone to further extent and is in a good form in the reign of present Swamiji.
+        </p>
+
+        <p>
+          His Holiness has been successfully taking forward Sri Adi Sankara's Vedanta Philisophy and its serenity in purifying the life &amp; living. Through Dharma Prachaara Yatras, Sri Swamiji has been extending divine blessings directly and indirectly to the entire Hindu Community in the Telugu-speaking region through active participation in many religious programs like installation of dieties in many new temples, among other activities.
+        </p>
+
+        <p>
+          The entire spiritual community has a deep respect for Sri Vidya Sankara Bharathi Swami for his exceptional intellect, knowledge and firm grip on almost all aspects of Sanathan Dharma like Vedas, Shaastras and Upanishads, among others.
+        </p>
+
+        <p>
+          Sri Swamiji is reverred for his unique and outstanding excellence in Jyotisha, Vyaakarana, Mantra Sastra, among other crucial areas of Vedic world by many prominent scholars and pandits.
+        </p>
+
+        <p class="font-semibold text-gray-900 text-base">
+          Sri Swamiji has been showing the righteous path to lakhs of devotees, standing as the living form of Jagadguru. Vande Guru Paramparam!
+        </p>
+
+      </div>
+
+      <!-- ========================================================
+           3. SACRED SANSKRIT SLOKA (Exact from Screenshot)
+           ======================================================== -->
+      <div class="my-10 py-10 px-4 sm:px-8 rounded-2xl text-center border border-[var(--border-strong)] shadow-inner"
+           style="background-color: var(--bg-subtle);">
+        <h3 class="text-xl sm:text-3xl font-bold font-serif text-[var(--primary)] tracking-wide leading-relaxed">
+          || नारसिंहस्य तत्वज्ञं नाना शास्त्रार्थ कोविदम्<br>
+          नोव्यहं नैष्ठिकं नित्यं विद्या शङ्कर भारती ||
+        </h3>
+        <div class="w-20 h-0.5 rounded-full mx-auto my-4" style="background-color: var(--primary);"></div>
+        <p class="text-sm sm:text-base font-telugu font-semibold text-[var(--text-muted)] mt-2">
+          || నారసింహస్య తత్వజ్ఞం నానా శాస్త్రార్థ కోవిదమ్ • నౌమ్యహం నైష్ఠికం నిత్యం విద్యా శంకర భారతీ ||
+        </p>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex flex-wrap items-center justify-center gap-4 pt-6 border-t border-[var(--border-color)]">
+        <button onclick="openVideo('OrHLNSxigoQ', 'Swamiji Anugraha Bhashanam')" 
+                class="px-6 py-3.5 rounded-xl text-white font-bold text-xs uppercase tracking-wider shadow-md hover:brightness-110 flex items-center gap-2 transition-all"
+                style="background-color: var(--primary);">
+          <span>▶ అనుగ్రహ భాషణం వినండి (Listen to Discourse)</span>
+        </button>
+        <a href="index.html#activities" 
+           class="px-6 py-3.5 rounded-xl bg-[var(--bg-subtle)] border border-[var(--border-strong)] text-[var(--primary)] font-bold text-xs uppercase tracking-wider hover:bg-white transition-all">
+          <span>మఠం నిత్య సేవలు (Mutt Activities) &rarr;</span>
+        </a>
+        <button onclick="openDonationModal()" 
+                class="px-6 py-3.5 rounded-xl border border-[var(--border-strong)] text-gray-700 font-bold text-xs uppercase tracking-wider hover:bg-[var(--bg-subtle)] transition-all">
+          <span>మఠం సేవా కానుకలు (Donations)</span>
+        </button>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- ========================================================
+       FOOTER (Matches 4-Column Design & Sacred Garland Trim)
+       ======================================================== -->
+  <footer id="contact" class="sacred-footer mt-auto px-4 sm:px-6 lg:px-8">
+    <div class="max-w-7xl mx-auto">
+      
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12 mb-10">
+        
+        <!-- Column 1: Quick Links -->
+        <div>
+          <h3 class="font-bold text-white text-xl mb-4 font-sans tracking-wide">Quick Links</h3>
+          <ul class="space-y-2.5 text-sm text-white/90">
+            <li><a href="48th-peetadhipatulu.html" class="hover:text-amber-300 transition-colors font-medium text-amber-200">48th Peetadhipatulu</a></li>
+            <li><a href="index.html#activities" class="hover:text-amber-300 transition-colors">Mutt Activites</a></li>
+            <li><a href="index.html#festivals" class="hover:text-amber-300 transition-colors">Annual Festivals</a></li>
+            <li><a href="index.html#gallery" class="hover:text-amber-300 transition-colors">Photos</a></li>
+            <li><a href="index.html#discourses" class="hover:text-amber-300 transition-colors">Videos</a></li>
+            <li><a href="#contact" class="hover:text-amber-300 transition-colors">Contact</a></li>
+          </ul>
+        </div>
+
+        <!-- Column 2: About Temple -->
+        <div>
+          <h3 class="font-bold text-white text-xl mb-4 font-sans tracking-wide">About Temple</h3>
+          <ul class="space-y-2.5 text-sm text-white/90">
+            <li><a href="index.html#history" class="hover:text-amber-300 transition-colors">History of Pushpagiri</a></li>
+            <li><a href="javascript:void(0)" onclick="openRiseModal()" class="hover:text-amber-300 transition-colors">The Rise of Pushpagiri Peetham</a></li>
+            <li><a href="javascript:void(0)" onclick="openGuruParamparaModal()" class="hover:text-amber-300 transition-colors">Vande Guru Paramparam</a></li>
+          </ul>
+        </div>
+
+        <!-- Column 3: Contact Us -->
+        <div>
+          <h3 class="font-bold text-white text-xl mb-4 font-sans tracking-wide">Contact Us</h3>
+          <div class="space-y-4 text-sm text-white/90 leading-relaxed">
+            <p>
+              CFR5+HH6, Beside Maruti Suzuki ARENA (Varun Motors, Hyderabad, Begumpet), Mayur Marg, Begumpet, Hyderabad, Telangana 500016
+            </p>
+            <div class="space-y-1">
+              <p>Phone – <a href="tel:+919849530641" class="hover:text-amber-300 font-semibold transition-colors">+91 9849530641</a></p>
+              <p>Email – <a href="mailto:pushpagirisankarapeetham.org" class="hover:text-amber-300 transition-colors">pushpagirisankarapeetham.org</a></p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Column 4: Timing -->
+        <div>
+          <h3 class="font-bold text-white text-xl mb-4 font-sans tracking-wide">Timing</h3>
+          <div class="space-y-2 text-sm text-white/90 leading-relaxed">
+            <p class="font-semibold text-white">Mon–Sun:</p>
+            <p>8:00 AM – 12:30 PM</p>
+            <p>6:00 PM – 9:00 PM</p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Bottom Copyright Row -->
+      <div class="pt-8 border-t border-white/20 flex flex-col sm:flex-row items-center justify-between text-xs text-white/80 gap-3">
+        <p>
+          Copyright © 2024 Pushpagiri Sankara Peetham, All Rights Reserved. 
+          <a href="javascript:void(0)" onclick="openPrivacyModal()" class="ml-1 underline hover:text-amber-300">Privacy Policy</a>
+        </p>
+        <p class="text-[11px] text-white/60 font-telugu">
+          శ్రీ జగద్గురు పుష్పగిరి శంకరాచార్య మహాసంస్థానం • అవిచ్ఛిన్న శంకర పరంపర
+        </p>
+      </div>
+
+    </div>
+  </footer>
+
+  <!-- Lightbox Photo Modal -->
+  <div id="photoModal" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-md hidden items-center justify-center p-4" onclick="closePhoto()">
+    <div class="max-w-4xl max-h-[90vh] relative p-2" onclick="event.stopPropagation()">
+      <button onclick="closePhoto()" class="absolute -top-10 right-0 p-2 text-white hover:text-amber-400 text-lg">✕</button>
+      <img id="photoImg" src="" alt="Enlarged Photo" class="max-w-full max-h-[80vh] object-contain rounded-xl shadow-2xl border border-white/20">
+      <p id="photoCaption" class="text-center text-xs text-amber-200 mt-2 font-medium font-telugu"></p>
+    </div>
+  </div>
+
+  <!-- Video Modal -->
+  <div id="videoModal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden items-center justify-center p-4" onclick="closeVideo()">
+    <div class="bg-[#1c1a24] rounded-2xl overflow-hidden max-w-3xl w-full border border-gray-700 shadow-2xl relative" onclick="event.stopPropagation()">
+      <div class="p-3 bg-black/60 border-b border-gray-700 flex items-center justify-between text-xs text-white">
+        <span id="videoTitle">Swamiji Discourse</span>
+        <button onclick="closeVideo()" class="p-1 hover:text-amber-400">✕</button>
+      </div>
+      <div class="aspect-video w-full bg-black">
+        <iframe id="videoFrame" class="w-full h-full" src="" frameborder="0" allowfullscreen></iframe>
+      </div>
+    </div>
+  </div>
+
+  <!-- Donation Modal -->
+  <div id="donationModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden items-center justify-center p-4" onclick="closeDonationModal()">
+    <div class="sanctum-card rounded-2xl p-6 max-w-md w-full relative bg-white" onclick="event.stopPropagation()">
+      <div class="flex justify-between items-center border-b border-gray-200 pb-3 mb-4">
+        <h4 class="font-bold text-[var(--primary)] font-telugu text-base">మఠం సేవా కానుకలు (Donations)</h4>
+        <button onclick="closeDonationModal()" class="text-gray-400 hover:text-gray-700">✕</button>
+      </div>
+      <div class="space-y-3 text-xs text-gray-700">
+        <p>• <strong>నిత్యాన్నదానం:</strong> ₹1,116 / ₹5,116</p>
+        <p>• <strong>వేద పాఠశాల సేవ:</strong> ₹2,500 / ₹10,000</p>
+        <p>• <strong>గో సంరక్షణ సేవ:</strong> ₹1,000 / ₹5,000</p>
+        <div class="p-3 rounded-xl bg-orange-50 border border-orange-200 text-center font-mono text-[var(--primary)] font-bold mt-3">
+          UPI ID: pushpagiripeetham@sbi
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Rise Modal -->
+  <div id="riseModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden items-center justify-center p-4" onclick="closeRiseModal()">
+    <div class="sanctum-card rounded-2xl p-6 sm:p-8 max-w-2xl w-full relative bg-white max-h-[85vh] overflow-y-auto" onclick="event.stopPropagation()">
+      <div class="flex justify-between items-center border-b border-gray-200 pb-3 mb-4">
+        <h4 class="font-bold text-gray-900 font-cinzel text-lg">The Rise of Pushpagiri Peetham</h4>
+        <button onclick="closeRiseModal()" class="text-gray-400 hover:text-gray-700">✕</button>
+      </div>
+      <div class="space-y-4 text-sm text-gray-700 leading-relaxed">
+        <p>For thousands of years, Pushpagiri was a strong spiritual centre known as a prominent Shaiva Peetham. Sri Vidyaranya Swami brought it into the ambit of Jagadguru Sankaracharya Peethams during the 14th Century as Raja Peetham.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Privacy Modal -->
+  <div id="privacyModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden items-center justify-center p-4" onclick="closePrivacyModal()">
+    <div class="sanctum-card rounded-2xl p-6 max-w-md w-full relative bg-white" onclick="event.stopPropagation()">
+      <div class="flex justify-between items-center border-b border-gray-200 pb-3 mb-4">
+        <h4 class="font-bold text-gray-900 font-cinzel text-base">Privacy Policy</h4>
+        <button onclick="closePrivacyModal()" class="text-gray-400 hover:text-gray-700">✕</button>
+      </div>
+      <p class="text-xs text-gray-700 leading-relaxed">
+        All devotee information shared with the Peetham is held in utmost sacred confidentiality.
+      </p>
+    </div>
+  </div>
+
+  <!-- JavaScript Dynamic Photo Loader & Theme Controller -->
+  <script>
+    function setTheme(theme) {
+      document.documentElement.setAttribute('data-theme', theme);
+      const themes = ['orange', 'blue', 'red', 'gold'];
+      themes.forEach(t => {
+        const btn = document.getElementById(`btn-theme-${t}`);
+        if (btn) {
+          if (t === theme) {
+            btn.className = 'flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-bold transition-all bg-white text-gray-900 shadow';
+          } else {
+            btn.className = 'flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-semibold transition-all text-white/80 hover:text-white';
+          }
+        }
+      });
+    }
+
+    // Load Photos from Firebase / Local Storage
+    async function renderPeethadipathiPhotos() {
+      const container = document.getElementById('peethadipathiPhotosContainer');
+      try {
+        const photos = await loadPeethadipathiPhotos();
+        if (!photos || photos.length === 0) {
+          container.innerHTML = `<p class="col-span-full text-center text-xs text-gray-500 py-6">చిత్రాలు అందుబాటులో లేవు.</p>`;
+          return;
+        }
+
+        container.innerHTML = photos.map(photo => `
+          <div class="sanctum-card rounded-2xl overflow-hidden shadow-md group cursor-pointer p-1.5 bg-white border border-[var(--border-color)]"
+               onclick="openPhoto('${photo.url}', '${(photo.caption || 'శ్రీ స్వామివారు').replace(/'/g, "\\'")}')">
+            <div class="rounded-xl overflow-hidden aspect-[4/5] bg-amber-50">
+              <img src="${photo.url}" 
+                   onerror="this.src='images/peethadipathi/Peethadipathi-3.jpg'" 
+                   alt="${photo.caption || 'Swamiji'}" 
+                   class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+            </div>
+            <p class="text-[11px] text-center text-[var(--text-muted)] font-medium mt-2 py-1 font-telugu truncate px-1">
+              ${photo.caption || 'దివ్య దర్శనం'}
+            </p>
+          </div>
+        `).join('');
+
+        // Update badge
+        const badge = document.getElementById('gallerySourceBadge');
+        if (badge) {
+          badge.textContent = `${photos.length} Photos Active`;
+        }
+      } catch (err) {
+        console.error("Render photos error:", err);
+      }
+    }
+
+    // Lightbox & Modals
+    function openPhoto(src, caption) {
+      document.getElementById('photoImg').src = src;
+      document.getElementById('photoCaption').textContent = caption;
+      document.getElementById('photoModal').classList.add('modal-active');
+    }
+    function closePhoto() {
+      document.getElementById('photoModal').classList.remove('modal-active');
+    }
+
+    function openVideo(id, title) {
+      document.getElementById('videoTitle').textContent = title;
+      document.getElementById('videoFrame').src = `https://www.youtube.com/embed/${id}?autoplay=1`;
+      document.getElementById('videoModal').classList.add('modal-active');
+    }
+    function closeVideo() {
+      document.getElementById('videoFrame').src = '';
+      document.getElementById('videoModal').classList.remove('modal-active');
+    }
+
+    function openDonationModal() {
+      document.getElementById('donationModal').classList.add('modal-active');
+    }
+    function closeDonationModal() {
+      document.getElementById('donationModal').classList.remove('modal-active');
+    }
+
+    function openRiseModal() {
+      document.getElementById('riseModal').classList.add('modal-active');
+    }
+    function closeRiseModal() {
+      document.getElementById('riseModal').classList.remove('modal-active');
+    }
+
+    function openPrivacyModal() {
+      document.getElementById('privacyModal').classList.add('modal-active');
+    }
+    function closePrivacyModal() {
+      document.getElementById('privacyModal').classList.remove('modal-active');
+    }
+
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closePhoto();
+        closeVideo();
+        closeDonationModal();
+        closeRiseModal();
+        closePrivacyModal();
+      }
+    });
+
+    // Initialize on page load
+    window.addEventListener('DOMContentLoaded', () => {
+      renderPeethadipathiPhotos();
+    });
+  </script>
+</body>
+</html>

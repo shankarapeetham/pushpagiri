@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard | Pushpagiri Sankara Peetham</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Tiro+Telugu:ital@0;1&display=swap" rel="stylesheet">
+
+  <!-- Firebase v10 Compat SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-storage-compat.js"></script>
+  <script src="js/firebase-init.js"></script>
+
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      background-color: #fdfbf7;
+      color: #271b12;
+    }
+    .font-cinzel { font-family: 'Cinzel', serif; }
+    .font-telugu { font-family: 'Tiro Telugu', serif; }
+  </style>
+</head>
+<body class="min-h-screen bg-slate-50 text-slate-900 flex flex-col">
+
+  <!-- ========================================================
+       TOP ADMIN HEADER
+       ======================================================== -->
+  <header class="bg-[#5D000F] text-white py-3.5 px-4 sm:px-8 border-b border-amber-900/40 shadow-md">
+    <div class="max-w-7xl mx-auto flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-full bg-amber-500 text-amber-950 flex items-center justify-center font-bold text-lg shadow">
+          ॐ
+        </div>
+        <div>
+          <h1 class="text-sm sm:text-base font-bold font-cinzel tracking-wider text-amber-200">
+            PUSHPAGIRI SANKARA PEETHAM
+          </h1>
+          <p class="text-[10px] text-amber-100/70 uppercase tracking-widest">
+            Admin Management Portal • ఫైర్‌బేస్ డాష్‌బోర్డ్
+          </p>
+        </div>
+      </div>
+
+      <!-- Header Links & User Badge -->
+      <div class="flex items-center gap-3">
+        <a href="index.html" class="text-xs text-amber-200 hover:text-white transition-colors hidden sm:inline">
+          &larr; Homepage
+        </a>
+        <a href="48th-peetadhipatulu.html" target="_blank" 
+           class="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-xs font-semibold text-white border border-white/20 transition-all flex items-center gap-1">
+          <span>👁 View 48th Pontiff Page</span>
+        </a>
+        <div id="authHeaderBlock" class="hidden items-center gap-2">
+          <span id="userEmailBadge" class="text-xs text-amber-200 font-medium px-2 py-1 rounded bg-black/30 truncate max-w-[150px]"></span>
+          <button onclick="handleLogout()" class="px-2.5 py-1 rounded bg-red-600/80 hover:bg-red-600 text-[11px] font-bold text-white transition-all">
+            Logout
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ========================================================
+       1. LOGIN SECTION (Only Mail & Password)
+       ======================================================== -->
+  <div id="loginView" class="flex-grow flex items-center justify-center p-4">
+    <div class="max-w-md w-full bg-white rounded-3xl p-8 sm:p-10 shadow-2xl border border-gray-200 text-center relative overflow-hidden">
+      
+      <!-- Ornamental Header -->
+      <div class="w-16 h-16 rounded-2xl bg-amber-50 border border-amber-200 text-amber-700 mx-auto flex items-center justify-center text-3xl mb-4 shadow-sm">
+        🔒
+      </div>
+      
+      <h2 class="text-2xl font-bold font-cinzel text-gray-900 mb-1">Admin Portal Login</h2>
+      <p class="text-xs text-gray-500 mb-6">
+        Sign in with your email and password to manage temple content &amp; photos.
+      </p>
+
+      <!-- Alert Box -->
+      <div id="loginAlert" class="hidden p-3 rounded-xl mb-4 text-xs font-medium text-left"></div>
+
+      <!-- Login Form -->
+      <form onsubmit="handleLogin(event)" class="space-y-4 text-left">
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">
+            Email Address
+          </label>
+          <input type="email" id="loginEmail" required 
+                 placeholder="admin@pushpagirisankarapeetham.org" 
+                 class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-amber-500 focus:border-amber-500 text-sm outline-none transition-all">
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">
+            Password
+          </label>
+          <input type="password" id="loginPassword" required 
+                 placeholder="••••••••••••" 
+                 class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-amber-500 focus:border-amber-500 text-sm outline-none transition-all">
+        </div>
+
+        <button type="submit" id="loginSubmitBtn"
+                class="w-full py-3.5 rounded-xl bg-[#c2410c] hover:bg-[#9a3412] text-white font-bold text-sm uppercase tracking-wider shadow-lg hover:shadow-xl transition-all transform active:scale-95 flex items-center justify-center gap-2">
+          <span>Sign In to Dashboard &rarr;</span>
+        </button>
+      </form>
+
+      <!-- Demo / Quick Setup Hint -->
+      <div class="mt-6 pt-5 border-t border-gray-100 flex flex-col gap-2">
+        <button onclick="toggleConfigModal()" class="text-xs text-amber-800 hover:underline font-semibold">
+          ⚙ Configure Firebase Project Credentials
+        </button>
+        <p class="text-[11px] text-gray-400">
+          Tip: You can use any valid admin email or set up Firebase keys anytime.
+        </p>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ========================================================
+       2. DASHBOARD MANAGEMENT VIEW (Protected)
+       ======================================================== -->
+  <div id="dashboardView" class="hidden flex-grow max-w-7xl mx-auto p-4 sm:p-8 w-full space-y-8">
+    
+    <!-- Top Welcome Banner -->
+    <div class="bg-gradient-to-r from-amber-900 to-[#5D000F] rounded-3xl p-6 sm:p-8 text-white shadow-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+      <div>
+        <span class="px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider bg-white/20 text-amber-200">
+          Sri Pushpagiri Maha Samsthanam
+        </span>
+        <h2 class="text-2xl sm:text-3xl font-bold font-cinzel mt-2">
+          48th Peetadhipatulu Photos Manager
+        </h2>
+        <p class="text-xs text-amber-100/90 mt-1 max-w-xl">
+          Upload and manage photos displayed at the top of the dedicated 48th Peetadhipatulu page. Photos are synchronized across Firebase and live storage.
+        </p>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <a href="48th-peetadhipatulu.html" target="_blank"
+           class="px-5 py-3 rounded-xl bg-white text-gray-900 font-bold text-xs uppercase tracking-wider shadow hover:bg-amber-50 transition-all flex items-center gap-1.5">
+          <span>👁 View Live Page</span> &rarr;
+        </a>
+      </div>
+    </div>
+
+    <!-- Manager Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+      
+      <!-- Form: Add / Upload New Photo -->
+      <div class="lg:col-span-5 bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-gray-200">
+        <div class="flex items-center justify-between mb-4 pb-3 border-b border-gray-100">
+          <h3 class="font-bold text-gray-900 text-base font-cinzel">
+            + Add New Photo
+          </h3>
+          <span class="text-[10px] uppercase font-bold text-amber-700 bg-amber-50 px-2.5 py-1 rounded-full border border-amber-200">
+            Realtime Sync
+          </span>
+        </div>
+
+        <form onsubmit="handlePhotoUpload(event)" class="space-y-4">
+          
+          <!-- Method Selection -->
+          <div class="flex rounded-xl bg-gray-100 p-1 text-xs font-semibold text-gray-600 mb-2">
+            <button type="button" onclick="switchUploadMethod('file')" id="btnMethodFile"
+                    class="flex-1 py-1.5 rounded-lg bg-white shadow-sm text-gray-900 transition-all">
+              File Upload
+            </button>
+            <button type="button" onclick="switchUploadMethod('url')" id="btnMethodUrl"
+                    class="flex-1 py-1.5 rounded-lg text-gray-500 hover:text-gray-900 transition-all">
+              Image URL
+            </button>
+          </div>
+
+          <!-- File Input Block -->
+          <div id="fileUploadBlock">
+            <label class="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">
+              Select Photo from Device
+            </label>
+            <div class="border-2 border-dashed border-gray-300 hover:border-amber-500 rounded-2xl p-6 text-center cursor-pointer bg-gray-50/60 transition-colors relative"
+                 onclick="document.getElementById('photoFileInput').click()">
+              <input type="file" id="photoFileInput" accept="image/*" class="hidden" onchange="previewSelectedFile(event)">
+              <div id="filePreviewPlaceholder">
+                <span class="text-3xl block mb-1">🖼</span>
+                <span class="text-xs text-gray-600 font-semibold block">Click to upload photo</span>
+                <span class="text-[11px] text-gray-400 block mt-0.5">JPG, PNG, WEBP (under 5MB)</span>
+              </div>
+              <img id="filePreviewImg" class="hidden max-h-48 mx-auto rounded-xl object-contain shadow-sm">
+            </div>
+          </div>
+
+          <!-- URL Input Block -->
+          <div id="urlUploadBlock" class="hidden">
+            <label class="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">
+              Photo URL
+            </label>
+            <input type="url" id="photoUrlInput" placeholder="https://example.com/photo.jpg" 
+                   class="w-full px-4 py-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-amber-500 text-xs outline-none">
+          </div>
+
+          <!-- Caption -->
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">
+              Photo Caption / శీర్షిక
+            </label>
+            <input type="text" id="photoCaptionInput" required placeholder="ఉదా: శ్రీ శ్రీ శ్రీ స్వామివారి దివ్య దర్శనం" 
+                   class="w-full px-4 py-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-amber-500 text-xs font-telugu outline-none">
+          </div>
+
+          <button type="submit" id="uploadSubmitBtn"
+                  class="w-full py-3.5 rounded-xl bg-[#c2410c] hover:bg-[#9a3412] text-white font-bold text-xs uppercase tracking-wider shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2">
+            <span>💾 Publish to 48th Peetadhipatulu Page</span>
+          </button>
+        </form>
+      </div>
+
+      <!-- List: Current Photos -->
+      <div class="lg:col-span-7 bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-gray-200">
+        <div class="flex items-center justify-between mb-4 pb-3 border-b border-gray-100">
+          <div>
+            <h3 class="font-bold text-gray-900 text-base font-cinzel">
+              Current Photos Gallery
+            </h3>
+            <p class="text-xs text-gray-500">Live images shown on 48th Peetadhipatulu section</p>
+          </div>
+          <span id="photosCountBadge" class="px-2.5 py-1 rounded-full bg-slate-100 text-slate-800 text-xs font-bold">
+            0 Photos
+          </span>
+        </div>
+
+        <!-- Photos Container -->
+        <div id="dashboardPhotosList" class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-h-[600px] overflow-y-auto pr-1">
+          <!-- Loaded via JS -->
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- ========================================================
+       FIREBASE CONFIG MODAL
+       ======================================================== -->
+  <div id="configModal" class="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-gray-200 relative" onclick="event.stopPropagation()">
+      <div class="flex items-center justify-between border-b pb-3 mb-4">
+        <h4 class="font-bold text-gray-900 font-cinzel text-base">Firebase Project Configuration</h4>
+        <button onclick="toggleConfigModal()" class="text-gray-400 hover:text-gray-700">✕</button>
+      </div>
+      
+      <p class="text-xs text-gray-600 mb-4 leading-relaxed">
+        Paste your Firebase Web App configuration from Firebase Console (Project Settings &rarr; General &rarr; Your apps).
+      </p>
+
+      <form onsubmit="saveFirebaseConfig(event)" class="space-y-3">
+        <div>
+          <label class="block text-[11px] font-bold uppercase text-gray-600 mb-1">API Key</label>
+          <input type="text" id="cfgApiKey" class="w-full px-3 py-2 rounded-lg border text-xs font-mono">
+        </div>
+        <div>
+          <label class="block text-[11px] font-bold uppercase text-gray-600 mb-1">Auth Domain</label>
+          <input type="text" id="cfgAuthDomain" class="w-full px-3 py-2 rounded-lg border text-xs font-mono">
+        </div>
+        <div>
+          <label class="block text-[11px] font-bold uppercase text-gray-600 mb-1">Project ID</label>
+          <input type="text" id="cfgProjectId" class="w-full px-3 py-2 rounded-lg border text-xs font-mono">
+        </div>
+        <div>
+          <label class="block text-[11px] font-bold uppercase text-gray-600 mb-1">Storage Bucket</label>
+          <input type="text" id="cfgStorageBucket" class="w-full px-3 py-2 rounded-lg border text-xs font-mono">
+        </div>
+
+        <div class="pt-3 flex gap-2">
+          <button type="submit" class="flex-1 py-2.5 rounded-xl bg-[#c2410c] text-white text-xs font-bold uppercase">
+            Save Config
+          </button>
+          <button type="button" onclick="toggleConfigModal()" class="px-4 py-2.5 rounded-xl border text-xs text-gray-600">
+            Cancel
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- JavaScript Controller -->
+  <script>
+    let activeUploadMethod = 'file';
+    let base64PhotoData = '';
+
+    // Check auth state on load
+    window.addEventListener('DOMContentLoaded', () => {
+      initFirebase();
+      checkAuthStatus();
+      loadSavedConfig();
+    });
+
+    function checkAuthStatus() {
+      const loggedUser = localStorage.getItem("pushpagiri_admin_user");
+      if (loggedUser) {
+        showDashboard(loggedUser);
+      } else if (firebaseAuth) {
+        firebaseAuth.onAuthStateChanged(user => {
+          if (user) {
+            showDashboard(user.email);
+          } else {
+            showLogin();
+          }
+        });
+      } else {
+        showLogin();
+      }
+    }
+
+    function showDashboard(email) {
+      document.getElementById('loginView').classList.add('hidden');
+      document.getElementById('dashboardView').classList.remove('hidden');
+      document.getElementById('authHeaderBlock').classList.remove('hidden');
+      document.getElementById('authHeaderBlock').classList.add('flex');
+      document.getElementById('userEmailBadge').textContent = email;
+      loadDashboardPhotos();
+    }
+
+    function showLogin() {
+      document.getElementById('loginView').classList.remove('hidden');
+      document.getElementById('dashboardView').classList.add('hidden');
+      document.getElementById('authHeaderBlock').classList.add('hidden');
+      document.getElementById('authHeaderBlock').classList.remove('flex');
+    }
+
+    async function handleLogin(e) {
+      e.preventDefault();
+      const email = document.getElementById('loginEmail').value.trim();
+      const password = document.getElementById('loginPassword').value;
+      const alertBox = document.getElementById('loginAlert');
+      const submitBtn = document.getElementById('loginSubmitBtn');
+
+      alertBox.className = "hidden";
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = "Signing in...";
+
+      try {
+        // If Firebase is initialized with apiKey
+        if (initFirebase() && firebaseAuth) {
+          try {
+            const userCred = await firebaseAuth.signInWithEmailAndPassword(email, password);
+            localStorage.setItem("pushpagiri_admin_user", userCred.user.email);
+            showDashboard(userCred.user.email);
+            return;
+          } catch (fbErr) {
+            // If user doesn't exist yet, attempt creation or give clear message
+            if (fbErr.code === 'auth/user-not-found') {
+              const newCred = await firebaseAuth.createUserWithEmailAndPassword(email, password);
+              localStorage.setItem("pushpagiri_admin_user", newCred.user.email);
+              showDashboard(newCred.user.email);
+              return;
+            } else {
+              throw fbErr;
+            }
+          }
+        } else {
+          // Local/Direct Authentication Fallback
+          if (email && password.length >= 6) {
+            localStorage.setItem("pushpagiri_admin_user", email);
+            showDashboard(email);
+          } else {
+            throw new Error("Password must be at least 6 characters.");
+          }
+        }
+      } catch (err) {
+        alertBox.className = "p-3 rounded-xl mb-4 text-xs font-medium text-red-800 bg-red-100 border border-red-200 block";
+        alertBox.textContent = err.message || "Login failed. Please verify credentials.";
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = "Sign In to Dashboard &rarr;";
+      }
+    }
+
+    function handleLogout() {
+      if (firebaseAuth) {
+        try { firebaseAuth.signOut(); } catch (e) {}
+      }
+      localStorage.removeItem("pushpagiri_admin_user");
+      showLogin();
+    }
+
+    // Upload Method Switching
+    function switchUploadMethod(method) {
+      activeUploadMethod = method;
+      const btnFile = document.getElementById('btnMethodFile');
+      const btnUrl = document.getElementById('btnMethodUrl');
+      const fileBlock = document.getElementById('fileUploadBlock');
+      const urlBlock = document.getElementById('urlUploadBlock');
+
+      if (method === 'file') {
+        btnFile.className = "flex-1 py-1.5 rounded-lg bg-white shadow-sm text-gray-900 transition-all";
+        btnUrl.className = "flex-1 py-1.5 rounded-lg text-gray-500 hover:text-gray-900 transition-all";
+        fileBlock.classList.remove('hidden');
+        urlBlock.classList.add('hidden');
+      } else {
+        btnUrl.className = "flex-1 py-1.5 rounded-lg bg-white shadow-sm text-gray-900 transition-all";
+        btnFile.className = "flex-1 py-1.5 rounded-lg text-gray-500 hover:text-gray-900 transition-all";
+        urlBlock.classList.remove('hidden');
+        fileBlock.classList.add('hidden');
+      }
+    }
+
+    // File Preview Handler
+    function previewSelectedFile(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        base64PhotoData = evt.target.result;
+        const img = document.getElementById('filePreviewImg');
+        const placeholder = document.getElementById('filePreviewPlaceholder');
+        img.src = base64PhotoData;
+        img.classList.remove('hidden');
+        placeholder.classList.add('hidden');
+      };
+      reader.readAsDataURL(file);
+    }
+
+    // Photo Upload Submission
+    async function handlePhotoUpload(e) {
+      e.preventDefault();
+      const caption = document.getElementById('photoCaptionInput').value.trim();
+      let photoUrl = '';
+
+      if (activeUploadMethod === 'file') {
+        if (!base64PhotoData) {
+          alert('Please select an image file first.');
+          return;
+        }
+        photoUrl = base64PhotoData;
+      } else {
+        photoUrl = document.getElementById('photoUrlInput').value.trim();
+        if (!photoUrl) {
+          alert('Please provide a valid image URL.');
+          return;
+        }
+      }
+
+      const submitBtn = document.getElementById('uploadSubmitBtn');
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = "Publishing photo...";
+
+      try {
+        const newPhoto = {
+          id: "photo-" + Date.now(),
+          url: photoUrl,
+          caption: caption,
+          date: new Date().toISOString()
+        };
+
+        await addPeethadipathiPhoto(newPhoto);
+
+        // Reset form
+        document.getElementById('photoCaptionInput').value = '';
+        document.getElementById('photoUrlInput').value = '';
+        base64PhotoData = '';
+        document.getElementById('filePreviewImg').classList.add('hidden');
+        document.getElementById('filePreviewPlaceholder').classList.remove('hidden');
+
+        await loadDashboardPhotos();
+        alert('Photo successfully added to 48th Peetadhipatulu section!');
+      } catch (err) {
+        alert('Error saving photo: ' + err.message);
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = "💾 Publish to 48th Peetadhipatulu Page";
+      }
+    }
+
+    // Load Photos inside Dashboard
+    async function loadDashboardPhotos() {
+      const listContainer = document.getElementById('dashboardPhotosList');
+      const countBadge = document.getElementById('photosCountBadge');
+
+      try {
+        const photos = await loadPeethadipathiPhotos();
+        countBadge.textContent = `${photos.length} Photos`;
+
+        if (!photos || photos.length === 0) {
+          listContainer.innerHTML = `<p class="col-span-full text-center text-xs text-gray-400 py-10">No photos available yet.</p>`;
+          return;
+        }
+
+        listContainer.innerHTML = photos.map(photo => `
+          <div class="rounded-2xl p-2.5 bg-gray-50 border border-gray-200 flex flex-col justify-between gap-2 shadow-sm">
+            <div class="rounded-xl overflow-hidden aspect-[4/3] bg-gray-200">
+              <img src="${photo.url}" alt="${photo.caption}" class="w-full h-full object-cover">
+            </div>
+            <div>
+              <p class="text-xs font-bold text-gray-800 font-telugu truncate">${photo.caption || 'Swamiji Photo'}</p>
+              <p class="text-[10px] text-gray-400">${new Date(photo.date).toLocaleDateString()}</p>
+            </div>
+            <button onclick="handleDeletePhoto('${photo.id}')" 
+                    class="w-full py-1.5 rounded-lg bg-red-50 hover:bg-red-100 text-red-600 font-bold text-[11px] border border-red-200 transition-colors">
+              🗑 Delete Photo
+            </button>
+          </div>
+        `).join('');
+      } catch (err) {
+        console.error("Error loading dashboard photos:", err);
+      }
+    }
+
+    async function handleDeletePhoto(id) {
+      if (confirm('Are you sure you want to delete this photo from the 48th Peetadhipatulu page?')) {
+        await deletePeethadipathiPhoto(id);
+        await loadDashboardPhotos();
+      }
+    }
+
+    // Firebase Config Modal Handlers
+    function toggleConfigModal() {
+      const modal = document.getElementById('configModal');
+      modal.classList.toggle('hidden');
+      modal.classList.toggle('flex');
+    }
+
+    function loadSavedConfig() {
+      const cfg = getFirebaseConfig();
+      if (cfg) {
+        document.getElementById('cfgApiKey').value = cfg.apiKey || '';
+        document.getElementById('cfgAuthDomain').value = cfg.authDomain || '';
+        document.getElementById('cfgProjectId').value = cfg.projectId || '';
+        document.getElementById('cfgStorageBucket').value = cfg.storageBucket || '';
+      }
+    }
+
+    function saveFirebaseConfig(e) {
+      e.preventDefault();
+      const cfg = {
+        apiKey: document.getElementById('cfgApiKey').value.trim(),
+        authDomain: document.getElementById('cfgAuthDomain').value.trim(),
+        projectId: document.getElementById('cfgProjectId').value.trim(),
+        storageBucket: document.getElementById('cfgStorageBucket').value.trim()
+      };
+      localStorage.setItem("pushpagiri_firebase_config", JSON.stringify(cfg));
+      toggleConfigModal();
+      alert('Firebase Configuration Saved! Please reload the page.');
+      location.reload();
+    }
+  </script>
+</body>
+</html>
