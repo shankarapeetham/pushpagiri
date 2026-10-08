@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Dashboard | Pushpagiri Sankara Peetham</title>
+  <title>Admin Dashboard & Realtime Manager | Sri Pushpagiri Sankara Peetham</title>
   
   <!-- Tailwind CSS -->
   <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
@@ -18,52 +18,84 @@
   <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-storage-compat.js"></script>
+  
+  <!-- Real-time & Auth Service -->
   <script src="js/firebase-init.js"></script>
 
   <style>
     body {
       font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
-      background-color: #fdfbf7;
-      color: #271b12;
+      background-color: #f8fafc;
+      color: #1e293b;
     }
     .font-cinzel { font-family: 'Cinzel', serif; }
     .font-telugu { font-family: 'Tiro Telugu', serif; }
+
+    @keyframes pulseLive {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.35); opacity: 0.6; }
+    }
+    .animate-pulse-live {
+      animation: pulseLive 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+    
+    .toast-enter {
+      animation: toastSlide 0.3s ease-out forwards;
+    }
+    @keyframes toastSlide {
+      from { transform: translateY(100%); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
   </style>
 </head>
-<body class="min-h-screen bg-slate-50 text-slate-900 flex flex-col">
+<body class="min-h-screen bg-slate-50 text-slate-900 flex flex-col selection:bg-amber-200">
 
   <!-- ========================================================
        TOP ADMIN HEADER
        ======================================================== -->
-  <header class="bg-[#5D000F] text-white py-3.5 px-4 sm:px-8 border-b border-amber-900/40 shadow-md">
+  <header class="bg-[#5D000F] text-white py-3.5 px-4 sm:px-8 border-b border-amber-900/50 shadow-lg sticky top-0 z-40 backdrop-blur-md bg-opacity-95">
     <div class="max-w-7xl mx-auto flex items-center justify-between">
       <div class="flex items-center gap-3">
-        <div class="w-9 h-9 rounded-full bg-amber-500 text-amber-950 flex items-center justify-center font-bold text-lg shadow">
+        <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-amber-400 to-amber-600 text-amber-950 flex items-center justify-center font-bold text-xl shadow-md border border-amber-300/40">
           ॐ
         </div>
         <div>
           <h1 class="text-sm sm:text-base font-bold font-cinzel tracking-wider text-amber-200">
-            PUSHPAGIRI SANKARA PEETHAM
+            SRI PUSHPAGIRI SANKARA PEETHAM
           </h1>
-          <p class="text-[10px] text-amber-100/70 uppercase tracking-widest">
-            Admin Management Portal • ఫైర్‌బేస్ డాష్‌బోర్డ్
+          <p class="text-[10px] text-amber-100/80 uppercase tracking-widest flex items-center gap-1.5">
+            <span>Secure Admin Portal</span>
+            <span class="inline-block w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+            <span>నిర్వాహక డాష్‌బోర్డ్</span>
           </p>
         </div>
       </div>
 
-      <!-- Header Links & User Badge -->
+      <!-- Header Actions -->
       <div class="flex items-center gap-3">
-        <a href="index.html" class="text-xs text-amber-200 hover:text-white transition-colors hidden sm:inline">
+        <a href="index.html" class="text-xs text-amber-200 hover:text-white transition-colors hidden sm:inline font-medium">
           &larr; Homepage
         </a>
         <a href="48th-peetadhipatulu.html" target="_blank" 
-           class="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-xs font-semibold text-white border border-white/20 transition-all flex items-center gap-1">
+           class="px-3.5 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-xs font-semibold text-white border border-white/20 transition-all flex items-center gap-1.5 shadow-sm">
           <span>👁 View 48th Pontiff Page</span>
+          <span class="text-[10px] text-amber-300">↗</span>
         </a>
-        <div id="authHeaderBlock" class="hidden items-center gap-2">
-          <span id="userEmailBadge" class="text-xs text-amber-200 font-medium px-2 py-1 rounded bg-black/30 truncate max-w-[150px]"></span>
-          <button onclick="handleLogout()" class="px-2.5 py-1 rounded bg-red-600/80 hover:bg-red-600 text-[11px] font-bold text-white transition-all">
-            Logout
+        
+        <!-- Authenticated User Badge & Logout -->
+        <div id="authHeaderBlock" class="hidden items-center gap-2 pl-2 border-l border-white/20">
+          <div class="hidden md:flex flex-col text-right">
+            <span id="userEmailBadge" class="text-xs text-amber-200 font-semibold truncate max-w-[160px]">admin@peetham</span>
+            <span class="text-[10px] text-emerald-300 flex items-center justify-end gap-1 font-medium">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse-live"></span>
+              Secure Session
+            </span>
+          </div>
+          <button onclick="handleLogout()" 
+                  class="px-3 py-1.5 rounded-xl bg-red-600/90 hover:bg-red-700 text-xs font-bold text-white transition-all shadow hover:shadow-md flex items-center gap-1"
+                  title="Sign out of Admin Dashboard">
+            <span>Logout</span>
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
           </button>
         </div>
       </div>
@@ -71,42 +103,71 @@
   </header>
 
   <!-- ========================================================
-       1. LOGIN SECTION (Only Mail & Password)
+       1. AUTHENTICATION & LOGIN VIEW (Protected Route Gate)
+       Strictly email & password authentication
        ======================================================== -->
-  <div id="loginView" class="flex-grow flex items-center justify-center p-4">
-    <div class="max-w-md w-full bg-white rounded-3xl p-8 sm:p-10 shadow-2xl border border-gray-200 text-center relative overflow-hidden">
+  <div id="loginView" class="flex-grow flex items-center justify-center p-4 sm:p-6 my-auto">
+    <div class="max-w-md w-full bg-white rounded-3xl p-8 sm:p-10 shadow-2xl border border-slate-200 text-center relative overflow-hidden">
       
-      <!-- Ornamental Header -->
+      <!-- Top Decorative Accent -->
+      <div class="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-amber-600 via-[#c2410c] to-[#5D000F]"></div>
+
+      <!-- Icon & Header -->
       <div class="w-16 h-16 rounded-2xl bg-amber-50 border border-amber-200 text-amber-700 mx-auto flex items-center justify-center text-3xl mb-4 shadow-sm">
-        🔒
+        🛡️
       </div>
       
-      <h2 class="text-2xl font-bold font-cinzel text-gray-900 mb-1">Admin Portal Login</h2>
-      <p class="text-xs text-gray-500 mb-6">
-        Sign in with your email and password to manage temple content &amp; photos.
+      <h2 class="text-2xl font-bold font-cinzel text-slate-900 mb-1">Admin Portal Security</h2>
+      <p class="text-xs text-slate-500 mb-6">
+        Sign in to manage 48th Peetadhipatulu photos and real-time darshan gallery.
       </p>
 
-      <!-- Alert Box -->
-      <div id="loginAlert" class="hidden p-3 rounded-xl mb-4 text-xs font-medium text-left"></div>
+      <!-- Auth Mode Tabs (Sign In vs Register) -->
+      <div class="flex rounded-xl bg-slate-100 p-1 mb-5 text-xs font-bold">
+        <button type="button" id="tabSignIn" onclick="switchAuthTab('signin')"
+                class="flex-1 py-2 rounded-lg bg-white text-slate-900 shadow-sm transition-all">
+          Sign In (సైన్ ఇన్)
+        </button>
+        <button type="button" id="tabRegister" onclick="switchAuthTab('register')"
+                class="flex-1 py-2 rounded-lg text-slate-500 hover:text-slate-900 transition-all">
+          Register Admin (ఖాతా సృష్టించండి)
+        </button>
+      </div>
 
-      <!-- Login Form -->
-      <form onsubmit="handleLogin(event)" class="space-y-4 text-left">
+      <!-- Alert Box -->
+      <div id="loginAlert" class="hidden p-3.5 rounded-xl mb-4 text-xs font-medium text-left leading-relaxed"></div>
+
+      <!-- Sign In Form -->
+      <form id="signInForm" onsubmit="handleSignInSubmit(event)" class="space-y-4 text-left">
         <div>
-          <label class="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">
-            Email Address
+          <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-700 mb-1">
+            Admin Email Address
           </label>
-          <input type="email" id="loginEmail" required 
-                 placeholder="admin@pushpagirisankarapeetham.org" 
-                 class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-amber-500 focus:border-amber-500 text-sm outline-none transition-all">
+          <div class="relative">
+            <input type="email" id="loginEmail" required 
+                   placeholder="admin@pushpagirisankarapeetham.org" 
+                   autocomplete="email"
+                   class="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-amber-500 focus:border-amber-500 text-sm outline-none transition-all">
+            <span class="absolute left-3.5 top-3.5 text-slate-400 text-sm">✉</span>
+          </div>
         </div>
 
         <div>
-          <label class="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">
-            Password
-          </label>
-          <input type="password" id="loginPassword" required 
-                 placeholder="••••••••••••" 
-                 class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-amber-500 focus:border-amber-500 text-sm outline-none transition-all">
+          <div class="flex items-center justify-between mb-1">
+            <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-700">
+              Password
+            </label>
+            <button type="button" onclick="togglePasswordVisibility('loginPassword', 'pwEye1')" class="text-[11px] text-amber-700 hover:underline">
+              <span id="pwEye1">Show</span>
+            </button>
+          </div>
+          <div class="relative">
+            <input type="password" id="loginPassword" required 
+                   placeholder="••••••••••••" 
+                   autocomplete="current-password"
+                   class="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-amber-500 focus:border-amber-500 text-sm outline-none transition-all">
+            <span class="absolute left-3.5 top-3.5 text-slate-400 text-sm">🔑</span>
+          </div>
         </div>
 
         <button type="submit" id="loginSubmitBtn"
@@ -115,14 +176,67 @@
         </button>
       </form>
 
-      <!-- Demo / Quick Setup Hint -->
-      <div class="mt-6 pt-5 border-t border-gray-100 flex flex-col gap-2">
-        <button onclick="toggleConfigModal()" class="text-xs text-amber-800 hover:underline font-semibold">
-          ⚙ Configure Firebase Project Credentials
+      <!-- Registration Form -->
+      <form id="registerForm" onsubmit="handleRegisterSubmit(event)" class="space-y-4 text-left hidden">
+        <div>
+          <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-700 mb-1">
+            Admin Email Address
+          </label>
+          <div class="relative">
+            <input type="email" id="regEmail" required 
+                   placeholder="admin@pushpagirisankarapeetham.org" 
+                   autocomplete="email"
+                   class="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-amber-500 focus:border-amber-500 text-sm outline-none transition-all">
+            <span class="absolute left-3.5 top-3.5 text-slate-400 text-sm">✉</span>
+          </div>
+        </div>
+
+        <div>
+          <div class="flex items-center justify-between mb-1">
+            <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-700">
+              Create Password
+            </label>
+            <button type="button" onclick="togglePasswordVisibility('regPassword', 'pwEye2')" class="text-[11px] text-amber-700 hover:underline">
+              <span id="pwEye2">Show</span>
+            </button>
+          </div>
+          <div class="relative">
+            <input type="password" id="regPassword" required minlength="6"
+                   placeholder="At least 6 characters" 
+                   autocomplete="new-password"
+                   class="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-amber-500 focus:border-amber-500 text-sm outline-none transition-all">
+            <span class="absolute left-3.5 top-3.5 text-slate-400 text-sm">🔑</span>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-700 mb-1">
+            Confirm Password
+          </label>
+          <div class="relative">
+            <input type="password" id="regConfirmPassword" required minlength="6"
+                   placeholder="Repeat your password" 
+                   autocomplete="new-password"
+                   class="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-amber-500 focus:border-amber-500 text-sm outline-none transition-all">
+            <span class="absolute left-3.5 top-3.5 text-slate-400 text-sm">🔒</span>
+          </div>
+        </div>
+
+        <button type="submit" id="regSubmitBtn"
+                class="w-full py-3.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-sm uppercase tracking-wider shadow-lg hover:shadow-xl transition-all transform active:scale-95 flex items-center justify-center gap-2">
+          <span>Create Admin Account &rarr;</span>
         </button>
-        <p class="text-[11px] text-gray-400">
-          Tip: You can use any valid admin email or set up Firebase keys anytime.
-        </p>
+      </form>
+
+      <!-- Footer Options & Config Link -->
+      <div class="mt-6 pt-5 border-t border-slate-100 flex flex-col items-center gap-2">
+        <button onclick="toggleConfigModal()" class="text-xs text-amber-800 hover:underline font-semibold flex items-center gap-1.5">
+          <span>⚙</span>
+          <span>Configure Firebase Cloud Credentials</span>
+        </button>
+        <span class="text-[11px] text-slate-400">
+          Protected by Enterprise Session Authentication
+        </span>
       </div>
 
     </div>
@@ -130,162 +244,237 @@
 
   <!-- ========================================================
        2. DASHBOARD MANAGEMENT VIEW (Protected)
+       Only rendered and displayed when authenticated
        ======================================================== -->
-  <div id="dashboardView" class="hidden flex-grow max-w-7xl mx-auto p-4 sm:p-8 w-full space-y-8">
+  <main id="dashboardView" class="hidden flex-grow max-w-7xl mx-auto p-4 sm:p-8 w-full space-y-8">
     
-    <!-- Top Welcome Banner -->
-    <div class="bg-gradient-to-r from-amber-900 to-[#5D000F] rounded-3xl p-6 sm:p-8 text-white shadow-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
-      <div>
-        <span class="px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider bg-white/20 text-amber-200">
-          Sri Pushpagiri Maha Samsthanam
-        </span>
-        <h2 class="text-2xl sm:text-3xl font-bold font-cinzel mt-2">
-          48th Peetadhipatulu Photos Manager
+    <!-- Top Welcome & Real-Time Status Banner -->
+    <div class="bg-gradient-to-r from-[#4A000C] via-[#6B091B] to-[#9a3412] rounded-3xl p-6 sm:p-8 text-white shadow-xl flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 border border-amber-500/20">
+      <div class="space-y-2">
+        <div class="flex flex-wrap items-center gap-2">
+          <span class="px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider bg-white/15 text-amber-200 border border-white/20">
+            Sri Pushpagiri Maha Samsthanam
+          </span>
+          <span id="realtimeStatusBadge" class="px-3 py-1 rounded-full text-[11px] font-bold tracking-wide bg-emerald-500/20 text-emerald-200 border border-emerald-400/30 flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse-live"></span>
+            <span id="realtimeStatusText">Real-Time Sync Active</span>
+          </span>
+        </div>
+        <h2 class="text-2xl sm:text-3xl font-bold font-cinzel text-white">
+          48th Peetadhipatulu Real-Time Photo Manager
         </h2>
-        <p class="text-xs text-amber-100/90 mt-1 max-w-xl">
-          Upload and manage photos displayed at the top of the dedicated 48th Peetadhipatulu page. Photos are synchronized across Firebase and live storage.
+        <p class="text-xs text-amber-100/90 max-w-2xl leading-relaxed">
+          Manage photos of Jagadguru Sri Sri Sri Vidya Sankara Bharati Swamiji. Photos added or removed here update <strong>instantaneously in real-time</strong> on the public 48th Peetadhipatulu page across all user devices.
         </p>
       </div>
 
-      <div class="flex items-center gap-3">
+      <div class="flex flex-wrap items-center gap-3">
+        <button onclick="toggleConfigModal()" 
+                class="px-4 py-3 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs uppercase tracking-wider border border-white/20 transition-all flex items-center gap-1.5 shadow">
+          <span>⚙ Firebase Settings</span>
+        </button>
         <a href="48th-peetadhipatulu.html" target="_blank"
-           class="px-5 py-3 rounded-xl bg-white text-gray-900 font-bold text-xs uppercase tracking-wider shadow hover:bg-amber-50 transition-all flex items-center gap-1.5">
-          <span>👁 View Live Page</span> &rarr;
+           class="px-5 py-3 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-amber-950 font-bold text-xs uppercase tracking-wider shadow-lg hover:shadow-xl transition-all flex items-center gap-2 transform active:scale-95">
+          <span>👁 View Public Page Live</span> &rarr;
         </a>
       </div>
     </div>
 
-    <!-- Manager Grid -->
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+    <!-- Manager Workspace Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
       
-      <!-- Form: Add / Upload New Photo -->
-      <div class="lg:col-span-5 bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-gray-200">
-        <div class="flex items-center justify-between mb-4 pb-3 border-b border-gray-100">
-          <h3 class="font-bold text-gray-900 text-base font-cinzel">
-            + Add New Photo
-          </h3>
-          <span class="text-[10px] uppercase font-bold text-amber-700 bg-amber-50 px-2.5 py-1 rounded-full border border-amber-200">
-            Realtime Sync
+      <!-- ====================================================
+           LEFT COLUMN: Upload / Add Photo Form
+           ==================================================== -->
+      <div class="lg:col-span-5 bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200 sticky top-24">
+        
+        <div class="flex items-center justify-between mb-5 pb-3 border-b border-slate-100">
+          <div>
+            <h3 class="font-bold text-slate-900 text-base font-cinzel">
+              + Publish New Photo
+            </h3>
+            <p class="text-[11px] text-slate-500">Live sync instantly pushes to all visitors</p>
+          </div>
+          <span class="text-[10px] uppercase font-bold text-emerald-800 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200 flex items-center gap-1">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse-live"></span>
+            Real-Time
           </span>
         </div>
 
         <form onsubmit="handlePhotoUpload(event)" class="space-y-4">
           
-          <!-- Method Selection -->
-          <div class="flex rounded-xl bg-gray-100 p-1 text-xs font-semibold text-gray-600 mb-2">
+          <!-- Method Selection Tabs -->
+          <div class="flex rounded-xl bg-slate-100 p-1 text-xs font-semibold text-slate-600 mb-2">
             <button type="button" onclick="switchUploadMethod('file')" id="btnMethodFile"
-                    class="flex-1 py-1.5 rounded-lg bg-white shadow-sm text-gray-900 transition-all">
-              File Upload
+                    class="flex-1 py-2 rounded-lg bg-white shadow-sm text-slate-900 transition-all font-bold">
+              📷 File Upload (Optimized)
             </button>
             <button type="button" onclick="switchUploadMethod('url')" id="btnMethodUrl"
-                    class="flex-1 py-1.5 rounded-lg text-gray-500 hover:text-gray-900 transition-all">
-              Image URL
+                    class="flex-1 py-2 rounded-lg text-slate-500 hover:text-slate-900 transition-all font-medium">
+              🔗 Image URL
             </button>
           </div>
 
           <!-- File Input Block -->
           <div id="fileUploadBlock">
-            <label class="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">
+            <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">
               Select Photo from Device
             </label>
-            <div class="border-2 border-dashed border-gray-300 hover:border-amber-500 rounded-2xl p-6 text-center cursor-pointer bg-gray-50/60 transition-colors relative"
+            <div class="border-2 border-dashed border-slate-300 hover:border-amber-500 rounded-2xl p-6 text-center cursor-pointer bg-slate-50/70 hover:bg-amber-50/30 transition-all relative group"
                  onclick="document.getElementById('photoFileInput').click()">
-              <input type="file" id="photoFileInput" accept="image/*" class="hidden" onchange="previewSelectedFile(event)">
-              <div id="filePreviewPlaceholder">
-                <span class="text-3xl block mb-1">🖼</span>
-                <span class="text-xs text-gray-600 font-semibold block">Click to upload photo</span>
-                <span class="text-[11px] text-gray-400 block mt-0.5">JPG, PNG, WEBP (under 5MB)</span>
+              <input type="file" id="photoFileInput" accept="image/*" class="hidden" onchange="previewAndCompressSelectedFile(event)">
+              
+              <div id="filePreviewPlaceholder" class="py-4">
+                <span class="text-4xl block mb-2 group-hover:scale-110 transition-transform">🖼️</span>
+                <span class="text-xs text-slate-700 font-bold block">Click to select photo</span>
+                <span class="text-[11px] text-slate-400 block mt-1">JPG, PNG, WEBP (auto-compressed for real-time delivery)</span>
               </div>
-              <img id="filePreviewImg" class="hidden max-h-48 mx-auto rounded-xl object-contain shadow-sm">
+
+              <!-- Preview Image Container -->
+              <div id="filePreviewContainer" class="hidden">
+                <img id="filePreviewImg" class="max-h-52 mx-auto rounded-xl object-contain shadow-md mb-2">
+                <div id="compressionStats" class="text-[11px] font-mono font-medium text-emerald-700 bg-emerald-50 py-1 px-3 rounded-lg border border-emerald-200 inline-block"></div>
+              </div>
             </div>
           </div>
 
           <!-- URL Input Block -->
           <div id="urlUploadBlock" class="hidden">
-            <label class="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">
+            <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">
               Photo URL
             </label>
-            <input type="url" id="photoUrlInput" placeholder="https://example.com/photo.jpg" 
-                   class="w-full px-4 py-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-amber-500 text-xs outline-none">
+            <input type="url" id="photoUrlInput" placeholder="https://example.com/swamiji-photo.jpg" 
+                   class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-amber-500 text-xs outline-none">
+            <p class="text-[10px] text-slate-400 mt-1">Provide a direct image link (HTTPS recommended)</p>
           </div>
 
-          <!-- Caption -->
+          <!-- Photo Caption -->
           <div>
-            <label class="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">
+            <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">
               Photo Caption / శీర్షిక
             </label>
-            <input type="text" id="photoCaptionInput" required placeholder="ఉదా: శ్రీ శ్రీ శ్రీ స్వామివారి దివ్య దర్శనం" 
-                   class="w-full px-4 py-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-amber-500 text-xs font-telugu outline-none">
+            <input type="text" id="photoCaptionInput" required 
+                   placeholder="ఉదా: శ్రీ శ్రీ శ్రీ స్వామివారి దివ్య దర్శనం" 
+                   class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-amber-500 text-xs font-telugu outline-none transition-all">
+            
+            <!-- Quick Suggestions -->
+            <div class="flex flex-wrap gap-1.5 mt-2">
+              <button type="button" onclick="setCaption('శ్రీ శ్రీ శ్రీ విద్యా శంకర భారతీ స్వామీజీ - దివ్య దర్శనం')" 
+                      class="text-[10px] font-telugu bg-slate-100 hover:bg-amber-100 hover:text-amber-900 px-2 py-0.5 rounded-md text-slate-600 transition-colors">
+                + దివ్య దర్శనం
+              </button>
+              <button type="button" onclick="setCaption('ధర్మ ప్రవచనం - పూజ్యశ్రీ స్వామివారు')" 
+                      class="text-[10px] font-telugu bg-slate-100 hover:bg-amber-100 hover:text-amber-900 px-2 py-0.5 rounded-md text-slate-600 transition-colors">
+                + ధర్మ ప్రవచనం
+              </button>
+              <button type="button" onclick="setCaption('గర్భాలయ పూజా కైంకర్యం')" 
+                      class="text-[10px] font-telugu bg-slate-100 hover:bg-amber-100 hover:text-amber-900 px-2 py-0.5 rounded-md text-slate-600 transition-colors">
+                + పూజా కైంకర్యం
+              </button>
+            </div>
           </div>
 
+          <!-- Submit Button -->
           <button type="submit" id="uploadSubmitBtn"
-                  class="w-full py-3.5 rounded-xl bg-[#c2410c] hover:bg-[#9a3412] text-white font-bold text-xs uppercase tracking-wider shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2">
-            <span>💾 Publish to 48th Peetadhipatulu Page</span>
+                  class="w-full py-4 rounded-xl bg-gradient-to-r from-[#c2410c] to-[#9a3412] hover:from-[#9a3412] hover:to-[#7c2d12] text-white font-bold text-xs uppercase tracking-wider shadow-lg hover:shadow-xl transition-all transform active:scale-95 flex items-center justify-center gap-2">
+            <span id="btnUploadSpinner" class="hidden animate-spin">⏳</span>
+            <span id="btnUploadText">🚀 Publish Live to 48th Peetadhipatulu Page</span>
           </button>
         </form>
       </div>
 
-      <!-- List: Current Photos -->
-      <div class="lg:col-span-7 bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-gray-200">
-        <div class="flex items-center justify-between mb-4 pb-3 border-b border-gray-100">
+      <!-- ====================================================
+           RIGHT COLUMN: Live Photos Gallery (Real-Time Synchronized)
+           ==================================================== -->
+      <div class="lg:col-span-7 bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200">
+        
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-6 pb-4 border-b border-slate-100">
           <div>
-            <h3 class="font-bold text-gray-900 text-base font-cinzel">
-              Current Photos Gallery
-            </h3>
-            <p class="text-xs text-gray-500">Live images shown on 48th Peetadhipatulu section</p>
+            <div class="flex items-center gap-2">
+              <h3 class="font-bold text-slate-900 text-lg font-cinzel">
+                Live Photos Gallery
+              </h3>
+              <span id="syncPulseDot" class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse-live" title="Real-time listener active"></span>
+            </div>
+            <p class="text-xs text-slate-500">
+              Live collection currently broadcasting to the 48th Pontiff section
+            </p>
           </div>
-          <span id="photosCountBadge" class="px-2.5 py-1 rounded-full bg-slate-100 text-slate-800 text-xs font-bold">
-            0 Photos
-          </span>
+          
+          <div class="flex items-center gap-2">
+            <span id="photosCountBadge" class="px-3 py-1 rounded-full bg-amber-50 text-amber-900 text-xs font-bold border border-amber-200">
+              Loading...
+            </span>
+            <button onclick="triggerManualRefresh()" 
+                    class="p-1.5 rounded-lg border border-slate-200 hover:bg-slate-50 text-slate-600 text-xs transition-colors"
+                    title="Refresh listener">
+              🔄
+            </button>
+          </div>
         </div>
 
-        <!-- Photos Container -->
-        <div id="dashboardPhotosList" class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-h-[600px] overflow-y-auto pr-1">
-          <!-- Loaded via JS -->
+        <!-- Real-time Photos Grid -->
+        <div id="dashboardPhotosList" class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-h-[640px] overflow-y-auto pr-1">
+          <!-- Loaded dynamically via real-time subscription -->
+          <div class="col-span-full py-16 text-center text-slate-400 text-xs">
+            <span class="inline-block animate-spin text-2xl mb-2">⏳</span>
+            <p>Connecting to real-time photo stream...</p>
+          </div>
         </div>
+
       </div>
 
     </div>
 
-  </div>
+  </main>
 
   <!-- ========================================================
-       FIREBASE CONFIG MODAL
+       FIREBASE CONFIGURATION MODAL
        ======================================================== -->
   <div id="configModal" class="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm hidden items-center justify-center p-4">
-    <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-gray-200 relative" onclick="event.stopPropagation()">
+    <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-slate-200 relative max-h-[90vh] overflow-y-auto" onclick="event.stopPropagation()">
       <div class="flex items-center justify-between border-b pb-3 mb-4">
-        <h4 class="font-bold text-gray-900 font-cinzel text-base">Firebase Project Configuration</h4>
-        <button onclick="toggleConfigModal()" class="text-gray-400 hover:text-gray-700">✕</button>
+        <div>
+          <h4 class="font-bold text-slate-900 font-cinzel text-base">Firebase Cloud Configuration</h4>
+          <p class="text-[11px] text-slate-500">Connect to Google Firebase for Global Cloud Real-Time Sync</p>
+        </div>
+        <button onclick="toggleConfigModal()" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 flex items-center justify-center text-sm font-bold">✕</button>
       </div>
       
-      <p class="text-xs text-gray-600 mb-4 leading-relaxed">
-        Paste your Firebase Web App configuration from Firebase Console (Project Settings &rarr; General &rarr; Your apps).
+      <p class="text-xs text-slate-600 mb-4 leading-relaxed">
+        Paste your Firebase Web App configuration from <a href="https://console.firebase.google.com" target="_blank" class="text-amber-700 underline font-semibold">Firebase Console</a> &rarr; Project Settings &rarr; General &rarr; Your apps.
       </p>
 
-      <form onsubmit="saveFirebaseConfig(event)" class="space-y-3">
+      <form onsubmit="handleSaveFirebaseConfig(event)" class="space-y-3">
         <div>
-          <label class="block text-[11px] font-bold uppercase text-gray-600 mb-1">API Key</label>
-          <input type="text" id="cfgApiKey" class="w-full px-3 py-2 rounded-lg border text-xs font-mono">
+          <label class="block text-[11px] font-bold uppercase text-slate-600 mb-1">API Key (apiKey)</label>
+          <input type="text" id="cfgApiKey" placeholder="AIzaSy..." class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs font-mono">
         </div>
         <div>
-          <label class="block text-[11px] font-bold uppercase text-gray-600 mb-1">Auth Domain</label>
-          <input type="text" id="cfgAuthDomain" class="w-full px-3 py-2 rounded-lg border text-xs font-mono">
+          <label class="block text-[11px] font-bold uppercase text-slate-600 mb-1">Auth Domain (authDomain)</label>
+          <input type="text" id="cfgAuthDomain" placeholder="your-project.firebaseapp.com" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs font-mono">
         </div>
         <div>
-          <label class="block text-[11px] font-bold uppercase text-gray-600 mb-1">Project ID</label>
-          <input type="text" id="cfgProjectId" class="w-full px-3 py-2 rounded-lg border text-xs font-mono">
+          <label class="block text-[11px] font-bold uppercase text-slate-600 mb-1">Project ID (projectId)</label>
+          <input type="text" id="cfgProjectId" placeholder="pushpagiri-peetham" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs font-mono">
         </div>
         <div>
-          <label class="block text-[11px] font-bold uppercase text-gray-600 mb-1">Storage Bucket</label>
-          <input type="text" id="cfgStorageBucket" class="w-full px-3 py-2 rounded-lg border text-xs font-mono">
+          <label class="block text-[11px] font-bold uppercase text-slate-600 mb-1">Storage Bucket (storageBucket)</label>
+          <input type="text" id="cfgStorageBucket" placeholder="your-project.appspot.com" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs font-mono">
+        </div>
+        <div>
+          <label class="block text-[11px] font-bold uppercase text-slate-600 mb-1">App ID (appId)</label>
+          <input type="text" id="cfgAppId" placeholder="1:123456789:web:abcdef" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs font-mono">
         </div>
 
-        <div class="pt-3 flex gap-2">
-          <button type="submit" class="flex-1 py-2.5 rounded-xl bg-[#c2410c] text-white text-xs font-bold uppercase">
-            Save Config
+        <div class="pt-4 flex flex-col sm:flex-row gap-2">
+          <button type="submit" class="flex-1 py-3 rounded-xl bg-[#c2410c] hover:bg-[#9a3412] text-white text-xs font-bold uppercase tracking-wider shadow">
+            💾 Save &amp; Connect Cloud
           </button>
-          <button type="button" onclick="toggleConfigModal()" class="px-4 py-2.5 rounded-xl border text-xs text-gray-600">
+          <button type="button" onclick="clearFirebaseConfig()" class="px-4 py-3 rounded-xl bg-red-50 hover:bg-red-100 text-red-700 text-xs font-bold">
+            Reset
+          </button>
+          <button type="button" onclick="toggleConfigModal()" class="px-4 py-3 rounded-xl border border-slate-300 text-xs font-semibold text-slate-700 hover:bg-slate-50">
             Cancel
           </button>
         </div>
@@ -293,52 +482,110 @@
     </div>
   </div>
 
-  <!-- JavaScript Controller -->
+  <!-- Realtime Toast Notification Banner -->
+  <div id="realtimeToast" class="fixed bottom-6 right-6 z-50 hidden max-w-sm bg-slate-900 text-white px-4 py-3 rounded-2xl shadow-2xl border border-slate-700 text-xs flex items-center gap-3 toast-enter">
+    <span class="text-lg">⚡</span>
+    <span id="toastMessage">Gallery updated in real-time!</span>
+  </div>
+
+  <!-- ========================================================
+       CLIENT CONTROLLER JAVASCRIPT
+       ======================================================== -->
   <script>
     let activeUploadMethod = 'file';
-    let base64PhotoData = '';
+    let processedPhotoData = null;
+    let unsubscribePhotos = null;
 
-    // Check auth state on load
+    // Initialization on Page Load
     window.addEventListener('DOMContentLoaded', () => {
       initFirebase();
-      checkAuthStatus();
-      loadSavedConfig();
+      checkAuthRouteProtection();
+      loadConfigInputs();
     });
 
-    function checkAuthStatus() {
-      const loggedUser = localStorage.getItem("pushpagiri_admin_user");
-      if (loggedUser) {
-        showDashboard(loggedUser);
-      } else if (firebaseAuth) {
-        firebaseAuth.onAuthStateChanged(user => {
-          if (user) {
-            showDashboard(user.email);
-          } else {
-            showLogin();
-          }
-        });
-      } else {
-        showLogin();
-      }
+    // ========================================================
+    // AUTHENTICATION & ROUTE GUARD
+    // ========================================================
+
+    function checkAuthRouteProtection() {
+      subscribeAuthState(session => {
+        if (session && session.email) {
+          showDashboardView(session);
+        } else {
+          showLoginView();
+        }
+      });
     }
 
-    function showDashboard(email) {
+    function showDashboardView(session) {
       document.getElementById('loginView').classList.add('hidden');
       document.getElementById('dashboardView').classList.remove('hidden');
       document.getElementById('authHeaderBlock').classList.remove('hidden');
       document.getElementById('authHeaderBlock').classList.add('flex');
-      document.getElementById('userEmailBadge').textContent = email;
-      loadDashboardPhotos();
+      
+      const emailBadge = document.getElementById('userEmailBadge');
+      if (emailBadge) emailBadge.textContent = session.email;
+
+      // Update Realtime Mode Badge
+      const statusText = document.getElementById('realtimeStatusText');
+      if (statusText) {
+        if (session.provider === 'firebase' || isFirebaseConfigured()) {
+          statusText.textContent = "Firebase Cloud Real-Time Active";
+        } else {
+          statusText.textContent = "Local Multi-Tab Real-Time Active";
+        }
+      }
+
+      // Start Real-Time Photo Listener
+      startRealtimePhotoSync();
     }
 
-    function showLogin() {
+    function showLoginView() {
+      if (unsubscribePhotos) {
+        try { unsubscribePhotos(); } catch (e) {}
+        unsubscribePhotos = null;
+      }
       document.getElementById('loginView').classList.remove('hidden');
       document.getElementById('dashboardView').classList.add('hidden');
       document.getElementById('authHeaderBlock').classList.add('hidden');
       document.getElementById('authHeaderBlock').classList.remove('flex');
     }
 
-    async function handleLogin(e) {
+    // Switch between Sign In and Register Tabs
+    function switchAuthTab(tab) {
+      const tabSignIn = document.getElementById('tabSignIn');
+      const tabReg = document.getElementById('tabRegister');
+      const formSignIn = document.getElementById('signInForm');
+      const formReg = document.getElementById('registerForm');
+      const alertBox = document.getElementById('loginAlert');
+      alertBox.className = "hidden";
+
+      if (tab === 'signin') {
+        tabSignIn.className = "flex-1 py-2 rounded-lg bg-white text-slate-900 shadow-sm transition-all font-bold";
+        tabReg.className = "flex-1 py-2 rounded-lg text-slate-500 hover:text-slate-900 transition-all font-medium";
+        formSignIn.classList.remove('hidden');
+        formReg.classList.add('hidden');
+      } else {
+        tabReg.className = "flex-1 py-2 rounded-lg bg-white text-slate-900 shadow-sm transition-all font-bold";
+        tabSignIn.className = "flex-1 py-2 rounded-lg text-slate-500 hover:text-slate-900 transition-all font-medium";
+        formReg.classList.remove('hidden');
+        formSignIn.classList.add('hidden');
+      }
+    }
+
+    function togglePasswordVisibility(inputId, eyeId) {
+      const input = document.getElementById(inputId);
+      const eye = document.getElementById(eyeId);
+      if (input.type === 'password') {
+        input.type = 'text';
+        eye.textContent = 'Hide';
+      } else {
+        input.type = 'password';
+        eye.textContent = 'Show';
+      }
+    }
+
+    async function handleSignInSubmit(e) {
       e.preventDefault();
       const email = document.getElementById('loginEmail').value.trim();
       const password = document.getElementById('loginPassword').value;
@@ -347,54 +594,126 @@
 
       alertBox.className = "hidden";
       submitBtn.disabled = true;
-      submitBtn.innerHTML = "Signing in...";
+      submitBtn.innerHTML = "Authenticating securely...";
 
       try {
-        // If Firebase is initialized with apiKey
-        if (initFirebase() && firebaseAuth) {
-          try {
-            const userCred = await firebaseAuth.signInWithEmailAndPassword(email, password);
-            localStorage.setItem("pushpagiri_admin_user", userCred.user.email);
-            showDashboard(userCred.user.email);
-            return;
-          } catch (fbErr) {
-            // If user doesn't exist yet, attempt creation or give clear message
-            if (fbErr.code === 'auth/user-not-found') {
-              const newCred = await firebaseAuth.createUserWithEmailAndPassword(email, password);
-              localStorage.setItem("pushpagiri_admin_user", newCred.user.email);
-              showDashboard(newCred.user.email);
-              return;
-            } else {
-              throw fbErr;
-            }
-          }
-        } else {
-          // Local/Direct Authentication Fallback
-          if (email && password.length >= 6) {
-            localStorage.setItem("pushpagiri_admin_user", email);
-            showDashboard(email);
-          } else {
-            throw new Error("Password must be at least 6 characters.");
-          }
-        }
+        const session = await authLoginAdmin(email, password);
+        showToast("Signed in securely as " + session.email);
+        showDashboardView(session);
       } catch (err) {
-        alertBox.className = "p-3 rounded-xl mb-4 text-xs font-medium text-red-800 bg-red-100 border border-red-200 block";
-        alertBox.textContent = err.message || "Login failed. Please verify credentials.";
+        alertBox.className = "p-3.5 rounded-xl mb-4 text-xs font-medium text-red-800 bg-red-50 border border-red-200 block text-left";
+        alertBox.textContent = err.message || "Login failed. Please check credentials.";
       } finally {
         submitBtn.disabled = false;
-        submitBtn.innerHTML = "Sign In to Dashboard &rarr;";
+        submitBtn.innerHTML = "<span>Sign In to Dashboard &rarr;</span>";
       }
     }
 
-    function handleLogout() {
-      if (firebaseAuth) {
-        try { firebaseAuth.signOut(); } catch (e) {}
+    async function handleRegisterSubmit(e) {
+      e.preventDefault();
+      const email = document.getElementById('regEmail').value.trim();
+      const password = document.getElementById('regPassword').value;
+      const confirmPassword = document.getElementById('regConfirmPassword').value;
+      const alertBox = document.getElementById('loginAlert');
+      const submitBtn = document.getElementById('regSubmitBtn');
+
+      alertBox.className = "hidden";
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = "Registering admin account...";
+
+      try {
+        const session = await authRegisterAdmin(email, password, confirmPassword);
+        showToast("Admin account registered successfully!");
+        showDashboardView(session);
+      } catch (err) {
+        alertBox.className = "p-3.5 rounded-xl mb-4 text-xs font-medium text-red-800 bg-red-50 border border-red-200 block text-left";
+        alertBox.textContent = err.message || "Registration failed.";
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = "<span>Create Admin Account &rarr;</span>";
       }
-      localStorage.removeItem("pushpagiri_admin_user");
-      showLogin();
     }
 
-    // Upload Method Switching
+    async function handleLogout() {
+      await authLogoutAdmin();
+      showToast("Signed out successfully.");
+      showLoginView();
+    }
+
+    // ========================================================
+    // REAL-TIME PHOTO MANAGEMENT
+    // ========================================================
+
+    function startRealtimePhotoSync() {
+      if (unsubscribePhotos) {
+        try { unsubscribePhotos(); } catch (e) {}
+      }
+
+      const listContainer = document.getElementById('dashboardPhotosList');
+      const countBadge = document.getElementById('photosCountBadge');
+
+      unsubscribePhotos = subscribePeethadipathiPhotos((photos, mode) => {
+        renderDashboardPhotosList(photos);
+        if (countBadge) {
+          countBadge.textContent = `${photos.length} Photos Live`;
+        }
+        showToast(`Real-time sync: ${photos.length} photos active (${mode})`);
+      });
+    }
+
+    function renderDashboardPhotosList(photos) {
+      const listContainer = document.getElementById('dashboardPhotosList');
+      if (!listContainer) return;
+
+      if (!photos || photos.length === 0) {
+        listContainer.innerHTML = `
+          <div class="col-span-full py-12 text-center text-slate-400 text-xs">
+            <p>ఫోటోలు ఏవీ లేవు (No photos currently published).</p>
+          </div>
+        `;
+        return;
+      }
+
+      listContainer.innerHTML = photos.map(photo => {
+        const dateStr = photo.date ? new Date(photo.date).toLocaleDateString('te-IN', { month: 'short', day: 'numeric', year: 'numeric' }) : '';
+        const safeCaption = (photo.caption || 'శ్రీ స్వామివారి దర్శనం').replace(/"/g, '&quot;');
+        
+        return `
+          <div class="rounded-2xl p-3 bg-slate-50 border border-slate-200 hover:border-amber-400 transition-all flex flex-col justify-between gap-2.5 shadow-sm hover:shadow group">
+            <div class="rounded-xl overflow-hidden aspect-[4/3] bg-slate-200 relative">
+              <img src="${photo.url}" alt="${safeCaption}" 
+                   onerror="this.src='images/peethadipathi/Peethadipathi-3.jpg'"
+                   class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+              <span class="absolute top-2 right-2 px-2 py-0.5 rounded-md bg-black/60 text-white text-[9px] font-mono backdrop-blur-sm">
+                Live
+              </span>
+            </div>
+            
+            <div class="flex-grow">
+              <p class="text-xs font-bold text-slate-800 font-telugu line-clamp-2" title="${safeCaption}">
+                ${safeCaption}
+              </p>
+              <p class="text-[10px] text-slate-400 mt-1">${dateStr}</p>
+            </div>
+
+            <button onclick="handleDeletePhoto('${photo.id}')" 
+                    class="w-full py-2 rounded-xl bg-red-50 hover:bg-red-100 text-red-600 hover:text-red-700 font-bold text-[11px] border border-red-200 transition-colors flex items-center justify-center gap-1.5">
+              <span>🗑 Delete Photo</span>
+            </button>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function triggerManualRefresh() {
+      startRealtimePhotoSync();
+      showToast("Real-time listener refreshed.");
+    }
+
+    // ========================================================
+    // PHOTO UPLOAD & COMPRESSION
+    // ========================================================
+
     function switchUploadMethod(method) {
       activeUploadMethod = method;
       const btnFile = document.getElementById('btnMethodFile');
@@ -403,58 +722,77 @@
       const urlBlock = document.getElementById('urlUploadBlock');
 
       if (method === 'file') {
-        btnFile.className = "flex-1 py-1.5 rounded-lg bg-white shadow-sm text-gray-900 transition-all";
-        btnUrl.className = "flex-1 py-1.5 rounded-lg text-gray-500 hover:text-gray-900 transition-all";
+        btnFile.className = "flex-1 py-2 rounded-lg bg-white shadow-sm text-slate-900 transition-all font-bold";
+        btnUrl.className = "flex-1 py-2 rounded-lg text-slate-500 hover:text-slate-900 transition-all font-medium";
         fileBlock.classList.remove('hidden');
         urlBlock.classList.add('hidden');
       } else {
-        btnUrl.className = "flex-1 py-1.5 rounded-lg bg-white shadow-sm text-gray-900 transition-all";
-        btnFile.className = "flex-1 py-1.5 rounded-lg text-gray-500 hover:text-gray-900 transition-all";
+        btnUrl.className = "flex-1 py-2 rounded-lg bg-white shadow-sm text-slate-900 transition-all font-bold";
+        btnFile.className = "flex-1 py-2 rounded-lg text-slate-500 hover:text-slate-900 transition-all font-medium";
         urlBlock.classList.remove('hidden');
         fileBlock.classList.add('hidden');
       }
     }
 
-    // File Preview Handler
-    function previewSelectedFile(e) {
+    async function previewAndCompressSelectedFile(e) {
       const file = e.target.files[0];
       if (!file) return;
 
-      const reader = new FileReader();
-      reader.onload = function(evt) {
-        base64PhotoData = evt.target.result;
-        const img = document.getElementById('filePreviewImg');
-        const placeholder = document.getElementById('filePreviewPlaceholder');
-        img.src = base64PhotoData;
-        img.classList.remove('hidden');
-        placeholder.classList.add('hidden');
-      };
-      reader.readAsDataURL(file);
+      const placeholder = document.getElementById('filePreviewPlaceholder');
+      const container = document.getElementById('filePreviewContainer');
+      const img = document.getElementById('filePreviewImg');
+      const stats = document.getElementById('compressionStats');
+
+      stats.textContent = "Optimizing image for real-time delivery...";
+      container.classList.remove('hidden');
+      placeholder.classList.add('hidden');
+
+      try {
+        const compressed = await compressImageFile(file, 1200, 1200, 0.82);
+        processedPhotoData = compressed.dataUrl;
+        img.src = processedPhotoData;
+        
+        const origKB = Math.round(compressed.originalSize / 1024);
+        const compKB = Math.round(compressed.compressedSize / 1024);
+        const reduction = Math.round((1 - compKB / origKB) * 100);
+        
+        stats.textContent = `✓ Optimized: ${compKB} KB (${origKB} KB ➔ ${reduction}% saved)`;
+      } catch (err) {
+        console.error("Compression error:", err);
+        stats.textContent = "Error preparing image. Please select another file.";
+      }
     }
 
-    // Photo Upload Submission
+    function setCaption(text) {
+      document.getElementById('photoCaptionInput').value = text;
+    }
+
     async function handlePhotoUpload(e) {
       e.preventDefault();
       const caption = document.getElementById('photoCaptionInput').value.trim();
       let photoUrl = '';
 
       if (activeUploadMethod === 'file') {
-        if (!base64PhotoData) {
-          alert('Please select an image file first.');
+        if (!processedPhotoData) {
+          alert('దయచేసి ముందుగా ఫోటోను ఎంచుకోండి (Please select a photo file first).');
           return;
         }
-        photoUrl = base64PhotoData;
+        photoUrl = processedPhotoData;
       } else {
         photoUrl = document.getElementById('photoUrlInput').value.trim();
         if (!photoUrl) {
-          alert('Please provide a valid image URL.');
+          alert('దయచేసి సరైన ఫోటో URL నమోదు చేయండి (Please enter image URL).');
           return;
         }
       }
 
       const submitBtn = document.getElementById('uploadSubmitBtn');
+      const spinner = document.getElementById('btnUploadSpinner');
+      const btnText = document.getElementById('btnUploadText');
+      
       submitBtn.disabled = true;
-      submitBtn.innerHTML = "Publishing photo...";
+      spinner.classList.remove('hidden');
+      btnText.textContent = "Broadcasting live to 48th Pontiff page...";
 
       try {
         const newPhoto = {
@@ -469,90 +807,91 @@
         // Reset form
         document.getElementById('photoCaptionInput').value = '';
         document.getElementById('photoUrlInput').value = '';
-        base64PhotoData = '';
-        document.getElementById('filePreviewImg').classList.add('hidden');
+        processedPhotoData = null;
+        document.getElementById('filePreviewContainer').classList.add('hidden');
         document.getElementById('filePreviewPlaceholder').classList.remove('hidden');
+        document.getElementById('photoFileInput').value = '';
 
-        await loadDashboardPhotos();
-        alert('Photo successfully added to 48th Peetadhipatulu section!');
+        showToast("✨ Photo published live in real-time!");
       } catch (err) {
-        alert('Error saving photo: ' + err.message);
+        alert("Upload error: " + err.message);
       } finally {
         submitBtn.disabled = false;
-        submitBtn.innerHTML = "💾 Publish to 48th Peetadhipatulu Page";
-      }
-    }
-
-    // Load Photos inside Dashboard
-    async function loadDashboardPhotos() {
-      const listContainer = document.getElementById('dashboardPhotosList');
-      const countBadge = document.getElementById('photosCountBadge');
-
-      try {
-        const photos = await loadPeethadipathiPhotos();
-        countBadge.textContent = `${photos.length} Photos`;
-
-        if (!photos || photos.length === 0) {
-          listContainer.innerHTML = `<p class="col-span-full text-center text-xs text-gray-400 py-10">No photos available yet.</p>`;
-          return;
-        }
-
-        listContainer.innerHTML = photos.map(photo => `
-          <div class="rounded-2xl p-2.5 bg-gray-50 border border-gray-200 flex flex-col justify-between gap-2 shadow-sm">
-            <div class="rounded-xl overflow-hidden aspect-[4/3] bg-gray-200">
-              <img src="${photo.url}" alt="${photo.caption}" class="w-full h-full object-cover">
-            </div>
-            <div>
-              <p class="text-xs font-bold text-gray-800 font-telugu truncate">${photo.caption || 'Swamiji Photo'}</p>
-              <p class="text-[10px] text-gray-400">${new Date(photo.date).toLocaleDateString()}</p>
-            </div>
-            <button onclick="handleDeletePhoto('${photo.id}')" 
-                    class="w-full py-1.5 rounded-lg bg-red-50 hover:bg-red-100 text-red-600 font-bold text-[11px] border border-red-200 transition-colors">
-              🗑 Delete Photo
-            </button>
-          </div>
-        `).join('');
-      } catch (err) {
-        console.error("Error loading dashboard photos:", err);
+        spinner.classList.add('hidden');
+        btnText.textContent = "🚀 Publish Live to 48th Peetadhipatulu Page";
       }
     }
 
     async function handleDeletePhoto(id) {
-      if (confirm('Are you sure you want to delete this photo from the 48th Peetadhipatulu page?')) {
-        await deletePeethadipathiPhoto(id);
-        await loadDashboardPhotos();
+      if (confirm('ఖచ్చితంగా ఈ ఫోటోను తొలగించాలనుకుంటున్నారా? (Are you sure you want to delete this photo from the live page?)')) {
+        try {
+          await deletePeethadipathiPhoto(id);
+          showToast("Photo removed from live gallery.");
+        } catch (err) {
+          alert("Delete error: " + err.message);
+        }
       }
     }
 
-    // Firebase Config Modal Handlers
+    // ========================================================
+    // TOAST & CONFIG MODAL HELPERS
+    // ========================================================
+
+    let toastTimer = null;
+    function showToast(msg) {
+      const toast = document.getElementById('realtimeToast');
+      const text = document.getElementById('toastMessage');
+      if (!toast || !text) return;
+      
+      text.textContent = msg;
+      toast.classList.remove('hidden');
+      toast.classList.add('flex');
+
+      if (toastTimer) clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => {
+        toast.classList.add('hidden');
+        toast.classList.remove('flex');
+      }, 4000);
+    }
+
     function toggleConfigModal() {
       const modal = document.getElementById('configModal');
       modal.classList.toggle('hidden');
       modal.classList.toggle('flex');
     }
 
-    function loadSavedConfig() {
+    function loadConfigInputs() {
       const cfg = getFirebaseConfig();
       if (cfg) {
         document.getElementById('cfgApiKey').value = cfg.apiKey || '';
         document.getElementById('cfgAuthDomain').value = cfg.authDomain || '';
         document.getElementById('cfgProjectId').value = cfg.projectId || '';
         document.getElementById('cfgStorageBucket').value = cfg.storageBucket || '';
+        document.getElementById('cfgAppId').value = cfg.appId || '';
       }
     }
 
-    function saveFirebaseConfig(e) {
+    function handleSaveFirebaseConfig(e) {
       e.preventDefault();
       const cfg = {
         apiKey: document.getElementById('cfgApiKey').value.trim(),
         authDomain: document.getElementById('cfgAuthDomain').value.trim(),
         projectId: document.getElementById('cfgProjectId').value.trim(),
-        storageBucket: document.getElementById('cfgStorageBucket').value.trim()
+        storageBucket: document.getElementById('cfgStorageBucket').value.trim(),
+        appId: document.getElementById('cfgAppId').value.trim()
       };
-      localStorage.setItem("pushpagiri_firebase_config", JSON.stringify(cfg));
+      saveFirebaseConfig(cfg);
       toggleConfigModal();
-      alert('Firebase Configuration Saved! Please reload the page.');
-      location.reload();
+      showToast("Firebase configuration saved! Reconnecting...");
+      setTimeout(() => location.reload(), 800);
+    }
+
+    function clearFirebaseConfig() {
+      if (confirm("Reset Firebase credentials to local mode?")) {
+        localStorage.removeItem("pushpagiri_firebase_config");
+        toggleConfigModal();
+        location.reload();
+      }
     }
   </script>
 </body>
