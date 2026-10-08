@@ -79,20 +79,6 @@
 
     .modal-active { display: flex !important; }
 
-    @keyframes lotusSpin {
-      from {
-        transform: rotate(0deg);
-      }
-      to {
-        transform: rotate(360deg);
-      }
-    }
-    .animate-lotus-spin {
-      animation: lotusSpin 35s linear infinite;
-      transform-origin: center center;
-      will-change: transform;
-    }
-
     @keyframes soundBar1 {
       0%, 100% { height: 6px; }
       50% { height: 16px; }
@@ -216,19 +202,9 @@
     <!-- Category 1: Grand Peetham Consecration Banner -->
     <div class="mb-14 sanctum-card rounded-3xl overflow-hidden shadow-2xl border border-[var(--border-strong)] bg-[#120603] cursor-pointer group"
          onclick="openPhoto('images/WhatsApp-Image-2026-10-08-at-22.06.58.jpeg', 'Sri Jagadguru Pushpagiri Sankaracharya Mahasamsthanam - Adi Sankaracharya, Seal & 48th Peetadhipatulu')">
-      <div class="relative w-full overflow-hidden" style="aspect-ratio: 1600 / 695;">
-        <img src="images/WhatsApp-Image-2026-10-08-at-22.06.58.jpeg" 
-             alt="Sri Jagadguru Pushpagiri Sankaracharya Mahasamsthanam" 
-             class="w-full h-full object-contain block group-hover:scale-[1.01] transition-transform duration-500">
-
-        <!-- Sacred Golden Lotus Mandala Rotating Around Center Seal -->
-        <div class="absolute left-1/2 top-[41.37%] -translate-x-1/2 -translate-y-1/2 pointer-events-none flex items-center justify-center z-20"
-             style="width: 29.15%; aspect-ratio: 1 / 1;">
-          <img src="images/gold-lotus-mandala.png" 
-               alt="Rotating Sacred Golden Lotus Mandala" 
-               class="w-full h-full object-contain animate-lotus-spin drop-shadow-[0_0_18px_rgba(245,158,11,0.85)] filter select-none">
-        </div>
-      </div>
+      <img src="images/WhatsApp-Image-2026-10-08-at-22.06.58.jpeg" 
+           alt="Sri Jagadguru Pushpagiri Sankaracharya Mahasamsthanam" 
+           class="w-full h-auto max-h-[500px] object-cover sm:object-contain mx-auto block group-hover:scale-[1.01] transition-transform duration-500">
       <div class="bg-black/70 px-4 py-2.5 border-t border-white/10 flex items-center justify-between text-xs text-amber-200">
         <span class="font-telugu font-semibold">శ్రీ జగద్గురు పుష్పగిరి శంకరాచార్య మహాసంస్థానం • ప్రధాన చిత్రమాలిక</span>
         <span class="text-[11px] text-white/70">🔍 Click to enlarge</span>
