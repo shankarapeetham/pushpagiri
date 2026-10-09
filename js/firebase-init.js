@@ -24,7 +24,7 @@ const DEFAULT_FIREBASE_CONFIG = {
 const DEFAULT_PEETHADIPATHI_PHOTOS = [
   {
     id: "default-banner",
-    url: "images/WhatsApp-Image-2026-10-08-at-22.06.58.jpeg",
+    url: "images/untitled-design.png",
     caption: "శ్రీ జగద్గురు పుష్పగిరి శంకరాచార్య మహాసంస్థానం - ఆదిశంకర & 48వ పీఠాధిపతులు",
     date: new Date().toISOString()
   },
