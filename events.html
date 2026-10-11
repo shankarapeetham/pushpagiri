@@ -242,9 +242,29 @@
           </div>
           <span class="audio-badge absolute -top-1 -right-1 w-2.5 h-2.5 bg-emerald-500 rounded-full ring-2 ring-white hidden"></span>
         </button>
+
+        <!-- Language Translation Option (Telugu & English) -->
+        <div class="lang-switcher-wrap relative inline-flex items-center bg-amber-50/90 border border-amber-500/40 rounded-xl p-0.5 shadow-sm text-xs font-bold transition-all hover:border-amber-500/70"
+             role="group" aria-label="Language selection / భాష ఎంపిక">
+          <button type="button" 
+                  onclick="setPeethamLanguage('te')" 
+                  class="lang-btn-te px-2.5 py-1.5 rounded-lg font-telugu transition-all duration-200 flex items-center gap-1 bg-gradient-to-r from-[#5D000F] to-[#7B0D1E] text-amber-100 shadow-sm font-bold"
+                  title="తెలుగులో చదవండి / Read in Telugu"
+                  aria-label="తెలుగు భాష">
+            <span class="text-[11px]">🕉</span>
+            <span>తెలుగు</span>
+          </button>
+          <button type="button" 
+                  onclick="setPeethamLanguage('en')" 
+                  class="lang-btn-en px-2.5 py-1.5 rounded-lg transition-all duration-200 flex items-center gap-1 text-amber-900 hover:text-amber-950 hover:bg-amber-100/60 font-medium"
+                  title="Translate to English"
+                  aria-label="English Language">
+            <span>EN</span>
+          </button>
+        </div>
       </nav>
 
-      <!-- Mobile Menu Trigger & Audio Button -->
+      <!-- Mobile Menu Trigger, Audio Button & Language Switcher -->
       <div class="lg:hidden flex items-center gap-2">
         <a href="donate.html" class="px-3 py-1.5 rounded-lg text-white font-bold text-xs shadow" style="background-color: var(--primary);">Donate</a>
         <button onclick="togglePeethamAudio()" 
@@ -263,6 +283,22 @@
             <span class="w-0.5 bg-amber-600 rounded-full animate-sound-bar-3 h-2"></span>
           </div>
         </button>
+
+        <!-- Mobile Language Auto-Translation Switcher -->
+        <div class="mobile-lang-switch-container inline-flex items-center bg-amber-50 border border-amber-500/40 rounded-lg p-0.5 shadow-sm text-[11px] font-bold">
+          <button type="button" 
+                  onclick="setPeethamLanguage('te')" 
+                  class="mobile-lang-btn-te px-2 py-1 rounded-md font-telugu transition-all bg-[#5D000F] text-amber-100 font-bold"
+                  title="తెలుగు" aria-label="తెలుగు">
+            తె
+          </button>
+          <button type="button" 
+                  onclick="setPeethamLanguage('en')" 
+                  class="mobile-lang-btn-en px-2 py-1 rounded-md transition-all text-amber-900 hover:bg-amber-100 font-medium"
+                  title="English" aria-label="English">
+            EN
+          </button>
+        </div>
       </div>
 
     </div>
@@ -517,5 +553,8 @@
   </script>
   <!-- Sacred Peetham Audio Controller -->
   <script src="js/peetham-audio.js"></script>
+
+  <!-- Real-Time Bilingual Language Auto-Translator (Telugu & English) -->
+  <script src="js/peetham-translator.js"></script>
 </body>
 </html>
