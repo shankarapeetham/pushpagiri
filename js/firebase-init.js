@@ -54,12 +54,41 @@ const DEFAULT_PEETHADIPATHI_PHOTOS = [
   }
 ];
 
+// Seed YouTube Videos for Sri Pushpagiri Peetham
+const DEFAULT_PEETHAM_VIDEOS = [
+  {
+    id: "default-vid-1",
+    youtubeId: "OrHLNSxigoQ",
+    title: "పుష్పగిరి మహా సంస్థానం పాత్ర & చంద్రమౌళీశ్వర వైభవం",
+    category: "దివ్య ప్రసంగం",
+    description: "పుష్పగిరి పీఠ విశేషాలు, శ్రీ చంద్రమౌళీశ్వర స్వామివారి దివ్య వైభవం మరియు పూజ్యశ్రీ స్వామివారి ఆశీస్సులు.",
+    date: new Date().toISOString()
+  },
+  {
+    id: "default-vid-2",
+    youtubeId: "bHXehVJb_UE",
+    title: "మంత్ర మహిమ - శ్రీ విద్యా శంకర భారతీ స్వామీజీ",
+    category: "ఆధ్యాత్మిక ప్రవచనం",
+    description: "పూజ్యశ్రీ జగద్గురు స్వామివారి అమృతతుల్యమైన ఆధ్యాత్మిక మార్గదర్శనం మరియు వేద మంత్ర రహస్యాలు.",
+    date: new Date().toISOString()
+  },
+  {
+    id: "default-vid-3",
+    youtubeId: "aTmlvfmF0eM",
+    title: "శ్రీ జగద్గురు పుష్పగిరి శంకరాచార్య మహాసంస్థాన వైభవం",
+    category: "పీఠ విశేషాలు",
+    description: "దక్షిణ కాశీ పుష్పగిరి క్షేత్ర విశేషాలు, అవిచ్ఛిన్న జగద్గురు శంకర పరంపర మరియు ధర్మ రక్షణ యాత్ర.",
+    date: new Date().toISOString()
+  }
+];
+
 // Local storage keys
 const STORAGE_KEYS = {
   FIREBASE_CONFIG: "pushpagiri_firebase_config",
   ADMIN_SESSION: "pushpagiri_admin_session",
   LOCAL_ADMIN_CREDS: "pushpagiri_local_admin_creds",
   CUSTOM_PHOTOS: "peethadipathi_custom_photos",
+  CUSTOM_VIDEOS: "peetham_custom_videos",
   SYNC_EVENT: "pushpagiri_sync_event"
 };
 
@@ -456,6 +485,256 @@ async function deletePeethadipathiPhoto(photoId) {
 
   // Broadcast real-time delete event
   broadcastRealtimeUpdate("PHOTOS_UPDATED", { photoId, deleted: true, deletedFromFirestore });
+}
+
+// ========================================================
+// 5B. REAL-TIME YOUTUBE VIDEO MANAGEMENT & SYNC
+// ========================================================
+
+/**
+ * Extracts standard 11-character YouTube video ID from various URL formats
+ */
+function extractYouTubeVideoId(input) {
+  if (!input) return "";
+  input = String(input).trim();
+  if (/^[a-zA-Z0-9_-]{11}$/.test(input)) {
+    return input;
+  }
+  const regExp = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?|shorts|live)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
+  const match = input.match(regExp);
+  if (match && match[1]) {
+    return match[1];
+  }
+  return input;
+}
+
+/**
+ * Load videos once (Firestore or Local fallback)
+ */
+async function loadPeethamVideos() {
+  const isFb = initFirebase();
+  if (isFb && firebaseDb) {
+    try {
+      const snap = await firebaseDb.collection("peetham_videos").orderBy("date", "desc").get();
+      if (!snap.empty) {
+        const videos = [];
+        snap.forEach(doc => videos.push({ id: doc.id, ...doc.data() }));
+        return videos;
+      }
+    } catch (err) {
+      console.warn("Firestore videos read failed, falling back to local:", err);
+    }
+  }
+
+  // Local storage fallback
+  try {
+    const local = localStorage.getItem(STORAGE_KEYS.CUSTOM_VIDEOS);
+    if (local) {
+      const parsed = JSON.parse(local);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        return parsed;
+      }
+    }
+  } catch (e) {}
+
+  return DEFAULT_PEETHAM_VIDEOS;
+}
+
+/**
+ * Real-time Subscription for Peetham YouTube Videos
+ * @param {Function} callback - callback(videos, mode)
+ * @returns {Function} unsubscribe
+ */
+function subscribePeethamVideos(callback) {
+  let isFirestoreListening = false;
+  let firestoreUnsub = null;
+
+  const isFb = initFirebase();
+  if (isFb && firebaseDb) {
+    try {
+      firestoreUnsub = firebaseDb.collection("peetham_videos")
+        .orderBy("date", "desc")
+        .onSnapshot(
+          snapshot => {
+            isFirestoreListening = true;
+            const videos = [];
+            snapshot.forEach(doc => videos.push({ id: doc.id, ...doc.data() }));
+            const result = videos.length > 0 ? videos : DEFAULT_PEETHAM_VIDEOS;
+            try {
+              localStorage.setItem(STORAGE_KEYS.CUSTOM_VIDEOS, JSON.stringify(result));
+            } catch (e) {}
+            callback(result, "cloud");
+          },
+          error => {
+            console.warn("Firestore videos snapshot error, falling back:", error);
+            handleLocalVideosFallback();
+          }
+        );
+    } catch (e) {
+      console.warn("Could not attach Firestore onSnapshot for videos:", e);
+      handleLocalVideosFallback();
+    }
+  } else {
+    handleLocalVideosFallback();
+  }
+
+  function handleLocalVideosFallback() {
+    loadPeethamVideos().then(videos => callback(videos, "local"));
+  }
+
+  // BroadcastChannel & Storage Event Listeners
+  const handleMessage = (evt) => {
+    if (evt && evt.data && evt.data.action === "VIDEOS_UPDATED") {
+      loadPeethamVideos().then(videos => callback(videos, isFirestoreListening ? "cloud" : "local"));
+    }
+  };
+
+  const handleStorageEvent = (e) => {
+    if (e.key === STORAGE_KEYS.SYNC_EVENT || e.key === STORAGE_KEYS.CUSTOM_VIDEOS) {
+      loadPeethamVideos().then(videos => callback(videos, isFirestoreListening ? "cloud" : "local"));
+    }
+  };
+
+  if (realtimeChannel) {
+    realtimeChannel.addEventListener("message", handleMessage);
+  }
+  window.addEventListener("storage", handleStorageEvent);
+
+  return function unsubscribe() {
+    if (firestoreUnsub) {
+      try { firestoreUnsub(); } catch (e) {}
+    }
+    if (realtimeChannel) {
+      try { realtimeChannel.removeEventListener("message", handleMessage); } catch (e) {}
+    }
+    window.removeEventListener("storage", handleStorageEvent);
+  };
+}
+
+/**
+ * Add a new YouTube video
+ */
+async function addPeethamVideo(video) {
+  const session = getActiveAdminSession();
+  const now = new Date().toISOString();
+  let createdId = video.id || "vid-" + Date.now();
+
+  const cleanId = extractYouTubeVideoId(video.youtubeId || video.url);
+  video.id = createdId;
+  video.youtubeId = cleanId;
+  video.date = video.date || now;
+  video.createdAt = video.createdAt || now;
+  video.updatedAt = now;
+  video.authorUid = session ? session.uid : "admin-local";
+  video.authorEmail = session ? session.email : "admin@pushpagirisankarapeetham.org";
+
+  const isFb = initFirebase();
+  let savedToFirestore = false;
+
+  if (isFb && firebaseDb) {
+    try {
+      const docRef = await firebaseDb.collection("peetham_videos").add(video);
+      video.id = docRef.id;
+      createdId = docRef.id;
+      savedToFirestore = true;
+    } catch (err) {
+      console.warn("Firestore video write failed:", err);
+    }
+  }
+
+  // Update local storage mirror
+  try {
+    let current = [];
+    const local = localStorage.getItem(STORAGE_KEYS.CUSTOM_VIDEOS);
+    if (local) current = JSON.parse(local);
+    if (!Array.isArray(current) || current.length === 0) {
+      current = [...DEFAULT_PEETHAM_VIDEOS];
+    }
+    current.unshift(video);
+    localStorage.setItem(STORAGE_KEYS.CUSTOM_VIDEOS, JSON.stringify(current));
+  } catch (e) {
+    console.warn("Local storage video mirror update error:", e);
+  }
+
+  // Broadcast real-time update
+  broadcastRealtimeUpdate("VIDEOS_UPDATED", { videoId: createdId, savedToFirestore });
+  return video;
+}
+
+/**
+ * Update a YouTube video
+ */
+async function updatePeethamVideo(videoId, updatedFields) {
+  const isFb = initFirebase();
+  let updatedInFirestore = false;
+  const now = new Date().toISOString();
+  updatedFields.updatedAt = now;
+
+  if (updatedFields.youtubeId) {
+    updatedFields.youtubeId = extractYouTubeVideoId(updatedFields.youtubeId);
+  }
+
+  if (isFb && firebaseDb) {
+    try {
+      await firebaseDb.collection("peetham_videos").doc(videoId).update(updatedFields);
+      updatedInFirestore = true;
+    } catch (err) {
+      console.warn("Firestore video update failed:", err);
+    }
+  }
+
+  // Update local storage mirror
+  try {
+    let current = [];
+    const local = localStorage.getItem(STORAGE_KEYS.CUSTOM_VIDEOS);
+    if (local) current = JSON.parse(local);
+    if (Array.isArray(current)) {
+      current = current.map(v => {
+        if (v.id === videoId) return { ...v, ...updatedFields };
+        return v;
+      });
+      localStorage.setItem(STORAGE_KEYS.CUSTOM_VIDEOS, JSON.stringify(current));
+    }
+  } catch (e) {
+    console.warn("Local storage update video warning:", e);
+  }
+
+  broadcastRealtimeUpdate("VIDEOS_UPDATED", { videoId, updated: true, updatedInFirestore });
+  return true;
+}
+
+/**
+ * Delete a YouTube video
+ */
+async function deletePeethamVideo(videoId) {
+  const isFb = initFirebase();
+  let deletedFromFirestore = false;
+
+  if (isFb && firebaseDb) {
+    try {
+      await firebaseDb.collection("peetham_videos").doc(videoId).delete();
+      deletedFromFirestore = true;
+    } catch (err) {
+      console.warn("Firestore video delete failed:", err);
+    }
+  }
+
+  // Remove from local storage mirror
+  try {
+    let current = [];
+    const local = localStorage.getItem(STORAGE_KEYS.CUSTOM_VIDEOS);
+    if (local) current = JSON.parse(local);
+    if (!Array.isArray(current) || current.length === 0) {
+      current = [...DEFAULT_PEETHAM_VIDEOS];
+    }
+    current = current.filter(v => v.id !== videoId);
+    localStorage.setItem(STORAGE_KEYS.CUSTOM_VIDEOS, JSON.stringify(current));
+  } catch (e) {
+    console.warn("Local storage video delete warning:", e);
+  }
+
+  broadcastRealtimeUpdate("VIDEOS_UPDATED", { videoId, deleted: true, deletedFromFirestore });
+  return true;
 }
 
 // ========================================================

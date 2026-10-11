@@ -19,6 +19,21 @@ service cloud.firestore {
     //   - authorUid: string (required, 1..128 chars, immutable) - Firebase Auth UID of admin creator
     //   - authorEmail: string (required, valid email, immutable) - Email address of admin creator
     //
+    // Collection: peetham_videos
+    // Document ID: {videoId} (Auto-generated Firestore ID or custom string)
+    //
+    // Fields:
+    //   - id: string (optional, 1..100 chars, immutable) - Client/system video identifier
+    //   - youtubeId: string (required, 11 chars, matches ^[a-zA-Z0-9_-]{11}$) - Standard 11-char YouTube ID
+    //   - title: string (required, 1..500 chars) - Sacred discourse or pravachanam title
+    //   - category: string (required, 1..100 chars) - Video category (e.g. దివ్య ప్రసంగం, ఆధ్యాత్మిక ప్రవచనం)
+    //   - description: string (optional, <= 2000 chars) - Detailed description of the video discourse
+    //   - date: string | timestamp (required) - Event/recording date in ISO 8601 or timestamp format
+    //   - createdAt: string | timestamp (required, immutable) - Creation timestamp
+    //   - updatedAt: string | timestamp (required) - Last modification timestamp
+    //   - authorUid: string (required, 1..128 chars, immutable) - Firebase Auth UID of admin creator
+    //   - authorEmail: string (required, valid email, immutable) - Email address of admin creator
+    //
     // ===============================================================
 
     // ===============================================================
@@ -76,6 +91,13 @@ service cloud.firestore {
         );
     }
 
+    // Validate YouTube video ID format (standard 11-character base64-like string)
+    function isValidYouTubeId(id) {
+      return id is string &&
+        id.size() == 11 &&
+        id.matches("^[a-zA-Z0-9_-]{11}$");
+    }
+
     // ===============================================================
     // Domain Validators
     // ===============================================================
@@ -112,7 +134,47 @@ service cloud.firestore {
              newData.createdAt == oldData.createdAt &&
              newData.authorUid == oldData.authorUid &&
              newData.authorEmail == oldData.authorEmail &&
-             (!('id' in oldData) || newData.id == oldData.id) &&
+             (!('id' in oldData) || ('id' in newData && newData.id == oldData.id)) &&
+             areImmutableFieldsUnchanged(['id', 'createdAt', 'authorUid', 'authorEmail']);
+    }
+
+    // Validate structural schema and bounds for video data
+    function isValidVideoData(data) {
+      return hasOnlyAllowedFields(data, ['id', 'youtubeId', 'title', 'category', 'description', 'date', 'createdAt', 'updatedAt', 'authorUid', 'authorEmail']) &&
+             hasRequiredFields(data, ['youtubeId', 'title', 'category', 'date', 'createdAt', 'updatedAt', 'authorUid', 'authorEmail']) &&
+             isValidYouTubeId(data.youtubeId) &&
+             data.title is string &&
+             data.title.size() > 0 &&
+             data.title.size() <= 500 &&
+             data.category is string &&
+             data.category.size() > 0 &&
+             data.category.size() <= 100 &&
+             (!('description' in data) || (data.description is string && data.description.size() <= 2000)) &&
+             isValidDate(data.date) &&
+             isValidDate(data.createdAt) &&
+             isValidDate(data.updatedAt) &&
+             data.authorUid is string &&
+             data.authorUid.size() > 0 &&
+             data.authorUid.size() <= 128 &&
+             data.authorEmail is string &&
+             isValidEmail(data.authorEmail) &&
+             (!('id' in data) || (data.id is string && data.id.size() > 0 && data.id.size() <= 100));
+    }
+
+    // Domain validator for creating a new video document
+    function isValidNewVideo(data) {
+      return isValidVideoData(data) &&
+             data.authorUid == request.auth.uid &&
+             (request.auth.token.email == null || data.authorEmail == request.auth.token.email);
+    }
+
+    // Domain validator for updating an existing video document (protects immutability & schema)
+    function isValidVideoUpdate(newData, oldData) {
+      return isValidVideoData(newData) &&
+             newData.createdAt == oldData.createdAt &&
+             newData.authorUid == oldData.authorUid &&
+             newData.authorEmail == oldData.authorEmail &&
+             (!('id' in oldData) || ('id' in newData && newData.id == oldData.id)) &&
              areImmutableFieldsUnchanged(['id', 'createdAt', 'authorUid', 'authorEmail']);
     }
 
@@ -132,6 +194,21 @@ service cloud.firestore {
       allow update: if isAuthenticated() && isValidPhotoUpdate(request.resource.data, resource.data);
 
       // Only authenticated admin users can delete photos
+      allow delete: if isAuthenticated();
+    }
+
+    // Sri Pushpagiri Sankara Peetham live YouTube video stream & catalog
+    match /peetham_videos/{videoId} {
+      // Devotees worldwide can view sacred video discourses publicly without authentication
+      allow read: if true;
+
+      // Only authenticated admin users can publish new videos
+      allow create: if isAuthenticated() && isValidNewVideo(request.resource.data);
+
+      // Only authenticated admin users can update videos (enforces full validation & immutability)
+      allow update: if isAuthenticated() && isValidVideoUpdate(request.resource.data, resource.data);
+
+      // Only authenticated admin users can delete videos
       allow delete: if isAuthenticated();
     }
 

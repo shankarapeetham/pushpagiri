@@ -286,8 +286,22 @@
       </div>
     </div>
 
-    <!-- Manager Workspace Grid -->
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+    <!-- Module Switcher Tabs -->
+    <div class="flex flex-wrap items-center gap-3 border-b border-slate-200 pb-3">
+      <button type="button" onclick="switchDashboardTab('photos')" id="tabBtnPhotos"
+              class="px-5 py-2.5 rounded-2xl font-bold text-xs uppercase tracking-wider transition-all bg-[#5D000F] text-amber-200 shadow-md flex items-center gap-2">
+        <span>📸 48th Peetadhipatulu Photos</span>
+        <span id="tabPhotosCountBadge" class="px-2 py-0.5 rounded-full bg-white/20 text-[10px]">...</span>
+      </button>
+      <button type="button" onclick="switchDashboardTab('videos')" id="tabBtnVideos"
+              class="px-5 py-2.5 rounded-2xl font-bold text-xs uppercase tracking-wider transition-all bg-white text-slate-600 hover:text-slate-900 border border-slate-200 shadow-sm flex items-center gap-2">
+        <span>🎥 YouTube Videos Manager</span>
+        <span id="tabVideosCountBadge" class="px-2 py-0.5 rounded-full bg-slate-100 text-[10px]">...</span>
+      </button>
+    </div>
+
+    <!-- TAB 1: 48TH PEETADHIPATULU PHOTOS -->
+    <div id="sectionPhotos" class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
       
       <!-- ====================================================
            LEFT COLUMN: Upload / Add Photo Form
@@ -441,6 +455,153 @@
       </div>
 
     </div>
+    <!-- END TAB 1 (PHOTOS) -->
+
+    <!-- ========================================================
+         TAB 2: YOUTUBE VIDEOS WORKSPACE (Real-Time Synchronized)
+         ======================================================== -->
+    <div id="sectionVideos" class="hidden grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      
+      <!-- LEFT COLUMN: Add YouTube Video Form -->
+      <div class="lg:col-span-5 bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200 sticky top-24">
+        <div class="flex items-center justify-between mb-5 pb-3 border-b border-slate-100">
+          <div>
+            <h3 class="font-bold text-slate-900 text-base font-cinzel">
+              + Add YouTube Video Link
+            </h3>
+            <p class="text-[11px] text-slate-500">Syncs immediately to Homepage &amp; Gallery</p>
+          </div>
+          <span class="text-[10px] uppercase font-bold text-red-700 bg-red-50 px-2.5 py-1 rounded-full border border-red-200 flex items-center gap-1">
+            <span class="w-1.5 h-1.5 rounded-full bg-red-600 animate-pulse-live"></span>
+            YouTube Live
+          </span>
+        </div>
+
+        <form onsubmit="handleVideoUpload(event)" class="space-y-4">
+          <!-- YouTube URL or Video ID -->
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">
+              YouTube Video URL or Video ID
+            </label>
+            <div class="relative">
+              <input type="text" id="videoUrlInput" required 
+                     placeholder="https://www.youtube.com/watch?v=OrHLNSxigoQ"
+                     oninput="handleVideoUrlInput(this.value)"
+                     class="w-full pl-9 pr-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-red-500 text-xs font-mono outline-none transition-all">
+              <span class="absolute left-3 top-3.5 text-red-500 font-bold text-xs">▶</span>
+            </div>
+            <p class="text-[10px] text-slate-400 mt-1">Accepts standard YouTube URLs, youtu.be, shorts, or direct 11-digit video ID</p>
+
+            <!-- Video Thumbnail Preview -->
+            <div id="videoThumbPreview" class="hidden mt-3 rounded-2xl overflow-hidden border border-slate-200 bg-slate-100 relative group aspect-video">
+              <img id="videoThumbImg" src="" alt="Thumbnail preview" class="w-full h-full object-cover">
+              <div class="absolute inset-0 bg-black/30 flex items-center justify-center">
+                <div class="w-10 h-10 rounded-full bg-red-600 text-white flex items-center justify-center shadow-lg font-bold text-sm">
+                  ▶
+                </div>
+              </div>
+              <span id="detectedVideoIdBadge" class="absolute bottom-2 left-2 px-2 py-0.5 rounded bg-black/70 text-white text-[10px] font-mono"></span>
+            </div>
+          </div>
+
+          <!-- Video Title -->
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">
+              Video Title / శీర్షిక
+            </label>
+            <input type="text" id="videoTitleInput" required 
+                   placeholder="ఉదా: శ్రీ పుష్పగిరి పీఠం దివ్య ప్రవచనం" 
+                   class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-red-500 text-xs font-telugu outline-none transition-all">
+          </div>
+
+          <!-- Video Category -->
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">
+              Category / విభాగం
+            </label>
+            <div class="grid grid-cols-2 gap-2">
+              <select id="videoCategorySelect" onchange="if(this.value!=='custom') document.getElementById('videoCategoryCustom').value=this.value;"
+                      class="px-3 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-red-500 text-xs font-telugu outline-none bg-white">
+                <option value="దివ్య ప్రసంగం">దివ్య ప్రసంగం</option>
+                <option value="ఆధ్యాత్మిక ప్రవచనం">ఆధ్యాత్మిక ప్రవచనం</option>
+                <option value="పీఠ విశేషాలు">పీఠ విశేషాలు</option>
+                <option value="వైదిక క్రతువులు">వైదిక క్రతువులు</option>
+                <option value="వార్షిక ఉత్సవాలు">వార్షిక ఉత్సవాలు</option>
+                <option value="custom">ఇతర విభాగం...</option>
+              </select>
+              <input type="text" id="videoCategoryCustom" placeholder="లేదా పేరు రాయండి..." value="దివ్య ప్రసంగం"
+                     class="px-3 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-red-500 text-xs font-telugu outline-none">
+            </div>
+          </div>
+
+          <!-- Video Description -->
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">
+              Short Description / వివరణ (Optional)
+            </label>
+            <textarea id="videoDescInput" rows="2" 
+                      placeholder="వీడియో గురించిన సంక్షిప్త వివరణ..." 
+                      class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-red-500 text-xs font-telugu outline-none"></textarea>
+          </div>
+
+          <!-- Submit Button -->
+          <button type="submit" id="videoSubmitBtn"
+                  class="w-full py-4 rounded-xl bg-gradient-to-r from-red-600 to-rose-700 hover:from-red-700 hover:to-rose-800 text-white font-bold text-xs uppercase tracking-wider shadow-lg hover:shadow-xl transition-all transform active:scale-95 flex items-center justify-center gap-2">
+            <span id="btnVideoSpinner" class="hidden animate-spin">⏳</span>
+            <span id="btnVideoText">🚀 Publish YouTube Video Live</span>
+          </button>
+        </form>
+      </div>
+
+      <!-- RIGHT COLUMN: Real-Time Videos List -->
+      <div class="lg:col-span-7 bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200">
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-6 pb-4 border-b border-slate-100">
+          <div>
+            <div class="flex items-center gap-2">
+              <h3 class="font-bold text-slate-900 text-lg font-cinzel">
+                Live YouTube Videos Archive
+              </h3>
+              <span class="w-2.5 h-2.5 rounded-full bg-red-600 animate-pulse-live" title="Video stream active"></span>
+            </div>
+            <p class="text-xs text-slate-500">
+              Videos broadcasted across Homepage (top 3) and full Video Gallery
+            </p>
+          </div>
+          
+          <div class="flex items-center gap-2">
+            <span id="videosCountBadge" class="px-3 py-1 rounded-full bg-red-50 text-red-900 text-xs font-bold border border-red-200">
+              Loading...
+            </span>
+            <button onclick="triggerVideosRefresh()" 
+                    class="p-1.5 rounded-lg border border-slate-200 hover:bg-slate-50 text-slate-600 text-xs transition-colors"
+                    title="Refresh video stream">
+              🔄
+            </button>
+          </div>
+        </div>
+
+        <!-- Video Search Input -->
+        <div class="mb-4">
+          <div class="relative">
+            <input type="text" id="videoSearchInput" oninput="handleSearchVideos(this.value)" 
+                   placeholder="🔍 శీర్షిక లేదా విభాగం ద్వారా వెతకండి / Search videos..." 
+                   class="w-full pl-9 pr-4 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-red-500 text-xs font-medium outline-none bg-slate-50/60 focus:bg-white transition-all">
+            <span class="absolute left-3 top-2.5 text-slate-400 text-xs">🔎</span>
+          </div>
+        </div>
+
+        <!-- Real-Time Videos List Container -->
+        <div id="dashboardVideosList" class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-h-[640px] overflow-y-auto pr-1">
+          <!-- Loaded dynamically via real-time subscription -->
+          <div class="col-span-full py-16 text-center text-slate-400 text-xs">
+            <span class="inline-block animate-spin text-2xl mb-2">⏳</span>
+            <p>Connecting to real-time video stream...</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <!-- END TAB 2 (VIDEOS) -->
 
   </main>
 
@@ -584,6 +745,68 @@
     </div>
   </div>
 
+  <!-- ========================================================
+       EDIT YOUTUBE VIDEO MODAL
+       ======================================================== -->
+  <div id="editVideoModal" class="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl border border-slate-200 relative text-left" onclick="event.stopPropagation()">
+      <div class="flex items-center justify-between border-b pb-3 mb-4">
+        <div>
+          <h4 class="font-bold text-slate-900 font-cinzel text-base">✏️ Edit YouTube Video</h4>
+          <p class="text-[11px] text-slate-500">Live sync instantly updates Homepage &amp; Gallery</p>
+        </div>
+        <button onclick="closeEditVideoModal()" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 flex items-center justify-center text-sm font-bold">✕</button>
+      </div>
+
+      <form onsubmit="handleSaveEditedVideo(event)" class="space-y-4">
+        <input type="hidden" id="editVideoId">
+        
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">
+            YouTube Video URL or ID
+          </label>
+          <input type="text" id="editVideoUrlInput" required 
+                 class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-red-500 text-xs font-mono outline-none">
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">
+            Video Title / శీర్షిక
+          </label>
+          <input type="text" id="editVideoTitleInput" required 
+                 class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-red-500 text-xs font-telugu outline-none">
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">
+            Category / విభాగం
+          </label>
+          <input type="text" id="editVideoCategoryInput" required 
+                 class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-red-500 text-xs font-telugu outline-none">
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">
+            Description / వివరణ
+          </label>
+          <textarea id="editVideoDescInput" rows="2" 
+                    class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-red-500 text-xs font-telugu outline-none"></textarea>
+        </div>
+
+        <div class="flex gap-2">
+          <button type="submit" id="btnSaveVideo"
+                  class="flex-1 py-3.5 rounded-xl bg-gradient-to-r from-red-600 to-rose-700 hover:from-red-700 text-white text-xs font-bold uppercase tracking-wider shadow">
+            💾 Save &amp; Broadcast Live
+          </button>
+          <button type="button" onclick="closeEditVideoModal()" 
+                  class="px-4 py-3.5 rounded-xl border border-slate-300 text-xs font-semibold text-slate-700 hover:bg-slate-50">
+            Cancel
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <!-- Realtime Toast Notification Banner -->
   <div id="realtimeToast" class="fixed bottom-6 right-6 z-50 hidden max-w-sm bg-slate-900 text-white px-4 py-3 rounded-2xl shadow-2xl border border-slate-700 text-xs flex items-center gap-3 toast-enter">
     <span class="text-lg">⚡</span>
@@ -638,14 +861,19 @@
         }
       }
 
-      // Start Real-Time Photo Listener
+      // Start Real-Time Listeners for Photos and Videos
       startRealtimePhotoSync();
+      startRealtimeVideosSync();
     }
 
     function showLoginView() {
       if (unsubscribePhotos) {
         try { unsubscribePhotos(); } catch (e) {}
         unsubscribePhotos = null;
+      }
+      if (unsubscribeVideos) {
+        try { unsubscribeVideos(); } catch (e) {}
+        unsubscribeVideos = null;
       }
       document.getElementById('loginView').classList.remove('hidden');
       document.getElementById('dashboardView').classList.add('hidden');
@@ -1131,6 +1359,278 @@
       } finally {
         btn.disabled = false;
         btn.innerHTML = "<span>🔌 Test Connection</span>";
+      }
+    }
+
+    // ========================================================
+    // DASHBOARD TAB SWITCHER
+    // ========================================================
+    let currentDashboardTab = 'photos';
+
+    function switchDashboardTab(tab) {
+      currentDashboardTab = tab;
+      const tabBtnPhotos = document.getElementById('tabBtnPhotos');
+      const tabBtnVideos = document.getElementById('tabBtnVideos');
+      const sectionPhotos = document.getElementById('sectionPhotos');
+      const sectionVideos = document.getElementById('sectionVideos');
+
+      if (!sectionPhotos || !sectionVideos) return;
+
+      if (tab === 'photos') {
+        if (tabBtnPhotos) tabBtnPhotos.className = "px-5 py-2.5 rounded-2xl font-bold text-xs uppercase tracking-wider transition-all bg-[#5D000F] text-amber-200 shadow-md flex items-center gap-2";
+        if (tabBtnVideos) tabBtnVideos.className = "px-5 py-2.5 rounded-2xl font-bold text-xs uppercase tracking-wider transition-all bg-white text-slate-600 hover:text-slate-900 border border-slate-200 shadow-sm flex items-center gap-2";
+        sectionPhotos.classList.remove('hidden');
+        sectionVideos.classList.add('hidden');
+      } else {
+        if (tabBtnVideos) tabBtnVideos.className = "px-5 py-2.5 rounded-2xl font-bold text-xs uppercase tracking-wider transition-all bg-red-700 text-white shadow-md flex items-center gap-2";
+        if (tabBtnPhotos) tabBtnPhotos.className = "px-5 py-2.5 rounded-2xl font-bold text-xs uppercase tracking-wider transition-all bg-white text-slate-600 hover:text-slate-900 border border-slate-200 shadow-sm flex items-center gap-2";
+        sectionVideos.classList.remove('hidden');
+        sectionPhotos.classList.add('hidden');
+      }
+    }
+
+    // ========================================================
+    // YOUTUBE VIDEOS REAL-TIME MANAGEMENT
+    // ========================================================
+    let unsubscribeVideos = null;
+    let allCurrentVideos = [];
+    let videoSearchTerm = '';
+
+    function startRealtimeVideosSync() {
+      if (unsubscribeVideos) {
+        try { unsubscribeVideos(); } catch (e) {}
+      }
+
+      const countBadge = document.getElementById('videosCountBadge');
+      const tabVideosBadge = document.getElementById('tabVideosCountBadge');
+
+      unsubscribeVideos = subscribePeethamVideos((videos, mode) => {
+        allCurrentVideos = videos || [];
+        renderFilteredVideos();
+        if (countBadge) {
+          countBadge.textContent = `${allCurrentVideos.length} Videos Live`;
+        }
+        if (tabVideosBadge) {
+          tabVideosBadge.textContent = `${allCurrentVideos.length}`;
+        }
+      });
+    }
+
+    function triggerVideosRefresh() {
+      startRealtimeVideosSync();
+      showToast("Real-time video archive refreshed.");
+    }
+
+    function handleVideoUrlInput(input) {
+      const vid = extractYouTubeVideoId(input);
+      const previewBlock = document.getElementById('videoThumbPreview');
+      const previewImg = document.getElementById('videoThumbImg');
+      const idBadge = document.getElementById('detectedVideoIdBadge');
+
+      if (vid) {
+        previewImg.src = `https://img.youtube.com/vi/${vid}/hqdefault.jpg`;
+        idBadge.textContent = `ID: ${vid}`;
+        previewBlock.classList.remove('hidden');
+      } else {
+        previewBlock.classList.add('hidden');
+      }
+    }
+
+    function handleSearchVideos(term) {
+      videoSearchTerm = (term || '').trim().toLowerCase();
+      renderFilteredVideos();
+    }
+
+    function renderFilteredVideos() {
+      const listContainer = document.getElementById('dashboardVideosList');
+      if (!listContainer) return;
+
+      let filtered = allCurrentVideos;
+      if (videoSearchTerm) {
+        filtered = allCurrentVideos.filter(v => 
+          (v.title && v.title.toLowerCase().includes(videoSearchTerm)) ||
+          (v.category && v.category.toLowerCase().includes(videoSearchTerm)) ||
+          (v.description && v.description.toLowerCase().includes(videoSearchTerm)) ||
+          (v.youtubeId && v.youtubeId.toLowerCase().includes(videoSearchTerm))
+        );
+      }
+
+      if (!filtered || filtered.length === 0) {
+        listContainer.innerHTML = `
+          <div class="col-span-full py-12 text-center text-slate-400 text-xs">
+            <p>వీడియోలు ఏవీ లేవు (${videoSearchTerm ? 'No matching videos found' : 'No videos currently added'}).</p>
+          </div>
+        `;
+        return;
+      }
+
+      listContainer.innerHTML = filtered.map(v => {
+        const safeTitle = (v.title || 'శ్రీ పుష్పగిరి పీఠం వీడియో').replace(/"/g, '&quot;');
+        const safeCat = (v.category || 'దివ్య ప్రసంగం').replace(/"/g, '&quot;');
+        const safeDesc = (v.description || '').replace(/"/g, '&quot;');
+        const dateStr = v.date ? new Date(v.date).toLocaleDateString('te-IN', { month: 'short', day: 'numeric', year: 'numeric' }) : '';
+
+        return `
+          <div class="rounded-2xl p-3 bg-slate-50 border border-slate-200 hover:border-red-400 transition-all flex flex-col justify-between gap-2.5 shadow-sm hover:shadow group">
+            <div class="rounded-xl overflow-hidden aspect-video bg-slate-200 relative group/thumb">
+              <img src="https://img.youtube.com/vi/${v.youtubeId}/hqdefault.jpg" alt="${safeTitle}"
+                   class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+              <span class="absolute top-2 left-2 px-2 py-0.5 rounded-md bg-red-600 text-white text-[9px] font-bold">
+                ${safeCat}
+              </span>
+              <a href="https://www.youtube.com/watch?v=${v.youtubeId}" target="_blank"
+                 class="absolute inset-0 bg-black/40 opacity-0 group-hover/thumb:opacity-100 transition-opacity flex items-center justify-center text-white text-xs font-bold gap-1">
+                <span>▶ Watch on YouTube</span>
+              </a>
+            </div>
+
+            <div class="flex-grow space-y-1">
+              <p class="text-xs font-bold text-slate-800 font-telugu line-clamp-2" title="${safeTitle}">
+                ${safeTitle}
+              </p>
+              ${v.description ? `<p class="text-[11px] text-slate-500 font-telugu line-clamp-2">${safeDesc}</p>` : ''}
+              <div class="flex items-center justify-between text-[10px] text-slate-400 pt-1 border-t border-slate-100">
+                <span class="font-mono text-slate-500">ID: ${v.youtubeId}</span>
+                <span>🗓 ${dateStr}</span>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-1.5 pt-1">
+              <button onclick="openEditVideoModal('${v.id}')"
+                      class="flex-1 py-2 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-800 font-bold text-[11px] border border-amber-200 transition-colors flex items-center justify-center gap-1">
+                <span>✏️ Edit</span>
+              </button>
+              <button onclick="handleDeleteVideo('${v.id}')"
+                      class="flex-1 py-2 rounded-xl bg-red-50 hover:bg-red-100 text-red-600 hover:text-red-700 font-bold text-[11px] border border-red-200 transition-colors flex items-center justify-center gap-1">
+                <span>🗑 Delete</span>
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    async function handleVideoUpload(e) {
+      e.preventDefault();
+      const rawUrl = document.getElementById('videoUrlInput').value.trim();
+      const title = document.getElementById('videoTitleInput').value.trim();
+      const customCat = document.getElementById('videoCategoryCustom').value.trim();
+      const desc = document.getElementById('videoDescInput').value.trim();
+
+      const youtubeId = extractYouTubeVideoId(rawUrl);
+      if (!youtubeId) {
+        alert('దయచేసి సరైన YouTube వీడియో URL లేదా 11-digit Video ID ఇవ్వండి (Please enter a valid YouTube link or ID).');
+        return;
+      }
+
+      if (!title) {
+        alert('దయచేసి వీడియో శీర్షిక నమోదు చేయండి (Please enter video title).');
+        return;
+      }
+
+      const category = customCat || document.getElementById('videoCategorySelect').value || 'దివ్య ప్రసంగం';
+
+      const submitBtn = document.getElementById('videoSubmitBtn');
+      const spinner = document.getElementById('btnVideoSpinner');
+      const btnText = document.getElementById('btnVideoText');
+
+      submitBtn.disabled = true;
+      spinner.classList.remove('hidden');
+      btnText.textContent = "Publishing YouTube video live...";
+
+      try {
+        const newVideo = {
+          id: "video-" + Date.now(),
+          youtubeId: youtubeId,
+          title: title,
+          category: category,
+          description: desc,
+          date: new Date().toISOString()
+        };
+
+        await addPeethamVideo(newVideo);
+
+        // Reset form
+        document.getElementById('videoUrlInput').value = '';
+        document.getElementById('videoTitleInput').value = '';
+        document.getElementById('videoDescInput').value = '';
+        document.getElementById('videoThumbPreview').classList.add('hidden');
+
+        showToast("🚀 YouTube Video published live across the website!");
+      } catch (err) {
+        alert("Video upload error: " + err.message);
+      } finally {
+        submitBtn.disabled = false;
+        spinner.classList.add('hidden');
+        btnText.textContent = "🚀 Publish YouTube Video Live";
+      }
+    }
+
+    function openEditVideoModal(id) {
+      const vid = allCurrentVideos.find(v => v.id === id);
+      if (!vid) return;
+
+      document.getElementById('editVideoId').value = id;
+      document.getElementById('editVideoUrlInput').value = vid.youtubeId;
+      document.getElementById('editVideoTitleInput').value = vid.title || '';
+      document.getElementById('editVideoCategoryInput').value = vid.category || '';
+      document.getElementById('editVideoDescInput').value = vid.description || '';
+
+      const modal = document.getElementById('editVideoModal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeEditVideoModal() {
+      const modal = document.getElementById('editVideoModal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    async function handleSaveEditedVideo(e) {
+      e.preventDefault();
+      const id = document.getElementById('editVideoId').value;
+      const rawUrl = document.getElementById('editVideoUrlInput').value.trim();
+      const title = document.getElementById('editVideoTitleInput').value.trim();
+      const category = document.getElementById('editVideoCategoryInput').value.trim();
+      const description = document.getElementById('editVideoDescInput').value.trim();
+
+      const youtubeId = extractYouTubeVideoId(rawUrl);
+      if (!youtubeId) {
+        alert('దయచేసి సరైన YouTube వీడియో ID ఇవ్వండి.');
+        return;
+      }
+
+      const submitBtn = document.getElementById('btnSaveVideo');
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = "Broadcasting update...";
+
+      try {
+        await updatePeethamVideo(id, {
+          youtubeId: youtubeId,
+          title: title,
+          category: category,
+          description: description
+        });
+
+        closeEditVideoModal();
+        showToast("✨ YouTube video updated live across the website!");
+      } catch (err) {
+        alert("Video update error: " + err.message);
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = "💾 Save &amp; Broadcast Live";
+      }
+    }
+
+    async function handleDeleteVideo(id) {
+      if (confirm('ఖచ్చితంగా ఈ వీడియోను వెబ్‌సైట్ నుండి తొలగించాలనుకుంటున్నారా? (Are you sure you want to delete this YouTube video?)')) {
+        try {
+          await deletePeethamVideo(id);
+          showToast("YouTube video removed from live site.");
+        } catch (err) {
+          alert("Delete error: " + err.message);
+        }
       }
     }
   </script>

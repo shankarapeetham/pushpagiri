@@ -13,6 +13,13 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Tiro+Telugu:ital@0;1&display=swap" rel="stylesheet">
 
+  <!-- Firebase v10 Compat SDK & Sync Engine -->
+  <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-storage-compat.js"></script>
+  <script src="js/firebase-init.js"></script>
+
   <style>
     :root, [data-theme="orange"] {
       --primary: #c2410c;
@@ -561,14 +568,14 @@
         </a>
       </div>
 
-      <!-- Videos Grid (3 Highlight Video Cards) -->
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+      <!-- Videos Grid (4 Boxes: 3 Highlight Videos + 4th More Option Box) -->
+      <div id="homepageVideosGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         
         <!-- ==============================================
              VIDEO 1: Pushpagiri Peetham & Chandramouleeswara Vaibhavam
              Verified Working Video ID: OrHLNSxigoQ
              ============================================== -->
-        <div class="sanctum-card bg-white rounded-3xl overflow-hidden border border-[var(--border-color)] shadow-md hover:shadow-xl transition-all flex flex-col group">
+        <div class="sanctum-card bg-white rounded-3xl overflow-hidden border border-[var(--border-color)] shadow-md hover:shadow-xl transition-all flex flex-col justify-between group">
           <div class="relative w-full aspect-video bg-black overflow-hidden">
             <iframe class="w-full h-full border-0" 
                     src="https://www.youtube.com/embed/OrHLNSxigoQ" 
@@ -604,7 +611,7 @@
              VIDEO 2: Mantra Mahima - Sri Vidya Shankara Bharathi Swamy (SVBC TTD)
              Verified Working Video ID: bHXehVJb_UE
              ============================================== -->
-        <div class="sanctum-card bg-white rounded-3xl overflow-hidden border border-[var(--border-color)] shadow-md hover:shadow-xl transition-all flex flex-col group">
+        <div class="sanctum-card bg-white rounded-3xl overflow-hidden border border-[var(--border-color)] shadow-md hover:shadow-xl transition-all flex flex-col justify-between group">
           <div class="relative w-full aspect-video bg-black overflow-hidden">
             <iframe class="w-full h-full border-0" 
                     src="https://www.youtube.com/embed/bHXehVJb_UE" 
@@ -640,7 +647,7 @@
              VIDEO 3: Jagadguru Pushpagiri Sankaracharya Mahasamsthana Vaibhavam
              Verified Working Video ID: aTmlvfmF0eM
              ============================================== -->
-        <div class="sanctum-card bg-white rounded-3xl overflow-hidden border border-[var(--border-color)] shadow-md hover:shadow-xl transition-all flex flex-col group">
+        <div class="sanctum-card bg-white rounded-3xl overflow-hidden border border-[var(--border-color)] shadow-md hover:shadow-xl transition-all flex flex-col justify-between group">
           <div class="relative w-full aspect-video bg-black overflow-hidden">
             <iframe class="w-full h-full border-0" 
                     src="https://www.youtube.com/embed/aTmlvfmF0eM" 
@@ -671,6 +678,53 @@
             </div>
           </div>
         </div>
+
+        <!-- ==============================================
+             BOX 4: "MORE VIDEOS" OPTION BOX
+             Takes users to the full video gallery
+             ============================================== -->
+        <a href="gallery.html#videos" 
+           class="sanctum-card rounded-3xl overflow-hidden border border-amber-500/40 shadow-lg hover:shadow-2xl transition-all duration-300 flex flex-col justify-between p-6 sm:p-7 relative group text-left cursor-pointer transform hover:-translate-y-1"
+           style="background: linear-gradient(145deg, #5D000F 0%, #3B000A 50%, #1F0005 100%); min-height: 340px;">
+          
+          <!-- Decorative Background Glow -->
+          <div class="absolute -top-12 -right-12 w-36 h-36 bg-amber-500/20 rounded-full blur-2xl group-hover:scale-150 transition-transform pointer-events-none"></div>
+          
+          <div class="relative z-10 space-y-4">
+            <div class="flex items-center justify-between">
+              <span class="px-2.5 py-1 rounded-full bg-amber-400/20 border border-amber-300/30 text-amber-200 text-[10px] font-bold uppercase tracking-wider">
+                Full Collection
+              </span>
+              <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#FF0000] to-[#b30000] text-white flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
+                  <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                </svg>
+              </div>
+            </div>
+
+            <div>
+              <p class="text-amber-300 font-cinzel text-xs font-semibold tracking-wider uppercase mb-1">
+                Explore More
+              </p>
+              <h4 class="font-telugu font-bold text-xl sm:text-2xl text-white leading-snug group-hover:text-amber-200 transition-colors">
+                మరిన్ని వీడియోలు &amp; ప్రవచనాలు
+              </h4>
+              <p class="text-xs text-amber-100/80 mt-2.5 font-medium leading-relaxed">
+                పుష్పగిరి పీఠం దివ్య ప్రవచనాలు, వైదిక క్రతువులు, రథోత్సవాలు మరియు స్వామివారి అనుగ్రహ భాషణల పూర్తి సమాహారం.
+              </p>
+            </div>
+          </div>
+
+          <div class="relative z-10 pt-6 mt-4 border-t border-white/10 flex items-center justify-between">
+            <span class="text-xs font-bold text-amber-300 flex items-center gap-1.5 group-hover:text-amber-200 transition-colors">
+              <span>పూర్తి గ్యాలరీ చూడండి</span>
+              <span class="text-sm transform group-hover:translate-x-1.5 transition-transform">&rarr;</span>
+            </span>
+            <span class="text-[10px] text-amber-200/60 font-cinzel uppercase">
+              Full Gallery
+            </span>
+          </div>
+        </a>
 
       </div>
 
@@ -888,6 +942,100 @@
     window.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') closeParamparaModal();
     });
+
+    // Real-Time YouTube Videos Stream for Homepage
+    let unsubHomepageVideos = null;
+    function initHomepageRealtimeVideos() {
+      if (typeof subscribePeethamVideos !== "function") return;
+      const grid = document.getElementById('homepageVideosGrid');
+      if (!grid) return;
+
+      unsubHomepageVideos = subscribePeethamVideos((videos) => {
+        if (!videos || videos.length === 0) return;
+        const top3 = videos.slice(0, 3);
+        
+        const videoCardsHtml = top3.map((v, idx) => `
+          <div class="sanctum-card bg-white rounded-3xl overflow-hidden border border-[var(--border-color)] shadow-md hover:shadow-xl transition-all flex flex-col justify-between group">
+            <div class="relative w-full aspect-video bg-black overflow-hidden">
+              <iframe class="w-full h-full border-0" 
+                      src="https://www.youtube.com/embed/${v.youtubeId}" 
+                      title="${v.title || 'Sri Pushpagiri Video'}" 
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                      allowfullscreen 
+                      loading="lazy"></iframe>
+            </div>
+            <div class="p-5 flex-1 flex flex-col justify-between">
+              <div>
+                <div class="flex items-center justify-between text-xs text-amber-800 font-bold mb-2">
+                  <span class="px-2 py-0.5 rounded bg-amber-100 text-amber-900 text-[11px]">${v.category || 'పీఠ విశేషాలు'}</span>
+                  <span class="text-stone-400 text-[11px]">Highlight #${idx + 1}</span>
+                </div>
+                <h4 class="font-telugu font-bold text-base text-[var(--primary)] group-hover:text-amber-800 transition-colors line-clamp-2" title="${v.title || ''}">
+                  ${v.title || 'శ్రీ పుష్పగిరి పీఠం విశేషం'}
+                </h4>
+                <p class="text-xs text-stone-600 mt-2 font-medium line-clamp-2 leading-relaxed">
+                  ${v.description || 'శ్రీ పుష్పగిరి శంకరాచార్య మహాసంస్థానం దివ్య ప్రసంగం.'}
+                </p>
+              </div>
+              <div class="pt-4 mt-3 border-t border-stone-100 flex items-center justify-between">
+                <a href="https://www.youtube.com/watch?v=${v.youtubeId}" target="_blank" rel="noopener noreferrer" class="text-xs font-bold text-red-600 hover:text-red-700 flex items-center gap-1.5 transition-colors">
+                  <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+                  Watch on YouTube
+                </a>
+                <span class="text-[11px] text-stone-400">Sri Pushpagiri</span>
+              </div>
+            </div>
+          </div>
+        `).join('');
+
+        const moreCardHtml = `
+          <a href="gallery.html#videos" 
+             class="sanctum-card rounded-3xl overflow-hidden border border-amber-500/40 shadow-lg hover:shadow-2xl transition-all duration-300 flex flex-col justify-between p-6 sm:p-7 relative group text-left cursor-pointer transform hover:-translate-y-1"
+             style="background: linear-gradient(145deg, #5D000F 0%, #3B000A 50%, #1F0005 100%); min-height: 340px;">
+            
+            <div class="absolute -top-12 -right-12 w-36 h-36 bg-amber-500/20 rounded-full blur-2xl group-hover:scale-150 transition-transform pointer-events-none"></div>
+            
+            <div class="relative z-10 space-y-4">
+              <div class="flex items-center justify-between">
+                <span class="px-2.5 py-1 rounded-full bg-amber-400/20 border border-amber-300/30 text-amber-200 text-[10px] font-bold uppercase tracking-wider">
+                  Full Collection
+                </span>
+                <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#FF0000] to-[#b30000] text-white flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                  <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
+                    <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                  </svg>
+                </div>
+              </div>
+
+              <div>
+                <p class="text-amber-300 font-cinzel text-xs font-semibold tracking-wider uppercase mb-1">
+                  Explore More
+                </p>
+                <h4 class="font-telugu font-bold text-xl sm:text-2xl text-white leading-snug group-hover:text-amber-200 transition-colors">
+                  మరిన్ని వీడియోలు &amp; ప్రవచనాలు
+                </h4>
+                <p class="text-xs text-amber-100/80 mt-2.5 font-medium leading-relaxed">
+                  పుష్పగిరి పీఠం దివ్య ప్రవచనాలు, వైదిక క్రతువులు, రథోత్సవాలు మరియు స్వామివారి అనుగ్రహ భాషణల పూర్తి సమాహారం.
+                </p>
+              </div>
+            </div>
+
+            <div class="relative z-10 pt-6 mt-4 border-t border-white/10 flex items-center justify-between">
+              <span class="text-xs font-bold text-amber-300 flex items-center gap-1.5 group-hover:text-amber-200 transition-colors">
+                <span>పూర్తి గ్యాలరీ చూడండి</span>
+                <span class="text-sm transform group-hover:translate-x-1.5 transition-transform">&rarr;</span>
+              </span>
+              <span class="text-[10px] text-amber-200/60 font-cinzel uppercase">
+                Full Gallery
+              </span>
+            </div>
+          </a>
+        `;
+
+        grid.innerHTML = videoCardsHtml + moreCardHtml;
+      });
+    }
+    document.addEventListener('DOMContentLoaded', initHomepageRealtimeVideos);
   </script>
 
   <!-- Sacred Peetham Audio Controller -->
