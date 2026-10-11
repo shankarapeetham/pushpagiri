@@ -204,6 +204,19 @@
       transform: translateX(6px) !important;
       filter: brightness(1.12) !important;
     }
+
+    /* Hero Carousel Animations */
+    @keyframes heroKenBurns {
+      0% { transform: scale(1.0); }
+      100% { transform: scale(1.08); }
+    }
+    .animate-hero-ken-burns {
+      animation: heroKenBurns 6s ease-in-out infinite alternate;
+    }
+    @keyframes heroProgress {
+      0% { width: 0%; }
+      100% { width: 100%; }
+    }
   </style>
 </head>
 <body class="flex flex-col min-h-screen">
@@ -610,24 +623,57 @@
         </div>
       </div>
 
-      <!-- Hero Visual -->
+      <!-- Hero Visual (Dynamic Interactive Auto-Carousel Slider) -->
       <div class="lg:col-span-5 flex justify-center">
-        <div class="relative w-full max-w-lg rounded-3xl overflow-hidden p-3 bg-white shadow-2xl border border-[var(--border-color)] group">
-          <div class="rounded-2xl overflow-hidden relative aspect-[4/3] bg-amber-100">
-            <img src="https://pushpagirisankarapeetham.org/wp-content/gallery/dharma-prachara-yatra/home-3.jpg" 
-                 onerror="this.src='https://pushpagirisankarapeetham.org/wp-content/uploads/2024/02/banner2.png'" 
-                 alt="Sri Pushpagiri Sanctum Abhishekam" 
-                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
-            <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
-            <div class="absolute bottom-3 left-3 right-3 text-white">
-              <span class="px-2.5 py-1 rounded-lg text-[10px] font-bold tracking-wider uppercase bg-white/20 backdrop-blur-md border border-white/30 text-amber-200">
-                శ్రీ పుష్పగిరి హరిహర క్షేత్రం
-              </span>
-              <p class="text-xs font-semibold mt-1 drop-shadow">
-                చెన్నకేశవ &amp; శాంతాన మల్లేశ్వర స్వామివార్ల సన్నిధి
-              </p>
+        <div id="heroSliderContainer" 
+             class="relative w-full max-w-lg rounded-3xl overflow-hidden p-2.5 sm:p-3 bg-white shadow-2xl border border-[var(--border-color)] group select-none transition-all duration-300 hover:shadow-amber-500/10">
+          
+          <div class="rounded-2xl overflow-hidden relative aspect-[4/3] bg-slate-950 shadow-inner">
+            
+            <!-- Slides Track (populated dynamically) -->
+            <div id="heroSlidesTrack" class="w-full h-full relative overflow-hidden">
+              <!-- Initial placeholder slide while loading -->
+              <div class="hero-slide active absolute inset-0 transition-opacity duration-700 ease-out z-10 opacity-100">
+                <img src="https://pushpagirisankarapeetham.org/wp-content/gallery/dharma-prachara-yatra/home-3.jpg" 
+                     onerror="this.src='https://pushpagirisankarapeetham.org/wp-content/uploads/2024/02/banner2.png'" 
+                     alt="Sri Pushpagiri Sanctum Abhishekam" 
+                     class="w-full h-full object-cover animate-hero-ken-burns">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent"></div>
+                <div class="absolute bottom-3 left-3 right-16 text-white z-20">
+                  <span class="px-2.5 py-1 rounded-lg text-[10px] font-bold tracking-wider uppercase bg-white/20 backdrop-blur-md border border-white/30 text-amber-200 inline-block shadow-sm">
+                    శ్రీ పుష్పగిరి హరిహర క్షేత్రం
+                  </span>
+                  <p class="text-xs sm:text-sm font-semibold mt-1 drop-shadow-md font-telugu line-clamp-2">
+                    చెన్నకేశవ &amp; శాంతాన మల్లేశ్వర స్వామివార్ల సన్నిధి
+                  </p>
+                </div>
+              </div>
             </div>
+
+            <!-- Top Counter Pill -->
+            <div id="heroSlideCounter" class="absolute top-3 right-3 z-30 px-2.5 py-1 rounded-full text-[10px] font-black tracking-wider uppercase bg-black/60 backdrop-blur-md border border-white/20 text-amber-300 shadow flex items-center gap-1">
+              <span id="heroSlideCurrentIdx">1</span> / <span id="heroSlideTotalCount">3</span>
+            </div>
+
+            <!-- Prev / Next Navigation Arrows -->
+            <button type="button" id="heroPrevBtn" onclick="prevHeroSlide()" 
+                    class="absolute left-2.5 top-1/2 -translate-y-1/2 z-30 w-9 h-9 rounded-full bg-black/45 hover:bg-black/75 text-white backdrop-blur-md border border-white/25 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 shadow-xl cursor-pointer hover:scale-105 active:scale-95"
+                    aria-label="Previous Slide">
+              <svg class="w-4 h-4 fill-none stroke-current stroke-2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+            </button>
+            <button type="button" id="heroNextBtn" onclick="nextHeroSlide()" 
+                    class="absolute right-2.5 top-1/2 -translate-y-1/2 z-30 w-9 h-9 rounded-full bg-black/45 hover:bg-black/75 text-white backdrop-blur-md border border-white/25 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 shadow-xl cursor-pointer hover:scale-105 active:scale-95"
+                    aria-label="Next Slide">
+              <svg class="w-4 h-4 fill-none stroke-current stroke-2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+            </button>
+
+            <!-- Bottom Progress Indicators -->
+            <div id="heroSliderDots" class="absolute bottom-3 right-3 z-30 flex items-center gap-1.5">
+              <!-- Dynamically populated indicator dots with live timer bar -->
+            </div>
+
           </div>
+
         </div>
       </div>
 
@@ -1137,6 +1183,171 @@
       });
     }
     document.addEventListener('DOMContentLoaded', initHomepageRealtimeVideos);
+
+    // ========================================================
+    // HOMEPAGE HERO DYNAMIC CAROUSEL SLIDER ENGINE
+    // Auto-advances every 4 seconds, pause on hover, touch swipe,
+    // smooth crossfade + Ken-Burns zoom, and real-time live sync.
+    // ========================================================
+    let heroSlides = [];
+    let heroCurrentIndex = 0;
+    let heroAutoSlideTimer = null;
+    let heroIsPaused = false;
+    const HERO_SLIDE_DURATION = 4000; // 4 seconds (3-5s request)
+    let unsubHeroSlider = null;
+
+    function initHeroSlider() {
+      const container = document.getElementById('heroSliderContainer');
+      if (!container) return;
+
+      if (typeof subscribeHeroSlides === 'function') {
+        unsubHeroSlider = subscribeHeroSlides((slides) => {
+          if (!slides || slides.length === 0) return;
+          heroSlides = slides;
+          if (heroCurrentIndex >= heroSlides.length) heroCurrentIndex = 0;
+          renderHeroSlidesTrack();
+          startHeroAutoSlider();
+        });
+      }
+
+      // Mouse hover pause/resume
+      container.addEventListener('mouseenter', () => {
+        heroIsPaused = true;
+        clearTimeout(heroAutoSlideTimer);
+        pauseHeroProgressBar();
+      });
+      container.addEventListener('mouseleave', () => {
+        heroIsPaused = false;
+        startHeroAutoSlider();
+      });
+
+      // Mobile Touch Swipe gestures
+      let touchStartX = 0;
+      let touchEndX = 0;
+      container.addEventListener('touchstart', (e) => {
+        if (e.changedTouches && e.changedTouches[0]) {
+          touchStartX = e.changedTouches[0].screenX;
+        }
+      }, { passive: true });
+      container.addEventListener('touchend', (e) => {
+        if (e.changedTouches && e.changedTouches[0]) {
+          touchEndX = e.changedTouches[0].screenX;
+          const threshold = 40;
+          if (touchEndX < touchStartX - threshold) {
+            nextHeroSlide(); // swipe left -> next
+          } else if (touchEndX > touchStartX + threshold) {
+            prevHeroSlide(); // swipe right -> prev
+          }
+        }
+      }, { passive: true });
+    }
+
+    function renderHeroSlidesTrack() {
+      const track = document.getElementById('heroSlidesTrack');
+      const dotsContainer = document.getElementById('heroSliderDots');
+      const counterTotal = document.getElementById('heroSlideTotalCount');
+      const counterCurrent = document.getElementById('heroSlideCurrentIdx');
+      const prevBtn = document.getElementById('heroPrevBtn');
+      const nextBtn = document.getElementById('heroNextBtn');
+
+      if (!track || heroSlides.length === 0) return;
+
+      if (counterTotal) counterTotal.textContent = heroSlides.length;
+      if (counterCurrent) counterCurrent.textContent = heroCurrentIndex + 1;
+
+      // Single slide state: hide arrows and dots if only 1 slide
+      if (heroSlides.length <= 1) {
+        if (prevBtn) prevBtn.classList.add('hidden');
+        if (nextBtn) nextBtn.classList.add('hidden');
+        if (dotsContainer) dotsContainer.classList.add('hidden');
+      } else {
+        if (prevBtn) prevBtn.classList.remove('hidden');
+        if (nextBtn) nextBtn.classList.remove('hidden');
+        if (dotsContainer) dotsContainer.classList.remove('hidden');
+      }
+
+      // Render Slides
+      track.innerHTML = heroSlides.map((slide, idx) => {
+        const isActive = idx === heroCurrentIndex;
+        return `
+          <div id="hero-slide-${idx}" 
+               class="absolute inset-0 transition-all duration-700 ease-in-out ${isActive ? 'opacity-100 z-10 pointer-events-auto scale-100' : 'opacity-0 z-0 pointer-events-none scale-105'}">
+            <img src="${slide.url}" 
+                 onerror="this.src='https://pushpagirisankarapeetham.org/wp-content/uploads/2024/02/banner2.png'" 
+                 alt="${slide.tag || 'Sri Pushpagiri'}" 
+                 class="w-full h-full object-cover ${isActive ? 'animate-hero-ken-burns' : ''}">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent"></div>
+            <div class="absolute bottom-3 left-3 right-20 text-white z-20">
+              <span class="px-2.5 py-1 rounded-lg text-[10px] font-bold tracking-wider uppercase bg-white/20 backdrop-blur-md border border-white/30 text-amber-200 inline-block shadow-sm">
+                ${slide.tag || 'శ్రీ పుష్పగిరి హరిహర క్షేత్రం'}
+              </span>
+              <p class="text-xs sm:text-sm font-semibold mt-1 drop-shadow-md font-telugu line-clamp-2">
+                ${slide.caption || 'చెన్నకేశవ & శాంతాన మల్లేశ్వర స్వామివార్ల సన్నిధి'}
+              </p>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      // Render Dots / Indicator Pills with live animated progress
+      if (dotsContainer && heroSlides.length > 1) {
+        dotsContainer.innerHTML = heroSlides.map((_, idx) => {
+          const isActive = idx === heroCurrentIndex;
+          if (isActive) {
+            return `
+              <div onclick="goToHeroSlide(${idx})" class="w-8 h-2 rounded-full bg-white/30 overflow-hidden relative cursor-pointer" title="Slide ${idx + 1}">
+                <div id="heroActiveProgress" class="h-full bg-amber-400 rounded-full w-0" style="animation: heroProgress 4s linear forwards;"></div>
+              </div>
+            `;
+          } else {
+            return `
+              <div onclick="goToHeroSlide(${idx})" class="w-2 h-2 rounded-full bg-white/40 hover:bg-white/80 transition-colors cursor-pointer" title="Go to slide ${idx + 1}"></div>
+            `;
+          }
+        }).join('');
+      }
+    }
+
+    function goToHeroSlide(index) {
+      if (index < 0 || index >= heroSlides.length) return;
+      heroCurrentIndex = index;
+      renderHeroSlidesTrack();
+      startHeroAutoSlider();
+    }
+
+    function nextHeroSlide() {
+      if (heroSlides.length <= 1) return;
+      heroCurrentIndex = (heroCurrentIndex + 1) % heroSlides.length;
+      renderHeroSlidesTrack();
+      startHeroAutoSlider();
+    }
+
+    function prevHeroSlide() {
+      if (heroSlides.length <= 1) return;
+      heroCurrentIndex = (heroCurrentIndex - 1 + heroSlides.length) % heroSlides.length;
+      renderHeroSlidesTrack();
+      startHeroAutoSlider();
+    }
+
+    function startHeroAutoSlider() {
+      clearTimeout(heroAutoSlideTimer);
+      if (heroIsPaused || heroSlides.length <= 1) return;
+
+      heroAutoSlideTimer = setTimeout(() => {
+        if (!heroIsPaused) {
+          nextHeroSlide();
+        }
+      }, HERO_SLIDE_DURATION);
+    }
+
+    function pauseHeroProgressBar() {
+      const bar = document.getElementById('heroActiveProgress');
+      if (bar) {
+        bar.style.animationPlayState = 'paused';
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', initHeroSlider);
   </script>
 
   <!-- Sacred Peetham Audio Controller -->

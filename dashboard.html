@@ -298,6 +298,11 @@
         <span>🎥 YouTube Videos Manager</span>
         <span id="tabVideosCountBadge" class="px-2 py-0.5 rounded-full bg-slate-100 text-[10px]">...</span>
       </button>
+      <button type="button" onclick="switchDashboardTab('hero')" id="tabBtnHero"
+              class="px-5 py-2.5 rounded-2xl font-bold text-xs uppercase tracking-wider transition-all bg-white text-slate-600 hover:text-slate-900 border border-slate-200 shadow-sm flex items-center gap-2">
+        <span>🖼️ Main Hero Slider</span>
+        <span id="tabHeroCountBadge" class="px-2 py-0.5 rounded-full bg-slate-100 text-[10px]">...</span>
+      </button>
       <button type="button" onclick="switchDashboardTab('theme')" id="tabBtnTheme"
               class="px-5 py-2.5 rounded-2xl font-bold text-xs uppercase tracking-wider transition-all bg-white text-slate-600 hover:text-slate-900 border border-slate-200 shadow-sm flex items-center gap-2">
         <span>🎨 Global Site Theme</span>
@@ -848,6 +853,159 @@
     </div>
     <!-- END TAB 3 (THEME) -->
 
+    <!-- TAB 4: HOMEPAGE MAIN HERO SLIDER (sectionHero) -->
+    <div id="sectionHero" class="hidden grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      
+      <!-- LEFT COLUMN: Add / Upload Hero Slide Form -->
+      <div class="lg:col-span-5 bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200 sticky top-24">
+        
+        <div class="flex items-center justify-between mb-5 pb-3 border-b border-slate-100">
+          <div>
+            <h3 class="font-bold text-slate-900 text-base font-cinzel">
+              + Add Hero Carousel Slide
+            </h3>
+            <p class="text-[11px] text-slate-500">Live slider automatically scrolls every 3-5 seconds</p>
+          </div>
+          <span id="heroSlideLimitBadge" class="text-[10px] uppercase font-bold text-amber-900 bg-amber-50 px-2.5 py-1 rounded-full border border-amber-200">
+            Active: <span id="heroCountText">...</span>
+          </span>
+        </div>
+
+        <form id="heroSlideForm" onsubmit="handleHeroSlideSubmit(event)" class="space-y-4">
+          
+          <!-- Image Upload Choice -->
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">
+              Select Image Source
+            </label>
+            <div class="grid grid-cols-2 gap-2 p-1 bg-slate-100 rounded-2xl mb-3">
+              <button type="button" onclick="switchHeroUploadMethod('file')" id="btnHeroMethodFile"
+                      class="py-2 rounded-xl text-xs font-bold transition-all bg-white text-slate-900 shadow-sm">
+                📁 Upload File
+              </button>
+              <button type="button" onclick="switchHeroUploadMethod('url')" id="btnHeroMethodUrl"
+                      class="py-2 rounded-xl text-xs font-bold transition-all text-slate-600 hover:text-slate-900">
+                🔗 Image URL
+              </button>
+            </div>
+
+            <!-- File Upload Input -->
+            <div id="heroFileInputBlock" class="space-y-2">
+              <div class="border-2 border-dashed border-slate-300 hover:border-amber-500 rounded-2xl p-5 text-center cursor-pointer transition-colors bg-slate-50/50 hover:bg-amber-50/20"
+                   onclick="document.getElementById('heroSlideFileInput').click()">
+                <input type="file" id="heroSlideFileInput" accept="image/*" class="hidden" onchange="handleHeroFileSelect(event)">
+                <div class="text-3xl mb-1">🖼️</div>
+                <p class="text-xs font-semibold text-slate-700">Click to choose image</p>
+                <p class="text-[10px] text-slate-400 mt-1">PNG, JPG, WebP (Optimized for hero banner)</p>
+              </div>
+            </div>
+
+            <!-- URL Input -->
+            <div id="heroUrlInputBlock" class="hidden space-y-2">
+              <input type="url" id="heroSlideUrlInput" placeholder="https://example.com/banner.jpg" 
+                     class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-amber-500 focus:border-amber-500 text-xs outline-none"
+                     oninput="handleHeroUrlInput(event)">
+            </div>
+
+            <!-- Image Preview Box -->
+            <div id="heroPreviewBox" class="hidden mt-3 p-2 bg-slate-50 rounded-2xl border border-slate-200">
+              <div class="aspect-[4/3] rounded-xl overflow-hidden bg-slate-200 relative">
+                <img id="heroPreviewImg" src="" alt="Hero preview" class="w-full h-full object-cover">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent"></div>
+                <div class="absolute bottom-2 left-2 right-2 text-white">
+                  <span id="heroPreviewTag" class="px-2 py-0.5 rounded text-[9px] font-bold uppercase bg-white/20 backdrop-blur-sm text-amber-200">
+                    శ్రీ పుష్పగిరి హరిహర క్షేత్రం
+                  </span>
+                  <p id="heroPreviewCaption" class="text-[11px] font-semibold truncate mt-0.5 drop-shadow">
+                    చెన్నకేశవ &amp; శాంతాన మల్లేశ్వర స్వామివార్ల సన్నిధి
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tag / Sacred Label -->
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">
+              Tag / Sacred Badge (e.g. శ్రీ పుష్పగిరి హరిహర క్షేత్రం)
+            </label>
+            <input type="text" id="heroSlideTagInput" required placeholder="శ్రీ పుష్పగిరి హరిహర క్షేత్రం"
+                   value="శ్రీ పుష్పగిరి హరిహర క్షేత్రం"
+                   class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-amber-500 focus:border-amber-500 text-xs font-telugu outline-none"
+                   oninput="updateHeroLivePreview()">
+          </div>
+
+          <!-- Caption / Title -->
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">
+              Subtitle / Caption (e.g. చెన్నకేశవ &amp; శాంతాన మల్లేశ్వర సన్నిధి)
+            </label>
+            <input type="text" id="heroSlideCaptionInput" placeholder="చెన్నకేశవ &amp; శాంతాన మల్లేశ్వర స్వామివార్ల సన్నిధి"
+                   class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-amber-500 focus:border-amber-500 text-xs font-telugu outline-none"
+                   oninput="updateHeroLivePreview()">
+          </div>
+
+          <!-- Order -->
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">
+              Position Order (1 to 5)
+            </label>
+            <select id="heroSlideOrderInput" 
+                    class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-amber-500 focus:border-amber-500 text-xs outline-none bg-white font-medium">
+              <option value="1">1 - First Slide</option>
+              <option value="2">2 - Second Slide</option>
+              <option value="3">3 - Third Slide</option>
+              <option value="4">4 - Fourth Slide</option>
+              <option value="5">5 - Fifth Slide</option>
+            </select>
+          </div>
+
+          <!-- Submit Button -->
+          <button type="submit" id="btnSubmitHeroSlide"
+                  class="w-full py-3.5 rounded-xl bg-gradient-to-r from-amber-600 to-orange-700 hover:from-amber-700 hover:to-orange-800 text-white font-bold text-xs uppercase tracking-wider shadow-md hover:shadow-lg transition-all duration-200 flex items-center justify-center gap-2">
+            <span>+ Add to Live Hero Carousel</span>
+          </button>
+          <p id="heroMaxWarning" class="hidden text-xs text-rose-600 font-semibold text-center mt-2">
+            ⚠️ Maximum 5 slides reached. Delete an existing slide to add a new one.
+          </p>
+        </form>
+
+      </div>
+
+      <!-- RIGHT COLUMN: Active Slides Manager & Live Preview -->
+      <div class="lg:col-span-7 space-y-6">
+        
+        <!-- Header & Quick Actions -->
+        <div class="bg-white rounded-3xl p-6 sm:p-7 shadow-sm border border-slate-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div>
+            <div class="flex items-center gap-2">
+              <h3 class="font-bold text-slate-900 text-lg font-cinzel">
+                Active Hero Slides (<span id="heroSlidesListCount">0</span> / 5)
+              </h3>
+              <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-emerald-50 text-emerald-700 border border-emerald-200">
+                Auto-Slide 4s
+              </span>
+            </div>
+            <p class="text-xs text-slate-500 mt-1">
+              You can have 1, 2, 3, 4, or 5 images. The carousel automatically rotates every 3 to 5 seconds on the homepage.
+            </p>
+          </div>
+          <button type="button" onclick="handleResetHeroSlides()"
+                  class="px-4 py-2.5 rounded-xl text-xs font-bold text-slate-600 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 border border-slate-200 transition-all flex items-center gap-1.5 whitespace-nowrap">
+            <span>↺ Reset to Default</span>
+          </button>
+        </div>
+
+        <!-- Slides List Container -->
+        <div id="heroSlidesListContainer" class="space-y-4">
+          <!-- Dynamically populated -->
+        </div>
+
+      </div>
+
+    </div>
+    <!-- END TAB 4 (HERO SLIDER) -->
+
   </main>
 
   <!-- ========================================================
@@ -1106,9 +1264,10 @@
         }
       }
 
-      // Start Real-Time Listeners for Photos, Videos and Global Theme
+      // Start Real-Time Listeners for Photos, Videos, Hero Slides and Global Theme
       startRealtimePhotoSync();
       startRealtimeVideosSync();
+      startRealtimeHeroSync();
       startRealtimeThemeSync();
     }
 
@@ -1120,6 +1279,10 @@
       if (unsubscribeVideos) {
         try { unsubscribeVideos(); } catch (e) {}
         unsubscribeVideos = null;
+      }
+      if (unsubscribeHero) {
+        try { unsubscribeHero(); } catch (e) {}
+        unsubscribeHero = null;
       }
       if (unsubscribeTheme) {
         try { unsubscribeTheme(); } catch (e) {}
@@ -1621,21 +1784,24 @@
       currentDashboardTab = tab;
       const tabBtnPhotos = document.getElementById('tabBtnPhotos');
       const tabBtnVideos = document.getElementById('tabBtnVideos');
+      const tabBtnHero = document.getElementById('tabBtnHero');
       const tabBtnTheme = document.getElementById('tabBtnTheme');
       const sectionPhotos = document.getElementById('sectionPhotos');
       const sectionVideos = document.getElementById('sectionVideos');
+      const sectionHero = document.getElementById('sectionHero');
       const sectionTheme = document.getElementById('sectionTheme');
 
-      if (!sectionPhotos || !sectionVideos || !sectionTheme) return;
+      if (!sectionPhotos || !sectionVideos || !sectionHero || !sectionTheme) return;
 
       // Reset all tab button styles to default inactive
-      [tabBtnPhotos, tabBtnVideos, tabBtnTheme].forEach(btn => {
+      [tabBtnPhotos, tabBtnVideos, tabBtnHero, tabBtnTheme].forEach(btn => {
         if (btn) btn.className = "px-5 py-2.5 rounded-2xl font-bold text-xs uppercase tracking-wider transition-all bg-white text-slate-600 hover:text-slate-900 border border-slate-200 shadow-sm flex items-center gap-2";
       });
 
       // Hide all content sections
       sectionPhotos.classList.add('hidden');
       sectionVideos.classList.add('hidden');
+      sectionHero.classList.add('hidden');
       sectionTheme.classList.add('hidden');
 
       if (tab === 'photos') {
@@ -1644,6 +1810,9 @@
       } else if (tab === 'videos') {
         if (tabBtnVideos) tabBtnVideos.className = "px-5 py-2.5 rounded-2xl font-bold text-xs uppercase tracking-wider transition-all bg-red-700 text-white shadow-md flex items-center gap-2";
         sectionVideos.classList.remove('hidden');
+      } else if (tab === 'hero') {
+        if (tabBtnHero) tabBtnHero.className = "px-5 py-2.5 rounded-2xl font-bold text-xs uppercase tracking-wider transition-all bg-gradient-to-r from-amber-600 to-orange-700 text-white shadow-md flex items-center gap-2";
+        sectionHero.classList.remove('hidden');
       } else if (tab === 'theme') {
         if (tabBtnTheme) tabBtnTheme.className = "px-5 py-2.5 rounded-2xl font-bold text-xs uppercase tracking-wider transition-all bg-gradient-to-r from-amber-600 to-orange-700 text-white shadow-md flex items-center gap-2";
         sectionTheme.classList.remove('hidden');
@@ -1983,6 +2152,285 @@
         showToast(`✨ ${themeName.toUpperCase()} theme is now live globally!`);
       } catch (err) {
         alert("Theme update error: " + err.message);
+      }
+    }
+
+    // ========================================================
+    // HOMEPAGE HERO SLIDER CONTROLLER (1 to 5 Images)
+    // ========================================================
+    let activeHeroUploadMethod = 'file';
+    let processedHeroFileData = null;
+    let unsubscribeHero = null;
+    let allCurrentHeroSlides = [];
+
+    function startRealtimeHeroSync() {
+      if (unsubscribeHero) {
+        try { unsubscribeHero(); } catch (e) {}
+      }
+
+      unsubscribeHero = subscribeHeroSlides((slides, mode) => {
+        allCurrentHeroSlides = slides || [];
+        renderHeroSlidesUI(allCurrentHeroSlides);
+      });
+    }
+
+    function switchHeroUploadMethod(method) {
+      activeHeroUploadMethod = method;
+      const btnFile = document.getElementById('btnHeroMethodFile');
+      const btnUrl = document.getElementById('btnHeroMethodUrl');
+      const blockFile = document.getElementById('heroFileInputBlock');
+      const blockUrl = document.getElementById('heroUrlInputBlock');
+
+      if (method === 'file') {
+        btnFile.className = "py-2 rounded-xl text-xs font-bold transition-all bg-white text-slate-900 shadow-sm";
+        btnUrl.className = "py-2 rounded-xl text-xs font-bold transition-all text-slate-600 hover:text-slate-900";
+        blockFile.classList.remove('hidden');
+        blockUrl.classList.add('hidden');
+      } else {
+        btnUrl.className = "py-2 rounded-xl text-xs font-bold transition-all bg-white text-slate-900 shadow-sm";
+        btnFile.className = "py-2 rounded-xl text-xs font-bold transition-all text-slate-600 hover:text-slate-900";
+        blockUrl.classList.remove('hidden');
+        blockFile.classList.add('hidden');
+      }
+    }
+
+    function handleHeroFileSelect(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        compressImage(e.target.result, 1200, 0.85, (compressed) => {
+          processedHeroFileData = compressed;
+          const previewBox = document.getElementById('heroPreviewBox');
+          const previewImg = document.getElementById('heroPreviewImg');
+          if (previewBox && previewImg) {
+            previewImg.src = compressed;
+            previewBox.classList.remove('hidden');
+          }
+          updateHeroLivePreview();
+        });
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function handleHeroUrlInput(event) {
+      const url = event.target.value.trim();
+      const previewBox = document.getElementById('heroPreviewBox');
+      const previewImg = document.getElementById('heroPreviewImg');
+      if (url && previewBox && previewImg) {
+        previewImg.src = url;
+        previewBox.classList.remove('hidden');
+      } else if (previewBox) {
+        previewBox.classList.add('hidden');
+      }
+      updateHeroLivePreview();
+    }
+
+    function updateHeroLivePreview() {
+      const tagInput = document.getElementById('heroSlideTagInput');
+      const captionInput = document.getElementById('heroSlideCaptionInput');
+      const previewTag = document.getElementById('heroPreviewTag');
+      const previewCaption = document.getElementById('heroPreviewCaption');
+
+      if (previewTag && tagInput) {
+        previewTag.textContent = tagInput.value.trim() || 'శ్రీ పుష్పగిరి హరిహర క్షేత్రం';
+      }
+      if (previewCaption && captionInput) {
+        previewCaption.textContent = captionInput.value.trim() || 'చెన్నకేశవ & శాంతాన మల్లేశ్వర స్వామివార్ల సన్నిధి';
+      }
+    }
+
+    function renderHeroSlidesUI(slides) {
+      const listContainer = document.getElementById('heroSlidesListContainer');
+      const badge = document.getElementById('tabHeroCountBadge');
+      const countText = document.getElementById('heroCountText');
+      const listCount = document.getElementById('heroSlidesListCount');
+      const submitBtn = document.getElementById('btnSubmitHeroSlide');
+      const maxWarning = document.getElementById('heroMaxWarning');
+      const orderSelect = document.getElementById('heroSlideOrderInput');
+
+      const count = slides.length;
+      if (badge) badge.textContent = `${count} / 5`;
+      if (countText) countText.textContent = `${count} / 5`;
+      if (listCount) listCount.textContent = count;
+
+      if (count >= 5) {
+        if (submitBtn) {
+          submitBtn.disabled = true;
+          submitBtn.classList.add('opacity-50', 'cursor-not-allowed');
+        }
+        if (maxWarning) maxWarning.classList.remove('hidden');
+      } else {
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+        }
+        if (maxWarning) maxWarning.classList.add('hidden');
+        if (orderSelect) {
+          orderSelect.value = String(count + 1);
+        }
+      }
+
+      if (!listContainer) return;
+
+      if (!slides || slides.length === 0) {
+        listContainer.innerHTML = `
+          <div class="bg-white rounded-3xl p-8 text-center border border-slate-200">
+            <p class="text-3xl mb-2">🖼️</p>
+            <p class="text-xs text-slate-500 font-semibold">ప్రస్తుతం స్లైడ్‌లు లేవు (No hero slides configured).</p>
+            <button onclick="handleResetHeroSlides()" class="mt-3 px-4 py-2 bg-amber-600 text-white text-xs font-bold rounded-xl shadow hover:bg-amber-700">
+              Restore Default Slides
+            </button>
+          </div>
+        `;
+        return;
+      }
+
+      listContainer.innerHTML = slides.map((slide, index) => {
+        const isFirst = index === 0;
+        const isLast = index === slides.length - 1;
+        const safeCaption = (slide.caption || '').replace(/'/g, "\\'");
+        const safeTag = (slide.tag || '').replace(/'/g, "\\'");
+
+        return `
+          <div class="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200 shadow-sm hover:shadow-md transition-all flex flex-col sm:flex-row items-center gap-4 group">
+            
+            <!-- Thumbnail with Badge -->
+            <div class="w-full sm:w-36 aspect-[4/3] rounded-xl overflow-hidden bg-slate-100 flex-shrink-0 relative shadow-inner">
+              <img src="${slide.url}" alt="${slide.tag || 'Hero'}" 
+                   onerror="this.src='https://pushpagirisankarapeetham.org/wp-content/uploads/2024/02/banner2.png'"
+                   class="w-full h-full object-cover">
+              <span class="absolute top-1.5 left-1.5 px-2 py-0.5 rounded-full text-[9px] font-black bg-black/70 text-amber-300 backdrop-blur-sm">
+                #${index + 1}
+              </span>
+            </div>
+
+            <!-- Content Details -->
+            <div class="flex-grow min-w-0 w-full sm:w-auto">
+              <div class="flex items-center gap-2 mb-1">
+                <span class="px-2.5 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider bg-amber-50 text-amber-800 border border-amber-200">
+                  ${slide.tag || 'శ్రీ పుష్పగిరి హరిహర క్షేత్రం'}
+                </span>
+                <span class="text-[10px] text-slate-400">Position ${slide.order || (index + 1)}</span>
+              </div>
+              <h4 class="text-xs font-bold text-slate-800 font-telugu leading-snug">
+                ${slide.caption || 'చెన్నకేశవ & శాంతాన మల్లేశ్వర స్వామివార్ల సన్నిధి'}
+              </h4>
+              <p class="text-[10px] text-slate-400 mt-1 font-mono truncate">
+                ${slide.url.startsWith('data:') ? 'Uploaded Image File' : slide.url}
+              </p>
+            </div>
+
+            <!-- Actions -->
+            <div class="flex items-center gap-1.5 self-end sm:self-center flex-shrink-0">
+              <button type="button" onclick="handleMoveHeroSlide('${slide.id}', -1)" ${isFirst ? 'disabled' : ''}
+                      class="w-8 h-8 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-100 flex items-center justify-center text-xs disabled:opacity-30 disabled:cursor-not-allowed"
+                      title="Move Up">
+                ▲
+              </button>
+              <button type="button" onclick="handleMoveHeroSlide('${slide.id}', 1)" ${isLast ? 'disabled' : ''}
+                      class="w-8 h-8 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-100 flex items-center justify-center text-xs disabled:opacity-30 disabled:cursor-not-allowed"
+                      title="Move Down">
+                ▼
+              </button>
+              <button type="button" onclick="handleDeleteHeroSlide('${slide.id}')"
+                      class="w-8 h-8 rounded-xl border border-rose-200 bg-rose-50 hover:bg-rose-100 text-rose-600 flex items-center justify-center text-xs transition-colors"
+                      title="Delete Slide">
+                🗑️
+              </button>
+            </div>
+
+          </div>
+        `;
+      }).join('');
+    }
+
+    async function handleHeroSlideSubmit(event) {
+      event.preventDefault();
+      const submitBtn = document.getElementById('btnSubmitHeroSlide');
+      const tag = document.getElementById('heroSlideTagInput').value.trim();
+      const caption = document.getElementById('heroSlideCaptionInput').value.trim();
+      const order = Number(document.getElementById('heroSlideOrderInput').value) || 1;
+
+      let imageUrl = '';
+      if (activeHeroUploadMethod === 'file') {
+        if (!processedHeroFileData) {
+          alert("దయచేసి చిత్రాన్ని ఎంచుకోండి (Please select an image file).");
+          return;
+        }
+        imageUrl = processedHeroFileData;
+      } else {
+        imageUrl = document.getElementById('heroSlideUrlInput').value.trim();
+        if (!imageUrl) {
+          alert("దయచేసి చిత్ర URL నమోదు చేయండి (Please enter image URL).");
+          return;
+        }
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = "<span>Saving to Live Carousel...</span>";
+
+      try {
+        await saveHeroSlide({
+          url: imageUrl,
+          tag: tag,
+          caption: caption,
+          order: order
+        });
+
+        showToast("✨ Hero carousel slide published live!");
+        document.getElementById('heroSlideForm').reset();
+        processedHeroFileData = null;
+        document.getElementById('heroPreviewBox').classList.add('hidden');
+        document.getElementById('heroSlideTagInput').value = "శ్రీ పుష్పగిరి హరిహర క్షేత్రం";
+      } catch (err) {
+        alert("Error: " + err.message);
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = "<span>+ Add to Live Hero Carousel</span>";
+      }
+    }
+
+    async function handleDeleteHeroSlide(slideId) {
+      if (!confirm("Are you sure you want to remove this hero slide?")) return;
+      try {
+        showToast("Removing slide...");
+        await deleteHeroSlide(slideId);
+        showToast("🗑️ Hero slide removed successfully!");
+      } catch (err) {
+        alert("Delete error: " + err.message);
+      }
+    }
+
+    async function handleMoveHeroSlide(slideId, direction) {
+      const idx = allCurrentHeroSlides.findIndex(s => s.id === slideId);
+      if (idx === -1) return;
+      const targetIdx = idx + direction;
+      if (targetIdx < 0 || targetIdx >= allCurrentHeroSlides.length) return;
+
+      const newOrder = [...allCurrentHeroSlides];
+      const temp = newOrder[idx];
+      newOrder[idx] = newOrder[targetIdx];
+      newOrder[targetIdx] = temp;
+
+      const orderedIds = newOrder.map(s => s.id);
+      try {
+        await reorderHeroSlides(orderedIds);
+        showToast("Reordered hero slides!");
+      } catch (err) {
+        alert("Reorder error: " + err.message);
+      }
+    }
+
+    async function handleResetHeroSlides() {
+      if (!confirm("Reset hero slides to official 3 default temple slides?")) return;
+      try {
+        showToast("Resetting to default slides...");
+        await resetHeroSlidesToDefault();
+        showToast("↺ Restored default hero slides!");
+      } catch (err) {
+        alert("Reset error: " + err.message);
       }
     }
   </script>

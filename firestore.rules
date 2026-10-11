@@ -43,6 +43,21 @@ service cloud.firestore {
     //   - authorUid: string (required, 1..128 chars, immutable) - Firebase Auth UID of admin creator
     //   - authorEmail: string (required, valid email, immutable) - Email address of admin creator
     //
+    // Collection: peetham_hero_slides
+    // Document ID: {slideId} (e.g. 'hero-slide-1' or auto-generated Firestore ID)
+    //
+    // Fields:
+    //   - id: string (optional, 1..100 chars, immutable) - Client/system slide identifier
+    //   - url: string (required, 1..500000 chars) - Hero banner image URL (HTTP/HTTPS, storage path, or base64 data URL)
+    //   - tag: string (required, 1..200 chars) - Sacred badge or highlight text (e.g. 'శ్రీ పుష్పగిరి హరిహర క్షేత్రం')
+    //   - caption: string (optional, <= 500 chars) - Subtitle or holy description of the slide
+    //   - order: number (required, 1 <= order <= 10) - Carousel display order
+    //   - date: string | timestamp (required) - Slide date in ISO 8601 string or timestamp format
+    //   - createdAt: string | timestamp (required, immutable) - Creation timestamp
+    //   - updatedAt: string | timestamp (required) - Last modification timestamp
+    //   - authorUid: string (required, 1..128 chars, immutable) - Firebase Auth UID of admin creator
+    //   - authorEmail: string (required, valid email, immutable) - Email address of admin creator
+    //
     // ===============================================================
 
     // ===============================================================
@@ -201,6 +216,45 @@ service cloud.firestore {
              areImmutableFieldsUnchanged(['id', 'createdAt', 'authorUid', 'authorEmail']);
     }
 
+    // Validate structural schema and bounds for hero slide data
+    function isValidHeroSlide(data) {
+      return hasOnlyAllowedFields(data, ['id', 'url', 'tag', 'caption', 'order', 'date', 'createdAt', 'updatedAt', 'authorUid', 'authorEmail']) &&
+             hasRequiredFields(data, ['url', 'tag', 'order', 'date', 'createdAt', 'updatedAt', 'authorUid', 'authorEmail']) &&
+             isValidPhotoUrl(data.url) &&
+             data.tag is string &&
+             data.tag.size() > 0 &&
+             data.tag.size() <= 200 &&
+             (!('caption' in data) || (data.caption is string && data.caption.size() <= 500)) &&
+             (data.order is int || data.order is float) &&
+             data.order >= 1 &&
+             data.order <= 10 &&
+             isValidDate(data.date) &&
+             isValidDate(data.createdAt) &&
+             isValidDate(data.updatedAt) &&
+             data.authorUid is string &&
+             data.authorUid.size() > 0 &&
+             data.authorUid.size() <= 128 &&
+             isValidEmail(data.authorEmail) &&
+             (!('id' in data) || (data.id is string && data.id.size() > 0 && data.id.size() <= 100));
+    }
+
+    // Domain validator for creating a new hero slide document
+    function isValidNewHeroSlide(data) {
+      return isValidHeroSlide(data) &&
+             data.authorUid == request.auth.uid &&
+             (request.auth.token.email == null || data.authorEmail == request.auth.token.email);
+    }
+
+    // Domain validator for updating an existing hero slide document (protects immutability & schema)
+    function isValidHeroSlideUpdate(newData, oldData) {
+      return isValidHeroSlide(newData) &&
+             newData.createdAt == oldData.createdAt &&
+             newData.authorUid == oldData.authorUid &&
+             newData.authorEmail == oldData.authorEmail &&
+             (!('id' in oldData) || ('id' in newData && newData.id == oldData.id)) &&
+             areImmutableFieldsUnchanged(['id', 'createdAt', 'authorUid', 'authorEmail']);
+    }
+
     // ===============================================================
     // Collection Rules
     // ===============================================================
@@ -245,6 +299,21 @@ service cloud.firestore {
       allow update: if isAuthenticated() && isValidVideoUpdate(request.resource.data, resource.data);
 
       // Only authenticated admin users can delete videos
+      allow delete: if isAuthenticated();
+    }
+
+    // Sri Pushpagiri Sankara Peetham real-time hero banner carousel slides (1 to 5 active slides)
+    match /peetham_hero_slides/{slideId} {
+      // Devotees and visitors worldwide can view hero slider banners publicly without authentication
+      allow read: if true;
+
+      // Only authenticated admin users can publish new hero slides
+      allow create: if isAuthenticated() && isValidNewHeroSlide(request.resource.data);
+
+      // Only authenticated admin users can update hero slides (enforces full validation & immutability)
+      allow update: if isAuthenticated() && isValidHeroSlideUpdate(request.resource.data, resource.data);
+
+      // Only authenticated admin users can delete hero slides
       allow delete: if isAuthenticated();
     }
 

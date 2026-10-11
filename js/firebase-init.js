@@ -82,6 +82,35 @@ const DEFAULT_PEETHAM_VIDEOS = [
   }
 ];
 
+// Seed Hero Banner Slides for Homepage Hero Section (Max 5 allowed)
+const MAX_HERO_SLIDES = 5;
+const DEFAULT_HERO_SLIDES = [
+  {
+    id: "hero-slide-1",
+    url: "https://pushpagirisankarapeetham.org/wp-content/gallery/dharma-prachara-yatra/home-3.jpg",
+    tag: "శ్రీ పుష్పగిరి హరిహర క్షేత్రం",
+    caption: "చెన్నకేశవ & శాంతాన మల్లేశ్వర స్వామివార్ల సన్నిధి",
+    order: 1,
+    date: new Date().toISOString()
+  },
+  {
+    id: "hero-slide-2",
+    url: "https://pushpagirisankarapeetham.org/wp-content/gallery/dharma-prachara-yatra/396493180_1370311970490604_545877388820617503_n.jpg",
+    tag: "జగద్గురు దివ్య దర్శనం",
+    caption: "48వ పీఠాధిపతులు పూజ్యశ్రీ విద్యా శంకర భారతీ స్వామీజీ",
+    order: 2,
+    date: new Date().toISOString()
+  },
+  {
+    id: "hero-slide-3",
+    url: "https://pushpagirisankarapeetham.org/wp-content/gallery/dharma-prachara-yatra/IMG-20240403-WA0033.jpg",
+    tag: "ధర్మ ప్రచార యాత్ర",
+    caption: "సనాతన ధర్మ రక్షణ • అఖండ వైదిక పరంపర",
+    order: 3,
+    date: new Date().toISOString()
+  }
+];
+
 // Local storage keys
 const STORAGE_KEYS = {
   FIREBASE_CONFIG: "pushpagiri_firebase_config",
@@ -89,6 +118,7 @@ const STORAGE_KEYS = {
   LOCAL_ADMIN_CREDS: "pushpagiri_local_admin_creds",
   CUSTOM_PHOTOS: "peethadipathi_custom_photos",
   CUSTOM_VIDEOS: "peetham_custom_videos",
+  HERO_SLIDES: "peetham_hero_slides",
   SITE_THEME: "peetham_site_theme",
   SYNC_EVENT: "pushpagiri_sync_event"
 };
@@ -1204,5 +1234,338 @@ if (typeof window !== 'undefined') {
       applyThemeToDOM(theme);
     });
   }
+}
+
+// ========================================================
+// 9. HOMEPAGE HERO SLIDER REAL-TIME SERVICE (1 to 5 Images)
+// Supports dynamic adding, deleting, ordering and live sync
+// ========================================================
+
+/**
+ * Load Hero Banner Slides
+ * Returns 1 to 5 slides ordered by order number.
+ */
+async function loadHeroSlides() {
+  const isFb = initFirebase();
+  if (isFb && firebaseDb) {
+    try {
+      const snap = await firebaseDb.collection("peetham_hero_slides").orderBy("order", "asc").get();
+      if (!snap.empty) {
+        const slides = [];
+        snap.forEach(doc => {
+          slides.push({ id: doc.id, ...doc.data() });
+        });
+        localStorage.setItem(STORAGE_KEYS.HERO_SLIDES, JSON.stringify(slides));
+        return slides;
+      }
+    } catch (e) {
+      console.warn("Firestore hero slides load warning, using local mirror:", e);
+    }
+  }
+
+  // Fallback to local storage mirror
+  try {
+    const local = localStorage.getItem(STORAGE_KEYS.HERO_SLIDES);
+    if (local) {
+      const parsed = JSON.parse(local);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        return parsed.slice(0, MAX_HERO_SLIDES);
+      }
+    }
+  } catch (e) {}
+
+  // Initial seed fallback
+  localStorage.setItem(STORAGE_KEYS.HERO_SLIDES, JSON.stringify(DEFAULT_HERO_SLIDES));
+  return DEFAULT_HERO_SLIDES;
+}
+
+/**
+ * Subscribe to Hero Banner Slides in Real-Time
+ * Updates automatically when Admin adds, removes or reorders hero slides
+ */
+function subscribeHeroSlides(callback) {
+  const isFb = initFirebase();
+  let unsubFirestore = null;
+
+  // Immediate cached invocation
+  let cached = null;
+  try {
+    const raw = localStorage.getItem(STORAGE_KEYS.HERO_SLIDES);
+    if (raw) cached = JSON.parse(raw);
+  } catch (e) {}
+  if (!Array.isArray(cached) || cached.length === 0) {
+    cached = DEFAULT_HERO_SLIDES;
+  }
+  if (typeof callback === 'function') callback(cached, "cached");
+
+  // Firestore Snapshot Listener
+  if (isFb && firebaseDb) {
+    try {
+      unsubFirestore = firebaseDb.collection("peetham_hero_slides")
+        .orderBy("order", "asc")
+        .onSnapshot(snap => {
+          if (!snap.empty) {
+            const slides = [];
+            snap.forEach(doc => {
+              slides.push({ id: doc.id, ...doc.data() });
+            });
+            localStorage.setItem(STORAGE_KEYS.HERO_SLIDES, JSON.stringify(slides));
+            if (typeof callback === 'function') callback(slides, "firebase");
+          } else {
+            const local = localStorage.getItem(STORAGE_KEYS.HERO_SLIDES);
+            const fallback = local ? JSON.parse(local) : DEFAULT_HERO_SLIDES;
+            if (typeof callback === 'function') callback(fallback, "firebase_empty");
+          }
+        }, err => {
+          console.warn("Firestore hero slides listener warning:", err);
+        });
+    } catch (e) {
+      console.warn("Firestore hero slides listener setup warning:", e);
+    }
+  }
+
+  // Cross-tab sync via storage events
+  const onStorageChange = (e) => {
+    if (e.key === STORAGE_KEYS.HERO_SLIDES && e.newValue) {
+      try {
+        const parsed = JSON.parse(e.newValue);
+        if (Array.isArray(parsed) && typeof callback === 'function') {
+          callback(parsed, "local_storage");
+        }
+      } catch (err) {}
+    }
+  };
+  window.addEventListener('storage', onStorageChange);
+
+  // Cross-tab sync via BroadcastChannel
+  let onBroadcast = null;
+  let broadcastChannel = null;
+  if (typeof BroadcastChannel !== 'undefined') {
+    broadcastChannel = new BroadcastChannel("peetham_hero_channel");
+    onBroadcast = (msg) => {
+      if (msg && msg.data && msg.data.type === "HERO_SLIDES_UPDATED" && Array.isArray(msg.data.slides)) {
+        if (typeof callback === 'function') callback(msg.data.slides, "broadcast");
+      }
+    };
+    broadcastChannel.addEventListener('message', onBroadcast);
+  }
+
+  return () => {
+    if (unsubFirestore) {
+      try { unsubFirestore(); } catch (e) {}
+    }
+    window.removeEventListener('storage', onStorageChange);
+    if (broadcastChannel && onBroadcast) {
+      try { broadcastChannel.removeEventListener('message', onBroadcast); } catch (e) {}
+    }
+  };
+}
+
+/**
+ * Save a Hero Slide (Add new or Update existing)
+ * Enforces maximum 5 slides restriction.
+ */
+async function saveHeroSlide(slideData) {
+  const session = getAdminSession();
+  if (!session) {
+    throw new Error("చిత్రాన్ని సేవ్ చేయడానికి నిర్వాహక లాగిన్ అవసరం (Admin session required to save hero slide).");
+  }
+
+  if (!slideData.url || !slideData.url.trim()) {
+    throw new Error("చిత్రం URL లేదా అప్‌లోడ్ ఫైల్ తప్పనిసరి (Image URL or file required).");
+  }
+
+  const currentSlides = await loadHeroSlides();
+  const isUpdating = Boolean(slideData.id && currentSlides.some(s => s.id === slideData.id));
+
+  // Enforce Max 5 Slides
+  if (!isUpdating && currentSlides.length >= MAX_HERO_SLIDES) {
+    throw new Error(`గరిష్టంగా ${MAX_HERO_SLIDES} చిత్రాలు మాత్రమే అనుమతించబడతాయి (Maximum ${MAX_HERO_SLIDES} slides allowed). దయచేసి ఇప్పటికే ఉన్న చిత్రాన్ని తొలగించండి.`);
+  }
+
+  const now = new Date().toISOString();
+  const slideId = slideData.id || ("hero-slide-" + Date.now());
+  const orderNum = Number(slideData.order) || (isUpdating ? (slideData.order || 1) : (currentSlides.length + 1));
+
+  const slidePayload = {
+    id: slideId,
+    url: slideData.url.trim(),
+    tag: (slideData.tag || "శ్రీ పుష్పగిరి హరిహర క్షేత్రం").trim(),
+    caption: (slideData.caption || "").trim(),
+    order: orderNum,
+    date: slideData.date || now,
+    createdAt: slideData.createdAt || now,
+    updatedAt: now,
+    authorUid: session.uid || (firebaseAuth && firebaseAuth.currentUser ? firebaseAuth.currentUser.uid : "admin"),
+    authorEmail: session.email || (firebaseAuth && firebaseAuth.currentUser ? firebaseAuth.currentUser.email : "admin")
+  };
+
+  const isFb = initFirebase();
+  let savedToFirestore = false;
+
+  if (isFb && firebaseDb) {
+    try {
+      await firebaseDb.collection("peetham_hero_slides").doc(slideId).set(slidePayload, { merge: true });
+      savedToFirestore = true;
+    } catch (err) {
+      console.warn("Firestore hero slide save failed, using local mirror:", err);
+    }
+  }
+
+  // Update local storage mirror
+  let updatedList = [];
+  try {
+    const local = localStorage.getItem(STORAGE_KEYS.HERO_SLIDES);
+    let list = local ? JSON.parse(local) : [...DEFAULT_HERO_SLIDES];
+    if (isUpdating) {
+      list = list.map(s => s.id === slideId ? slidePayload : s);
+    } else {
+      list.push(slidePayload);
+    }
+    list.sort((a, b) => (Number(a.order) || 0) - (Number(b.order) || 0));
+    updatedList = list.slice(0, MAX_HERO_SLIDES);
+    localStorage.setItem(STORAGE_KEYS.HERO_SLIDES, JSON.stringify(updatedList));
+  } catch (e) {
+    console.warn("Local storage mirror save failed:", e);
+  }
+
+  // Broadcast across tabs
+  try {
+    if (typeof BroadcastChannel !== 'undefined') {
+      const channel = new BroadcastChannel("peetham_hero_channel");
+      channel.postMessage({ type: "HERO_SLIDES_UPDATED", slides: updatedList, savedToFirestore });
+    }
+    broadcastRealtimeUpdate("HERO_SLIDES_UPDATED", { slideId, savedToFirestore });
+  } catch (e) {}
+
+  return { success: true, slide: slidePayload, savedToFirestore };
+}
+
+/**
+ * Delete a Hero Slide
+ */
+async function deleteHeroSlide(slideId) {
+  const session = getAdminSession();
+  if (!session) {
+    throw new Error("చిత్రాన్ని తొలగించడానికి నిర్వాహక లాగిన్ అవసరం (Admin session required).");
+  }
+
+  const isFb = initFirebase();
+  let deletedFromFirestore = false;
+
+  if (isFb && firebaseDb) {
+    try {
+      await firebaseDb.collection("peetham_hero_slides").doc(slideId).delete();
+      deletedFromFirestore = true;
+    } catch (err) {
+      console.warn("Firestore hero slide delete failed:", err);
+    }
+  }
+
+  let updatedList = [];
+  try {
+    const local = localStorage.getItem(STORAGE_KEYS.HERO_SLIDES);
+    let list = local ? JSON.parse(local) : [...DEFAULT_HERO_SLIDES];
+    list = list.filter(s => s.id !== slideId);
+    list.forEach((s, idx) => { s.order = idx + 1; });
+    updatedList = list;
+    localStorage.setItem(STORAGE_KEYS.HERO_SLIDES, JSON.stringify(updatedList));
+  } catch (e) {}
+
+  try {
+    if (typeof BroadcastChannel !== 'undefined') {
+      const channel = new BroadcastChannel("peetham_hero_channel");
+      channel.postMessage({ type: "HERO_SLIDES_UPDATED", slides: updatedList, deletedFromFirestore });
+    }
+    broadcastRealtimeUpdate("HERO_SLIDES_UPDATED", { slideId, deleted: true, deletedFromFirestore });
+  } catch (e) {}
+
+  return { success: true, deletedFromFirestore };
+}
+
+/**
+ * Reorder Hero Slides
+ */
+async function reorderHeroSlides(orderedSlideIds) {
+  const session = getAdminSession();
+  if (!session) {
+    throw new Error("నిర్వాహక లాగిన్ అవసరం (Admin session required).");
+  }
+
+  const currentSlides = await loadHeroSlides();
+  const reordered = [];
+
+  orderedSlideIds.forEach((id, index) => {
+    const found = currentSlides.find(s => s.id === id);
+    if (found) {
+      found.order = index + 1;
+      found.updatedAt = new Date().toISOString();
+      reordered.push(found);
+    }
+  });
+
+  const isFb = initFirebase();
+  if (isFb && firebaseDb) {
+    try {
+      const batch = firebaseDb.batch();
+      reordered.forEach(slide => {
+        const ref = firebaseDb.collection("peetham_hero_slides").doc(slide.id);
+        batch.set(ref, slide, { merge: true });
+      });
+      await batch.commit();
+    } catch (e) {
+      console.warn("Firestore batch reorder warning:", e);
+    }
+  }
+
+  localStorage.setItem(STORAGE_KEYS.HERO_SLIDES, JSON.stringify(reordered));
+
+  try {
+    if (typeof BroadcastChannel !== 'undefined') {
+      const channel = new BroadcastChannel("peetham_hero_channel");
+      channel.postMessage({ type: "HERO_SLIDES_UPDATED", slides: reordered });
+    }
+    broadcastRealtimeUpdate("HERO_SLIDES_UPDATED", { reordered: true });
+  } catch (e) {}
+
+  return reordered;
+}
+
+/**
+ * Reset Hero Slides to Default 3 Holy Photos
+ */
+async function resetHeroSlidesToDefault() {
+  const session = getAdminSession();
+  if (!session) {
+    throw new Error("నిర్వాహక లాగిన్ అవసరం (Admin session required).");
+  }
+
+  const isFb = initFirebase();
+  if (isFb && firebaseDb) {
+    try {
+      const snap = await firebaseDb.collection("peetham_hero_slides").get();
+      const batch = firebaseDb.batch();
+      snap.forEach(doc => batch.delete(doc.ref));
+      DEFAULT_HERO_SLIDES.forEach(s => {
+        const ref = firebaseDb.collection("peetham_hero_slides").doc(s.id);
+        batch.set(ref, s);
+      });
+      await batch.commit();
+    } catch (e) {
+      console.warn("Firestore reset batch error:", e);
+    }
+  }
+
+  localStorage.setItem(STORAGE_KEYS.HERO_SLIDES, JSON.stringify(DEFAULT_HERO_SLIDES));
+
+  try {
+    if (typeof BroadcastChannel !== 'undefined') {
+      const channel = new BroadcastChannel("peetham_hero_channel");
+      channel.postMessage({ type: "HERO_SLIDES_UPDATED", slides: DEFAULT_HERO_SLIDES });
+    }
+    broadcastRealtimeUpdate("HERO_SLIDES_UPDATED", { reset: true });
+  } catch (e) {}
+
+  return DEFAULT_HERO_SLIDES;
 }
 
