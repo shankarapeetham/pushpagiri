@@ -1,0 +1,146 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ===============================================================
+    // Assumed Data Model
+    // ===============================================================
+    //
+    // Collection: peethadipathi_photos
+    // Document ID: {photoId} (Auto-generated Firestore ID or custom string)
+    //
+    // Fields:
+    //   - id: string (optional, 1..100 chars, immutable) - Client/system photo identifier
+    //   - url: string (required, 1..500000 chars) - Image URL (HTTP/HTTPS, storage path, or base64 data URL)
+    //   - caption: string (required, 1..500 chars) - Darshan event description or holy title
+    //   - date: string | timestamp (required) - Event date in ISO 8601 string or timestamp format
+    //   - createdAt: string | timestamp (required, immutable) - Creation timestamp
+    //   - updatedAt: string | timestamp (required) - Last modification timestamp
+    //   - authorUid: string (required, 1..128 chars, immutable) - Firebase Auth UID of admin creator
+    //   - authorEmail: string (required, valid email, immutable) - Email address of admin creator
+    //
+    // ===============================================================
+
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
+
+    // Check if the request is from an authenticated user
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // Validate that all required fields are present in data
+    function hasRequiredFields(data, fields) {
+      return data.keys().hasAll(fields);
+    }
+
+    // Validate that document contains only allowed fields (prevents schema pollution)
+    function hasOnlyAllowedFields(data, fields) {
+      return data.keys().hasOnly(fields);
+    }
+
+    // Validate that immutable fields are not modified during an update
+    function areImmutableFieldsUnchanged(fields) {
+      return !request.resource.data.diff(resource.data).affectedKeys().hasAny(fields);
+    }
+
+    // Validate email address format
+    function isValidEmail(email) {
+      return email is string &&
+        email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$");
+    }
+
+    // Validate ISO 8601 date string format (YYYY-MM-DD...)
+    function isValidDateString(dateStr) {
+      return dateStr is string &&
+        dateStr.size() >= 10 &&
+        dateStr.size() <= 50 &&
+        dateStr.matches("^\\d{4}-\\d{2}-\\d{2}(T\\d{2}:\\d{2}:\\d{2}.*)?");
+    }
+
+    // Validate date field (accepts either ISO 8601 string or Firestore timestamp)
+    function isValidDate(val) {
+      return (val is timestamp) || (val is string && isValidDateString(val));
+    }
+
+    // Validate photo URL (supports HTTP/HTTPS URLs, base64 image data URLs, and relative temple asset paths)
+    function isValidPhotoUrl(url) {
+      return url is string &&
+        url.size() > 0 &&
+        url.size() <= 500000 &&
+        (
+          url.matches("^https?://.*") ||
+          url.matches("^data:image/.*") ||
+          url.matches("^/?images/.*")
+        );
+    }
+
+    // ===============================================================
+    // Domain Validators
+    // ===============================================================
+
+    // Validate structural schema and bounds for photo data
+    function isValidPhotoData(data) {
+      return hasOnlyAllowedFields(data, ['id', 'url', 'caption', 'date', 'createdAt', 'updatedAt', 'authorUid', 'authorEmail']) &&
+             hasRequiredFields(data, ['url', 'caption', 'date', 'createdAt', 'updatedAt', 'authorUid', 'authorEmail']) &&
+             isValidPhotoUrl(data.url) &&
+             data.caption is string &&
+             data.caption.size() > 0 &&
+             data.caption.size() <= 500 &&
+             isValidDate(data.date) &&
+             isValidDate(data.createdAt) &&
+             isValidDate(data.updatedAt) &&
+             data.authorUid is string &&
+             data.authorUid.size() > 0 &&
+             data.authorUid.size() <= 128 &&
+             data.authorEmail is string &&
+             isValidEmail(data.authorEmail) &&
+             (!('id' in data) || (data.id is string && data.id.size() > 0 && data.id.size() <= 100));
+    }
+
+    // Domain validator for creating a new photo document
+    function isValidNewPhoto(data) {
+      return isValidPhotoData(data) &&
+             data.authorUid == request.auth.uid &&
+             (request.auth.token.email == null || data.authorEmail == request.auth.token.email);
+    }
+
+    // Domain validator for updating an existing photo document (protects immutability & schema)
+    function isValidPhotoUpdate(newData, oldData) {
+      return isValidPhotoData(newData) &&
+             newData.createdAt == oldData.createdAt &&
+             newData.authorUid == oldData.authorUid &&
+             newData.authorEmail == oldData.authorEmail &&
+             (!('id' in oldData) || newData.id == oldData.id) &&
+             areImmutableFieldsUnchanged(['id', 'createdAt', 'authorUid', 'authorEmail']);
+    }
+
+    // ===============================================================
+    // Collection Rules
+    // ===============================================================
+
+    // 48th Peetadhipatulu live darshan gallery photo stream
+    match /peethadipathi_photos/{photoId} {
+      // Devotees worldwide can view holy darshan photos publicly without authentication
+      allow read: if true;
+
+      // Only authenticated admin users can publish new photos
+      allow create: if isAuthenticated() && isValidNewPhoto(request.resource.data);
+
+      // Only authenticated admin users can update photos (enforces full validation & immutability)
+      allow update: if isAuthenticated() && isValidPhotoUpdate(request.resource.data, resource.data);
+
+      // Only authenticated admin users can delete photos
+      allow delete: if isAuthenticated();
+    }
+
+    // ===============================================================
+    // Default Deny Rule
+    // ===============================================================
+    // Deny all reads and writes on any unspecified collection or document path
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

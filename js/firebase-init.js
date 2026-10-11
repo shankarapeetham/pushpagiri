@@ -333,8 +333,15 @@ function subscribePeethadipathiPhotos(callback) {
  */
 async function addPeethadipathiPhoto(photo) {
   let createdId = photo.id || "photo-" + Date.now();
+  const session = getActiveAdminSession();
+  const now = new Date().toISOString();
+
   photo.id = createdId;
-  photo.date = photo.date || new Date().toISOString();
+  photo.date = photo.date || now;
+  photo.createdAt = photo.createdAt || now;
+  photo.updatedAt = now;
+  photo.authorUid = session ? session.uid : "admin-local";
+  photo.authorEmail = session ? session.email : "admin@pushpagirisankarapeetham.org";
 
   const isFb = initFirebase();
   let savedToFirestore = false;
@@ -370,6 +377,49 @@ async function addPeethadipathiPhoto(photo) {
   broadcastRealtimeUpdate("PHOTOS_UPDATED", { photoId: createdId, savedToFirestore });
 
   return photo;
+}
+
+/**
+ * Update an existing photo caption/metadata (Firestore + Local Mirror + Real-time Broadcast)
+ */
+async function updatePeethadipathiPhoto(photoId, updatedFields) {
+  const isFb = initFirebase();
+  let updatedInFirestore = false;
+  const now = new Date().toISOString();
+  updatedFields.updatedAt = now;
+
+  if (isFb && firebaseDb) {
+    try {
+      await firebaseDb.collection("peethadipathi_photos").doc(photoId).update(updatedFields);
+      updatedInFirestore = true;
+    } catch (err) {
+      console.warn("Firestore photo update failed:", err);
+    }
+  }
+
+  // Update local storage mirror
+  try {
+    let current = [];
+    const local = localStorage.getItem(STORAGE_KEYS.CUSTOM_PHOTOS);
+    if (local) {
+      current = JSON.parse(local);
+    }
+    if (Array.isArray(current)) {
+      current = current.map(p => {
+        if (p.id === photoId) {
+          return { ...p, ...updatedFields };
+        }
+        return p;
+      });
+      localStorage.setItem(STORAGE_KEYS.CUSTOM_PHOTOS, JSON.stringify(current));
+    }
+  } catch (e) {
+    console.warn("Local storage update mirror warning:", e);
+  }
+
+  // Broadcast real-time update event
+  broadcastRealtimeUpdate("PHOTOS_UPDATED", { photoId, updated: true, updatedInFirestore });
+  return true;
 }
 
 /**
@@ -609,3 +659,84 @@ function subscribeAuthState(callback) {
     return () => {};
   }
 }
+
+/**
+ * Send Password Reset Email
+ */
+async function authResetPassword(email) {
+  email = (email || "").trim().toLowerCase();
+  if (!email || !email.includes("@")) {
+    throw new Error("దయచేసి సరైన ఈమెయిల్ చిరునామాను నమోదు చేయండి (Please enter a valid email address).");
+  }
+
+  const isFb = initFirebase();
+  if (isFb && firebaseAuth) {
+    try {
+      await firebaseAuth.sendPasswordResetEmail(email);
+      return {
+        success: true,
+        message: "పాస్‌వర్డ్ రీసెట్ లింక్ మీ ఈమెయిల్‌కు విజయవంతంగా పంపబడింది (Password reset link sent to your email successfully)."
+      };
+    } catch (fbErr) {
+      let msg = fbErr.message;
+      if (fbErr.code === "auth/user-not-found") {
+        msg = "ఈ ఈమెయిల్‌తో ఖాతా కనుగొనబడలేదు (No account registered with this email).";
+      } else if (fbErr.code === "auth/invalid-email") {
+        msg = "చెల్లని ఈమెయిల్ ఆకృతి (Invalid email format).";
+      }
+      throw new Error(msg);
+    }
+  }
+
+  // Local fallback
+  return {
+    success: true,
+    message: "స్థానిక మోడ్: మీరు నేరుగా 'రిజిస్టర్ అడ్మిన్' ట్యాబ్ ద్వారా పాస్‌వర్డ్ మార్చుకోవచ్చు లేదా కొత్తగా సెట్ చేయవచ్చు (Local mode active: You can re-register or sign in)."
+  };
+}
+
+/**
+ * Test Firebase Connection & Verify Firestore/Auth Status
+ */
+async function testFirebaseConnection() {
+  const cfg = getFirebaseConfig();
+  if (!cfg || !cfg.apiKey || !cfg.projectId) {
+    return {
+      connected: false,
+      mode: "local",
+      message: "Firebase credentials not entered yet. Running in offline/local high-speed sync mode."
+    };
+  }
+
+  const isFb = initFirebase();
+  if (!isFb || !firebaseDb) {
+    return {
+      connected: false,
+      mode: "unreachable",
+      message: "Could not initialize Firebase client. Please verify API key and Project ID."
+    };
+  }
+
+  const startTime = Date.now();
+  try {
+    // Probe Firestore read on peethadipathi_photos
+    const snap = await firebaseDb.collection("peethadipathi_photos").limit(1).get();
+    const latency = Date.now() - startTime;
+    return {
+      connected: true,
+      mode: "cloud",
+      latencyMs: latency,
+      projectId: cfg.projectId,
+      message: `Firebase connection verified! Firestore response time: ${latency}ms. Project: ${cfg.projectId}.`
+    };
+  } catch (err) {
+    const latency = Date.now() - startTime;
+    return {
+      connected: false,
+      mode: "error",
+      latencyMs: latency,
+      message: `Firebase Firestore error: ${err.message}`
+    };
+  }
+}
+

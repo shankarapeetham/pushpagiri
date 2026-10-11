@@ -6,7 +6,7 @@
   <title>Admin Dashboard & Realtime Manager | Sri Pushpagiri Sankara Peetham</title>
   
   <!-- Tailwind CSS -->
-  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
   
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -168,6 +168,12 @@
                    class="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-amber-500 focus:border-amber-500 text-sm outline-none transition-all">
             <span class="absolute left-3.5 top-3.5 text-slate-400 text-sm">🔑</span>
           </div>
+        </div>
+
+        <div class="flex items-center justify-end">
+          <button type="button" onclick="showResetPasswordModal()" class="text-[11px] text-amber-700 hover:text-amber-900 font-semibold hover:underline">
+            Forgot Password? (పాస్‌వర్డ్ మర్చిపోయారా?)
+          </button>
         </div>
 
         <button type="submit" id="loginSubmitBtn"
@@ -413,6 +419,16 @@
           </div>
         </div>
 
+        <!-- Search / Filter Input -->
+        <div class="mb-4">
+          <div class="relative">
+            <input type="text" id="photoSearchInput" oninput="handleSearchPhotos(this.value)" 
+                   placeholder="🔍 శీర్షిక ద్వారా వెతకండి / Search photos by caption..." 
+                   class="w-full pl-9 pr-4 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-amber-500 text-xs font-medium outline-none bg-slate-50/60 focus:bg-white transition-all">
+            <span class="absolute left-3 top-2.5 text-slate-400 text-xs">🔎</span>
+          </div>
+        </div>
+
         <!-- Real-time Photos Grid -->
         <div id="dashboardPhotosList" class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-h-[640px] overflow-y-auto pr-1">
           <!-- Loaded dynamically via real-time subscription -->
@@ -467,7 +483,13 @@
           <input type="text" id="cfgAppId" placeholder="1:123456789:web:abcdef" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs font-mono">
         </div>
 
+        <div id="testConnResult" class="hidden p-3 rounded-xl text-xs font-mono mb-2"></div>
+
         <div class="pt-4 flex flex-col sm:flex-row gap-2">
+          <button type="button" onclick="handleTestFirebaseConnection()" id="btnTestConn" 
+                  class="px-4 py-3 rounded-xl bg-slate-800 hover:bg-slate-900 text-white text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-1.5 shadow">
+            <span>🔌 Test Connection</span>
+          </button>
           <button type="submit" class="flex-1 py-3 rounded-xl bg-[#c2410c] hover:bg-[#9a3412] text-white text-xs font-bold uppercase tracking-wider shadow">
             💾 Save &amp; Connect Cloud
           </button>
@@ -475,6 +497,86 @@
             Reset
           </button>
           <button type="button" onclick="toggleConfigModal()" class="px-4 py-3 rounded-xl border border-slate-300 text-xs font-semibold text-slate-700 hover:bg-slate-50">
+            Cancel
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       PASSWORD RESET MODAL
+       ======================================================== -->
+  <div id="resetPasswordModal" class="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl border border-slate-200 relative text-left" onclick="event.stopPropagation()">
+      <div class="flex items-center justify-between border-b pb-3 mb-4">
+        <div>
+          <h4 class="font-bold text-slate-900 font-cinzel text-base">Reset Admin Password</h4>
+          <p class="text-[11px] text-slate-500">పాస్‌వర్డ్ రీసెట్ లింక్ పొందండి (Email Recovery)</p>
+        </div>
+        <button onclick="closeResetPasswordModal()" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 flex items-center justify-center text-sm font-bold">✕</button>
+      </div>
+
+      <div id="resetAlert" class="hidden p-3 rounded-xl mb-4 text-xs font-medium leading-relaxed"></div>
+
+      <form onsubmit="handleResetPasswordSubmit(event)" class="space-y-4">
+        <div>
+          <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-700 mb-1">
+            Registered Admin Email Address
+          </label>
+          <div class="relative">
+            <input type="email" id="resetEmailInput" required 
+                   placeholder="admin@pushpagirisankarapeetham.org" 
+                   class="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-amber-500 text-xs outline-none">
+            <span class="absolute left-3.5 top-3.5 text-slate-400 text-sm">✉</span>
+          </div>
+        </div>
+
+        <div class="flex gap-2">
+          <button type="submit" id="btnSendReset"
+                  class="flex-1 py-3.5 rounded-xl bg-amber-700 hover:bg-amber-800 text-white text-xs font-bold uppercase tracking-wider shadow">
+            ✉ Send Reset Link
+          </button>
+          <button type="button" onclick="closeResetPasswordModal()" 
+                  class="px-4 py-3.5 rounded-xl border border-slate-300 text-xs font-semibold text-slate-700 hover:bg-slate-50">
+            Cancel
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       EDIT PHOTO CAPTION MODAL
+       ======================================================== -->
+  <div id="editCaptionModal" class="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl border border-slate-200 relative text-left" onclick="event.stopPropagation()">
+      <div class="flex items-center justify-between border-b pb-3 mb-4">
+        <div>
+          <h4 class="font-bold text-slate-900 font-cinzel text-base">✏️ Edit Photo Caption</h4>
+          <p class="text-[11px] text-slate-500">Live sync instantly updates the 48th Pontiff gallery</p>
+        </div>
+        <button onclick="closeEditCaptionModal()" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 flex items-center justify-center text-sm font-bold">✕</button>
+      </div>
+
+      <form onsubmit="handleSaveEditedCaption(event)" class="space-y-4">
+        <input type="hidden" id="editPhotoId">
+        
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">
+            Photo Caption / శీర్షిక
+          </label>
+          <textarea id="editCaptionInput" rows="3" required 
+                    class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-amber-500 text-xs font-telugu outline-none"></textarea>
+        </div>
+
+        <div class="flex gap-2">
+          <button type="submit" id="btnSaveCaption"
+                  class="flex-1 py-3.5 rounded-xl bg-gradient-to-r from-[#c2410c] to-[#9a3412] hover:from-[#9a3412] text-white text-xs font-bold uppercase tracking-wider shadow">
+            💾 Save &amp; Broadcast Live
+          </button>
+          <button type="button" onclick="closeEditCaptionModal()" 
+                  class="px-4 py-3.5 rounded-xl border border-slate-300 text-xs font-semibold text-slate-700 hover:bg-slate-50">
             Cancel
           </button>
         </div>
@@ -641,42 +743,59 @@
     }
 
     // ========================================================
-    // REAL-TIME PHOTO MANAGEMENT
+    // REAL-TIME PHOTO MANAGEMENT & SEARCH
     // ========================================================
+
+    let allCurrentPhotos = [];
+    let photoSearchTerm = '';
 
     function startRealtimePhotoSync() {
       if (unsubscribePhotos) {
         try { unsubscribePhotos(); } catch (e) {}
       }
 
-      const listContainer = document.getElementById('dashboardPhotosList');
       const countBadge = document.getElementById('photosCountBadge');
 
       unsubscribePhotos = subscribePeethadipathiPhotos((photos, mode) => {
-        renderDashboardPhotosList(photos);
+        allCurrentPhotos = photos || [];
+        renderFilteredPhotos();
         if (countBadge) {
-          countBadge.textContent = `${photos.length} Photos Live`;
+          countBadge.textContent = `${allCurrentPhotos.length} Photos Live`;
         }
-        showToast(`Real-time sync: ${photos.length} photos active (${mode})`);
+        showToast(`Real-time sync: ${allCurrentPhotos.length} photos active (${mode})`);
       });
     }
 
-    function renderDashboardPhotosList(photos) {
+    function handleSearchPhotos(term) {
+      photoSearchTerm = (term || '').trim().toLowerCase();
+      renderFilteredPhotos();
+    }
+
+    function renderFilteredPhotos() {
       const listContainer = document.getElementById('dashboardPhotosList');
       if (!listContainer) return;
 
-      if (!photos || photos.length === 0) {
+      let filtered = allCurrentPhotos;
+      if (photoSearchTerm) {
+        filtered = allCurrentPhotos.filter(p => 
+          (p.caption && p.caption.toLowerCase().includes(photoSearchTerm)) ||
+          (p.authorEmail && p.authorEmail.toLowerCase().includes(photoSearchTerm))
+        );
+      }
+
+      if (!filtered || filtered.length === 0) {
         listContainer.innerHTML = `
           <div class="col-span-full py-12 text-center text-slate-400 text-xs">
-            <p>ఫోటోలు ఏవీ లేవు (No photos currently published).</p>
+            <p>ఫోటోలు ఏవీ లేవు (${photoSearchTerm ? 'No matching photos found' : 'No photos currently published'}).</p>
           </div>
         `;
         return;
       }
 
-      listContainer.innerHTML = photos.map(photo => {
+      listContainer.innerHTML = filtered.map(photo => {
         const dateStr = photo.date ? new Date(photo.date).toLocaleDateString('te-IN', { month: 'short', day: 'numeric', year: 'numeric' }) : '';
         const safeCaption = (photo.caption || 'శ్రీ స్వామివారి దర్శనం').replace(/"/g, '&quot;');
+        const authorText = photo.authorEmail ? photo.authorEmail.split('@')[0] : 'Admin';
         
         return `
           <div class="rounded-2xl p-3 bg-slate-50 border border-slate-200 hover:border-amber-400 transition-all flex flex-col justify-between gap-2.5 shadow-sm hover:shadow group">
@@ -689,17 +808,26 @@
               </span>
             </div>
             
-            <div class="flex-grow">
+            <div class="flex-grow space-y-1">
               <p class="text-xs font-bold text-slate-800 font-telugu line-clamp-2" title="${safeCaption}">
                 ${safeCaption}
               </p>
-              <p class="text-[10px] text-slate-400 mt-1">${dateStr}</p>
+              <div class="flex items-center justify-between text-[10px] text-slate-400 pt-1 border-t border-slate-100">
+                <span>🗓 ${dateStr}</span>
+                <span class="truncate max-w-[100px]" title="${photo.authorEmail || 'Admin'}">👤 ${authorText}</span>
+              </div>
             </div>
 
-            <button onclick="handleDeletePhoto('${photo.id}')" 
-                    class="w-full py-2 rounded-xl bg-red-50 hover:bg-red-100 text-red-600 hover:text-red-700 font-bold text-[11px] border border-red-200 transition-colors flex items-center justify-center gap-1.5">
-              <span>🗑 Delete Photo</span>
-            </button>
+            <div class="flex items-center gap-1.5 pt-1">
+              <button onclick="openEditCaptionModal('${photo.id}')" 
+                      class="flex-1 py-2 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-800 font-bold text-[11px] border border-amber-200 transition-colors flex items-center justify-center gap-1">
+                <span>✏️ Edit</span>
+              </button>
+              <button onclick="handleDeletePhoto('${photo.id}')" 
+                      class="flex-1 py-2 rounded-xl bg-red-50 hover:bg-red-100 text-red-600 hover:text-red-700 font-bold text-[11px] border border-red-200 transition-colors flex items-center justify-center gap-1">
+                <span>🗑 Delete</span>
+              </button>
+            </div>
           </div>
         `;
       }).join('');
@@ -891,6 +1019,118 @@
         localStorage.removeItem("pushpagiri_firebase_config");
         toggleConfigModal();
         location.reload();
+      }
+    }
+
+    // ========================================================
+    // MODAL HANDLERS: PASSWORD RESET, CAPTION EDIT & CLOUD TEST
+    // ========================================================
+
+    function showResetPasswordModal() {
+      const modal = document.getElementById('resetPasswordModal');
+      const alertBox = document.getElementById('resetAlert');
+      alertBox.className = "hidden";
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeResetPasswordModal() {
+      const modal = document.getElementById('resetPasswordModal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    async function handleResetPasswordSubmit(e) {
+      e.preventDefault();
+      const email = document.getElementById('resetEmailInput').value.trim();
+      const alertBox = document.getElementById('resetAlert');
+      const submitBtn = document.getElementById('btnSendReset');
+
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = "Sending reset link...";
+      alertBox.className = "hidden";
+
+      try {
+        const result = await authResetPassword(email);
+        alertBox.className = "p-3.5 rounded-xl mb-4 text-xs font-medium text-emerald-800 bg-emerald-50 border border-emerald-200 block text-left";
+        alertBox.textContent = result.message;
+        showToast("Password reset link sent to " + email);
+        setTimeout(() => closeResetPasswordModal(), 3000);
+      } catch (err) {
+        alertBox.className = "p-3.5 rounded-xl mb-4 text-xs font-medium text-red-800 bg-red-50 border border-red-200 block text-left";
+        alertBox.textContent = err.message;
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = "✉ Send Reset Link";
+      }
+    }
+
+    function openEditCaptionModal(id) {
+      const photo = allCurrentPhotos.find(p => p.id === id);
+      if (!photo) return;
+      document.getElementById('editPhotoId').value = id;
+      document.getElementById('editCaptionInput').value = photo.caption || '';
+      const modal = document.getElementById('editCaptionModal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeEditCaptionModal() {
+      const modal = document.getElementById('editCaptionModal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    async function handleSaveEditedCaption(e) {
+      e.preventDefault();
+      const id = document.getElementById('editPhotoId').value;
+      const newCaption = document.getElementById('editCaptionInput').value.trim();
+      if (!id || !newCaption) return;
+
+      const submitBtn = document.getElementById('btnSaveCaption');
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = "Broadcasting update...";
+
+      try {
+        await updatePeethadipathiPhoto(id, { caption: newCaption });
+        closeEditCaptionModal();
+        showToast("✨ Caption updated and broadcasted live!");
+      } catch (err) {
+        alert("Update error: " + err.message);
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = "💾 Save &amp; Broadcast Live";
+      }
+    }
+
+    async function handleTestFirebaseConnection() {
+      const btn = document.getElementById('btnTestConn');
+      const resultBox = document.getElementById('testConnResult');
+      
+      btn.disabled = true;
+      btn.innerHTML = "Testing connection...";
+      resultBox.classList.remove('hidden');
+      resultBox.className = "p-3 rounded-xl text-xs font-mono mb-2 bg-slate-100 text-slate-800 border border-slate-200";
+      resultBox.textContent = "Connecting to Firebase services...";
+
+      try {
+        const res = await testFirebaseConnection();
+        if (res.connected) {
+          resultBox.className = "p-3 rounded-xl text-xs font-mono mb-2 bg-emerald-50 text-emerald-800 border border-emerald-300";
+          resultBox.textContent = `✓ [SUCCESS] ${res.message}`;
+        } else if (res.mode === 'local') {
+          resultBox.className = "p-3 rounded-xl text-xs font-mono mb-2 bg-amber-50 text-amber-800 border border-amber-300";
+          resultBox.textContent = `ℹ [LOCAL MODE] ${res.message}`;
+        } else {
+          resultBox.className = "p-3 rounded-xl text-xs font-mono mb-2 bg-red-50 text-red-800 border border-red-300";
+          resultBox.textContent = `✗ [ERROR] ${res.message}`;
+        }
+      } catch (e) {
+        resultBox.className = "p-3 rounded-xl text-xs font-mono mb-2 bg-red-50 text-red-800 border border-red-300";
+        resultBox.textContent = "Test error: " + e.message;
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = "<span>🔌 Test Connection</span>";
       }
     }
   </script>
