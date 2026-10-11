@@ -39,12 +39,77 @@
       --aura-glow: rgba(249, 115, 22, 0.12);
       --pill-bg: #ffedd5;
       --pill-text: #9a3412;
+      --badge-accent: #ea580c;
+    }
+
+    [data-theme="blue"] {
+      --primary: #153969;
+      --primary-dark: #0f294a;
+      --primary-light: #1e40af;
+      --secondary: #2563eb;
+      --accent-gold: #d4af37;
+      --bg-base: #f7faff;
+      --bg-surface: #ffffff;
+      --bg-subtle: #eff6ff;
+      --card-bg: #ffffff;
+      --border-color: #bfdbfe;
+      --border-strong: #93c5fd;
+      --text-main: #141f32;
+      --text-muted: #4b5d78;
+      --hero-grad: radial-gradient(circle at 65% 30%, #e0f2fe 0%, #f0f7ff 50%, #f7faff 100%);
+      --aura-glow: rgba(37, 99, 235, 0.12);
+      --pill-bg: #dbeafe;
+      --pill-text: #1e40af;
+      --badge-accent: #2563eb;
+    }
+
+    [data-theme="red"] {
+      --primary: #7b1e19;
+      --primary-dark: #50130f;
+      --primary-light: #991b1b;
+      --secondary: #c86432;
+      --accent-gold: #d4af37;
+      --bg-base: #fdf8f6;
+      --bg-surface: #ffffff;
+      --bg-subtle: #fef2f2;
+      --card-bg: #ffffff;
+      --border-color: #eed8c9;
+      --border-strong: #e2bca4;
+      --text-main: #1f1b18;
+      --text-muted: #5e5751;
+      --hero-grad: radial-gradient(circle at 65% 30%, #fee2e2 0%, #fff5f5 50%, #fdf8f6 100%);
+      --aura-glow: rgba(185, 28, 28, 0.12);
+      --pill-bg: #fee2e2;
+      --pill-text: #991b1b;
+      --badge-accent: #991b1b;
+    }
+
+    [data-theme="gold"] {
+      --primary: #854d0e;
+      --primary-dark: #583307;
+      --primary-light: #a16207;
+      --secondary: #d97706;
+      --accent-gold: #ca8a04;
+      --bg-base: #fefdf6;
+      --bg-surface: #ffffff;
+      --bg-subtle: #fefce8;
+      --card-bg: #ffffff;
+      --border-color: #fef08a;
+      --border-strong: #fde047;
+      --text-main: #241c09;
+      --text-muted: #64552e;
+      --hero-grad: radial-gradient(circle at 65% 30%, #fef9c3 0%, #fefce8 50%, #fefdf6 100%);
+      --aura-glow: rgba(217, 119, 6, 0.14);
+      --pill-bg: #fef9c3;
+      --pill-text: #854d0e;
+      --badge-accent: #d97706;
     }
 
     body {
       font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
       background-color: var(--bg-base);
       color: var(--text-main);
+      transition: background-color 0.35s ease, color 0.35s ease;
       overflow-x: hidden;
     }
 

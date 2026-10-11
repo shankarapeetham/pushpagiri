@@ -89,6 +89,7 @@ const STORAGE_KEYS = {
   LOCAL_ADMIN_CREDS: "pushpagiri_local_admin_creds",
   CUSTOM_PHOTOS: "peethadipathi_custom_photos",
   CUSTOM_VIDEOS: "peetham_custom_videos",
+  SITE_THEME: "peetham_site_theme",
   SYNC_EVENT: "pushpagiri_sync_event"
 };
 
@@ -1016,6 +1017,192 @@ async function testFirebaseConnection() {
       latencyMs: latency,
       message: `Firebase Firestore error: ${err.message}`
     };
+  }
+}
+
+// ========================================================
+// 8. GLOBAL SITE THEME REAL-TIME SERVICE
+// Only authenticated admins can modify; applies globally to all visitors
+// ========================================================
+
+const DEFAULT_SITE_THEME = "orange";
+const VALID_SITE_THEMES = ["orange", "blue", "red", "gold"];
+
+// Apply theme to document element immediately
+function applyThemeToDOM(theme) {
+  if (!VALID_SITE_THEMES.includes(theme)) theme = DEFAULT_SITE_THEME;
+  document.documentElement.setAttribute('data-theme', theme);
+  window.dispatchEvent(new CustomEvent('peetham:themeChanged', { detail: { theme } }));
+}
+
+// Initial immediate theme application from localStorage to avoid FOUC
+try {
+  const cachedTheme = localStorage.getItem(STORAGE_KEYS.SITE_THEME) || DEFAULT_SITE_THEME;
+  applyThemeToDOM(cachedTheme);
+} catch (e) {}
+
+/**
+ * Load Global Site Theme
+ */
+async function loadSiteTheme() {
+  const isFb = initFirebase();
+  if (isFb && firebaseDb) {
+    try {
+      const doc = await firebaseDb.collection("peetham_settings").doc("site_theme").get();
+      if (doc.exists && doc.data() && doc.data().theme) {
+        const theme = doc.data().theme;
+        if (VALID_SITE_THEMES.includes(theme)) {
+          localStorage.setItem(STORAGE_KEYS.SITE_THEME, theme);
+          applyThemeToDOM(theme);
+          return theme;
+        }
+      }
+    } catch (e) {
+      console.warn("Firestore theme load error, using fallback:", e);
+    }
+  }
+
+  const localTheme = localStorage.getItem(STORAGE_KEYS.SITE_THEME) || DEFAULT_SITE_THEME;
+  applyThemeToDOM(localTheme);
+  return localTheme;
+}
+
+/**
+ * Subscribe to Global Site Theme in Real-Time
+ * Updates automatically when Admin sets a new theme in the dashboard
+ */
+function subscribeSiteTheme(callback) {
+  const isFb = initFirebase();
+  let unsubFirestore = null;
+
+  // Immediate cached invocation
+  const initialTheme = localStorage.getItem(STORAGE_KEYS.SITE_THEME) || DEFAULT_SITE_THEME;
+  applyThemeToDOM(initialTheme);
+  if (typeof callback === 'function') callback(initialTheme, "cached");
+
+  if (isFb && firebaseDb) {
+    try {
+      unsubFirestore = firebaseDb.collection("peetham_settings").doc("site_theme")
+        .onSnapshot(doc => {
+          if (doc.exists && doc.data() && doc.data().theme) {
+            const theme = doc.data().theme;
+            if (VALID_SITE_THEMES.includes(theme)) {
+              localStorage.setItem(STORAGE_KEYS.SITE_THEME, theme);
+              applyThemeToDOM(theme);
+              if (typeof callback === 'function') callback(theme, "firebase");
+            }
+          }
+        }, err => {
+          console.warn("Firestore theme listener warning:", err);
+        });
+    } catch (e) {
+      console.warn("Firestore theme listener setup warning:", e);
+    }
+  }
+
+  // Cross-tab real-time sync listeners
+  const onStorageChange = (e) => {
+    if (e.key === STORAGE_KEYS.SITE_THEME && e.newValue) {
+      if (VALID_SITE_THEMES.includes(e.newValue)) {
+        applyThemeToDOM(e.newValue);
+        if (typeof callback === 'function') callback(e.newValue, "local_storage");
+      }
+    }
+  };
+  window.addEventListener('storage', onStorageChange);
+
+  let onBroadcast = null;
+  if (typeof BroadcastChannel !== 'undefined') {
+    const channel = new BroadcastChannel("peetham_theme_channel");
+    onBroadcast = (msg) => {
+      if (msg && msg.data && msg.data.theme) {
+        const theme = msg.data.theme;
+        if (VALID_SITE_THEMES.includes(theme)) {
+          localStorage.setItem(STORAGE_KEYS.SITE_THEME, theme);
+          applyThemeToDOM(theme);
+          if (typeof callback === 'function') callback(theme, "broadcast");
+        }
+      }
+    };
+    channel.addEventListener('message', onBroadcast);
+  }
+
+  return () => {
+    if (unsubFirestore) {
+      try { unsubFirestore(); } catch (e) {}
+    }
+    window.removeEventListener('storage', onStorageChange);
+  };
+}
+
+/**
+ * Admin Action: Update Global Site Theme
+ * Only authenticated administrators can execute this.
+ * Updates Firestore + Local Mirror + Broadcasts to all open browser sessions worldwide.
+ */
+async function setGlobalSiteTheme(themeName) {
+  if (!VALID_SITE_THEMES.includes(themeName)) {
+    throw new Error(`అమాన్యమైన థీమ్ (Invalid theme: ${themeName}). Valid options: ${VALID_SITE_THEMES.join(', ')}`);
+  }
+
+  // Verify Admin Session
+  const session = getAdminSession();
+  if (!session) {
+    throw new Error("థీమ్ మార్చడానికి నిర్వాహక అధికారాలు అవసరం (Admin authentication required to change site theme).");
+  }
+
+  const isFb = initFirebase();
+  let savedToFirestore = false;
+  const now = new Date().toISOString();
+
+  const themePayload = {
+    theme: themeName,
+    updatedAt: now,
+    updatedByUid: session.uid || (firebaseAuth && firebaseAuth.currentUser ? firebaseAuth.currentUser.uid : "admin"),
+    updatedByEmail: session.email || (firebaseAuth && firebaseAuth.currentUser ? firebaseAuth.currentUser.email : "admin")
+  };
+
+  if (isFb && firebaseDb) {
+    try {
+      await firebaseDb.collection("peetham_settings").doc("site_theme").set(themePayload, { merge: true });
+      savedToFirestore = true;
+    } catch (err) {
+      console.warn("Firestore save theme failed, using local mirror:", err);
+    }
+  }
+
+  // Update local storage mirror
+  try {
+    localStorage.setItem(STORAGE_KEYS.SITE_THEME, themeName);
+  } catch (e) {}
+
+  // Apply to current DOM
+  applyThemeToDOM(themeName);
+
+  // Broadcast across all open tabs
+  try {
+    if (typeof BroadcastChannel !== 'undefined') {
+      const channel = new BroadcastChannel("peetham_theme_channel");
+      channel.postMessage({ type: "THEME_UPDATED", theme: themeName, savedToFirestore });
+    }
+    broadcastRealtimeUpdate("THEME_UPDATED", { theme: themeName, savedToFirestore });
+  } catch (e) {}
+
+  return { success: true, theme: themeName, savedToFirestore };
+}
+
+// Auto-subscribe to theme on DOM ready for all pages that import firebase-init.js
+if (typeof window !== 'undefined') {
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+      subscribeSiteTheme((theme) => {
+        applyThemeToDOM(theme);
+      });
+    });
+  } else {
+    subscribeSiteTheme((theme) => {
+      applyThemeToDOM(theme);
+    });
   }
 }
 

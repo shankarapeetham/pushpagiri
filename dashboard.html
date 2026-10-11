@@ -298,6 +298,11 @@
         <span>🎥 YouTube Videos Manager</span>
         <span id="tabVideosCountBadge" class="px-2 py-0.5 rounded-full bg-slate-100 text-[10px]">...</span>
       </button>
+      <button type="button" onclick="switchDashboardTab('theme')" id="tabBtnTheme"
+              class="px-5 py-2.5 rounded-2xl font-bold text-xs uppercase tracking-wider transition-all bg-white text-slate-600 hover:text-slate-900 border border-slate-200 shadow-sm flex items-center gap-2">
+        <span>🎨 Global Site Theme</span>
+        <span id="tabThemeBadge" class="px-2 py-0.5 rounded-full bg-orange-100 text-orange-800 text-[10px] uppercase font-bold">Orange</span>
+      </button>
     </div>
 
     <!-- TAB 1: 48TH PEETADHIPATULU PHOTOS -->
@@ -603,6 +608,246 @@
     </div>
     <!-- END TAB 2 (VIDEOS) -->
 
+    <!-- ========================================================
+         TAB 3: GLOBAL SITE THEME MANAGER (Real-Time Admin Controlled)
+         Only authenticated admin can select; applies globally to all visitors
+         ======================================================== -->
+    <div id="sectionTheme" class="hidden space-y-6">
+      
+      <!-- Top Banner for Theme Manager -->
+      <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+        <div class="space-y-1.5">
+          <div class="flex items-center gap-2">
+            <span class="text-xl">🎨</span>
+            <h3 class="text-lg sm:text-xl font-bold font-cinzel text-slate-900">
+              Global Website Visual Theme
+            </h3>
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse-live" title="Theme broadcast active"></span>
+          </div>
+          <p class="text-xs text-slate-600 max-w-2xl leading-relaxed">
+            Select the active color theme for Sri Pushpagiri Sankara Peetham. Once selected, this theme <strong>instantaneously applies in real-time to all visitors</strong> across all pages of the website on every device.
+          </p>
+        </div>
+
+        <div class="flex items-center gap-3 bg-slate-50 border border-slate-200 px-4 py-3 rounded-2xl">
+          <span class="text-xs text-slate-500 font-medium">Currently Active:</span>
+          <div class="flex items-center gap-2">
+            <span id="currentThemeSwatch" class="w-3.5 h-3.5 rounded-full bg-[#c2410c] shadow-xs ring-2 ring-white"></span>
+            <span id="currentThemeNameLabel" class="text-xs font-bold text-slate-900 font-cinzel uppercase tracking-wider">
+              Orange (Saffron)
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4 Sacred Themes Selection Cards Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        
+        <!-- THEME 1: ORANGE (Sacred Saffron) -->
+        <div id="themeCard-orange" 
+             class="theme-card relative rounded-3xl bg-white border-2 border-slate-200 hover:border-orange-500 p-6 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between group">
+          <div class="space-y-4">
+            <!-- Header & Badge -->
+            <div class="flex items-center justify-between">
+              <span class="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-orange-100 text-orange-800">
+                Default Vedic
+              </span>
+              <span id="badgeActive-orange" class="hidden items-center gap-1 text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Live Active
+              </span>
+            </div>
+
+            <!-- Theme Color Swatches Preview -->
+            <div class="h-28 rounded-2xl p-3 flex flex-col justify-between shadow-inner relative overflow-hidden"
+                 style="background: radial-gradient(circle at 65% 30%, #ffedd5 0%, #fff7ed 50%, #fffbf7 100%); border: 1px solid #fed7aa;">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold font-cinzel text-[#c2410c]">PUSHPAGIRI</span>
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded-md text-white bg-[#c2410c]">ॐ</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="w-6 h-6 rounded-lg bg-[#c2410c] shadow" title="Primary: #c2410c"></span>
+                <span class="w-6 h-6 rounded-lg bg-[#ea580c] shadow" title="Primary Light: #ea580c"></span>
+                <span class="w-6 h-6 rounded-lg bg-[#d97706] shadow" title="Accent Gold: #d97706"></span>
+                <span class="w-6 h-6 rounded-lg bg-[#fffbf7] border border-[#fed7aa] shadow" title="Background: #fffbf7"></span>
+              </div>
+            </div>
+
+            <!-- Title & Description -->
+            <div>
+              <h4 class="font-bold text-slate-900 font-cinzel text-base flex items-center gap-1.5">
+                <span>🟠 Sacred Saffron</span>
+                <span class="text-xs text-slate-400 font-telugu font-normal">(కేసరి)</span>
+              </h4>
+              <p class="text-[11px] text-slate-500 mt-1 leading-relaxed">
+                Traditional auspicious saffron &amp; warm temple gold, evoking ancient Vedic fire and sacred warmth.
+              </p>
+            </div>
+          </div>
+
+          <!-- Action Button -->
+          <div class="pt-5 mt-5 border-t border-slate-100">
+            <button type="button" onclick="handleSelectSiteTheme('orange')" id="btnSelect-orange"
+                    class="w-full py-3 rounded-xl font-bold text-xs uppercase tracking-wider transition-all duration-200 flex items-center justify-center gap-2 bg-orange-600 hover:bg-orange-700 text-white shadow-md active:scale-95">
+              <span>Set as Global Live Theme</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- THEME 2: BLUE (Divya Neelam) -->
+        <div id="themeCard-blue" 
+             class="theme-card relative rounded-3xl bg-white border-2 border-slate-200 hover:border-blue-500 p-6 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between group">
+          <div class="space-y-4">
+            <!-- Header & Badge -->
+            <div class="flex items-center justify-between">
+              <span class="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-blue-100 text-blue-800">
+                Devotional Serene
+              </span>
+              <span id="badgeActive-blue" class="hidden items-center gap-1 text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Live Active
+              </span>
+            </div>
+
+            <!-- Theme Color Swatches Preview -->
+            <div class="h-28 rounded-2xl p-3 flex flex-col justify-between shadow-inner relative overflow-hidden"
+                 style="background: radial-gradient(circle at 65% 30%, #e0f2fe 0%, #f0f7ff 50%, #f7faff 100%); border: 1px solid #bfdbfe;">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold font-cinzel text-[#153969]">PUSHPAGIRI</span>
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded-md text-white bg-[#153969]">ॐ</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="w-6 h-6 rounded-lg bg-[#153969] shadow" title="Primary: #153969"></span>
+                <span class="w-6 h-6 rounded-lg bg-[#2563eb] shadow" title="Secondary: #2563eb"></span>
+                <span class="w-6 h-6 rounded-lg bg-[#d4af37] shadow" title="Accent Gold: #d4af37"></span>
+                <span class="w-6 h-6 rounded-lg bg-[#f7faff] border border-[#bfdbfe] shadow" title="Background: #f7faff"></span>
+              </div>
+            </div>
+
+            <!-- Title & Description -->
+            <div>
+              <h4 class="font-bold text-slate-900 font-cinzel text-base flex items-center gap-1.5">
+                <span>🔵 Divya Neelam</span>
+                <span class="text-xs text-slate-400 font-telugu font-normal">(నీలం)</span>
+              </h4>
+              <p class="text-[11px] text-slate-500 mt-1 leading-relaxed">
+                Sacred cosmic Krishna blue and deep ocean sapphire, embodying calm devotion and divine peace.
+              </p>
+            </div>
+          </div>
+
+          <!-- Action Button -->
+          <div class="pt-5 mt-5 border-t border-slate-100">
+            <button type="button" onclick="handleSelectSiteTheme('blue')" id="btnSelect-blue"
+                    class="w-full py-3 rounded-xl font-bold text-xs uppercase tracking-wider transition-all duration-200 flex items-center justify-center gap-2 bg-blue-700 hover:bg-blue-800 text-white shadow-md active:scale-95">
+              <span>Set as Global Live Theme</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- THEME 3: RED (Sacred Sindhoor) -->
+        <div id="themeCard-red" 
+             class="theme-card relative rounded-3xl bg-white border-2 border-slate-200 hover:border-red-500 p-6 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between group">
+          <div class="space-y-4">
+            <!-- Header & Badge -->
+            <div class="flex items-center justify-between">
+              <span class="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-red-100 text-red-800">
+                Shakti Splendor
+              </span>
+              <span id="badgeActive-red" class="hidden items-center gap-1 text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Live Active
+              </span>
+            </div>
+
+            <!-- Theme Color Swatches Preview -->
+            <div class="h-28 rounded-2xl p-3 flex flex-col justify-between shadow-inner relative overflow-hidden"
+                 style="background: radial-gradient(circle at 65% 30%, #fee2e2 0%, #fff5f5 50%, #fdf8f6 100%); border: 1px solid #eed8c9;">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold font-cinzel text-[#7b1e19]">PUSHPAGIRI</span>
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded-md text-white bg-[#7b1e19]">ॐ</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="w-6 h-6 rounded-lg bg-[#7b1e19] shadow" title="Primary: #7b1e19"></span>
+                <span class="w-6 h-6 rounded-lg bg-[#c86432] shadow" title="Secondary: #c86432"></span>
+                <span class="w-6 h-6 rounded-lg bg-[#d4af37] shadow" title="Accent Gold: #d4af37"></span>
+                <span class="w-6 h-6 rounded-lg bg-[#fdf8f6] border border-[#eed8c9] shadow" title="Background: #fdf8f6"></span>
+              </div>
+            </div>
+
+            <!-- Title & Description -->
+            <div>
+              <h4 class="font-bold text-slate-900 font-cinzel text-base flex items-center gap-1.5">
+                <span>🔴 Sacred Sindhoor</span>
+                <span class="text-xs text-slate-400 font-telugu font-normal">(సింధూరం)</span>
+              </h4>
+              <p class="text-[11px] text-slate-500 mt-1 leading-relaxed">
+                Royal temple kumkum and sacred sindhoor maroon, symbolizing Sri Lalitha Mahatripurasundari's divine grace.
+              </p>
+            </div>
+          </div>
+
+          <!-- Action Button -->
+          <div class="pt-5 mt-5 border-t border-slate-100">
+            <button type="button" onclick="handleSelectSiteTheme('red')" id="btnSelect-red"
+                    class="w-full py-3 rounded-xl font-bold text-xs uppercase tracking-wider transition-all duration-200 flex items-center justify-center gap-2 bg-red-700 hover:bg-red-800 text-white shadow-md active:scale-95">
+              <span>Set as Global Live Theme</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- THEME 4: GOLD (Suvarna Swarna) -->
+        <div id="themeCard-gold" 
+             class="theme-card relative rounded-3xl bg-white border-2 border-slate-200 hover:border-amber-500 p-6 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between group">
+          <div class="space-y-4">
+            <!-- Header & Badge -->
+            <div class="flex items-center justify-between">
+              <span class="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-amber-100 text-amber-800">
+                Golden Throne
+              </span>
+              <span id="badgeActive-gold" class="hidden items-center gap-1 text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Live Active
+              </span>
+            </div>
+
+            <!-- Theme Color Swatches Preview -->
+            <div class="h-28 rounded-2xl p-3 flex flex-col justify-between shadow-inner relative overflow-hidden"
+                 style="background: radial-gradient(circle at 65% 30%, #fef9c3 0%, #fefce8 50%, #fefdf6 100%); border: 1px solid #fef08a;">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold font-cinzel text-[#854d0e]">PUSHPAGIRI</span>
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded-md text-white bg-[#854d0e]">ॐ</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="w-6 h-6 rounded-lg bg-[#854d0e] shadow" title="Primary: #854d0e"></span>
+                <span class="w-6 h-6 rounded-lg bg-[#d97706] shadow" title="Secondary: #d97706"></span>
+                <span class="w-6 h-6 rounded-lg bg-[#ca8a04] shadow" title="Accent Gold: #ca8a04"></span>
+                <span class="w-6 h-6 rounded-lg bg-[#fefdf6] border border-[#fef08a] shadow" title="Background: #fefdf6"></span>
+              </div>
+            </div>
+
+            <!-- Title & Description -->
+            <div>
+              <h4 class="font-bold text-slate-900 font-cinzel text-base flex items-center gap-1.5">
+                <span>🟡 Suvarna Swarna</span>
+                <span class="text-xs text-slate-400 font-telugu font-normal">(సువర్ణం)</span>
+              </h4>
+              <p class="text-[11px] text-slate-500 mt-1 leading-relaxed">
+                Radiant turmeric and golden throne grandeur, reflecting timeless enlightenment and sacred sovereignty.
+              </p>
+            </div>
+          </div>
+
+          <!-- Action Button -->
+          <div class="pt-5 mt-5 border-t border-slate-100">
+            <button type="button" onclick="handleSelectSiteTheme('gold')" id="btnSelect-gold"
+                    class="w-full py-3 rounded-xl font-bold text-xs uppercase tracking-wider transition-all duration-200 flex items-center justify-center gap-2 bg-amber-700 hover:bg-amber-800 text-white shadow-md active:scale-95">
+              <span>Set as Global Live Theme</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+    <!-- END TAB 3 (THEME) -->
+
   </main>
 
   <!-- ========================================================
@@ -861,9 +1106,10 @@
         }
       }
 
-      // Start Real-Time Listeners for Photos and Videos
+      // Start Real-Time Listeners for Photos, Videos and Global Theme
       startRealtimePhotoSync();
       startRealtimeVideosSync();
+      startRealtimeThemeSync();
     }
 
     function showLoginView() {
@@ -874,6 +1120,10 @@
       if (unsubscribeVideos) {
         try { unsubscribeVideos(); } catch (e) {}
         unsubscribeVideos = null;
+      }
+      if (unsubscribeTheme) {
+        try { unsubscribeTheme(); } catch (e) {}
+        unsubscribeTheme = null;
       }
       document.getElementById('loginView').classList.remove('hidden');
       document.getElementById('dashboardView').classList.add('hidden');
@@ -1371,21 +1621,32 @@
       currentDashboardTab = tab;
       const tabBtnPhotos = document.getElementById('tabBtnPhotos');
       const tabBtnVideos = document.getElementById('tabBtnVideos');
+      const tabBtnTheme = document.getElementById('tabBtnTheme');
       const sectionPhotos = document.getElementById('sectionPhotos');
       const sectionVideos = document.getElementById('sectionVideos');
+      const sectionTheme = document.getElementById('sectionTheme');
 
-      if (!sectionPhotos || !sectionVideos) return;
+      if (!sectionPhotos || !sectionVideos || !sectionTheme) return;
+
+      // Reset all tab button styles to default inactive
+      [tabBtnPhotos, tabBtnVideos, tabBtnTheme].forEach(btn => {
+        if (btn) btn.className = "px-5 py-2.5 rounded-2xl font-bold text-xs uppercase tracking-wider transition-all bg-white text-slate-600 hover:text-slate-900 border border-slate-200 shadow-sm flex items-center gap-2";
+      });
+
+      // Hide all content sections
+      sectionPhotos.classList.add('hidden');
+      sectionVideos.classList.add('hidden');
+      sectionTheme.classList.add('hidden');
 
       if (tab === 'photos') {
         if (tabBtnPhotos) tabBtnPhotos.className = "px-5 py-2.5 rounded-2xl font-bold text-xs uppercase tracking-wider transition-all bg-[#5D000F] text-amber-200 shadow-md flex items-center gap-2";
-        if (tabBtnVideos) tabBtnVideos.className = "px-5 py-2.5 rounded-2xl font-bold text-xs uppercase tracking-wider transition-all bg-white text-slate-600 hover:text-slate-900 border border-slate-200 shadow-sm flex items-center gap-2";
         sectionPhotos.classList.remove('hidden');
-        sectionVideos.classList.add('hidden');
-      } else {
+      } else if (tab === 'videos') {
         if (tabBtnVideos) tabBtnVideos.className = "px-5 py-2.5 rounded-2xl font-bold text-xs uppercase tracking-wider transition-all bg-red-700 text-white shadow-md flex items-center gap-2";
-        if (tabBtnPhotos) tabBtnPhotos.className = "px-5 py-2.5 rounded-2xl font-bold text-xs uppercase tracking-wider transition-all bg-white text-slate-600 hover:text-slate-900 border border-slate-200 shadow-sm flex items-center gap-2";
         sectionVideos.classList.remove('hidden');
-        sectionPhotos.classList.add('hidden');
+      } else if (tab === 'theme') {
+        if (tabBtnTheme) tabBtnTheme.className = "px-5 py-2.5 rounded-2xl font-bold text-xs uppercase tracking-wider transition-all bg-gradient-to-r from-amber-600 to-orange-700 text-white shadow-md flex items-center gap-2";
+        sectionTheme.classList.remove('hidden');
       }
     }
 
@@ -1631,6 +1892,97 @@
         } catch (err) {
           alert("Delete error: " + err.message);
         }
+      }
+    }
+
+    // ========================================================
+    // GLOBAL SITE THEME CONTROLLER
+    // ========================================================
+    let currentGlobalTheme = 'orange';
+    let unsubscribeTheme = null;
+
+    function startRealtimeThemeSync() {
+      if (unsubscribeTheme) {
+        try { unsubscribeTheme(); } catch (e) {}
+      }
+
+      unsubscribeTheme = subscribeSiteTheme((theme, mode) => {
+        currentGlobalTheme = theme || 'orange';
+        renderThemeUI(currentGlobalTheme);
+      });
+    }
+
+    const THEME_DISPLAY_DATA = {
+      orange: { name: "Orange (Saffron)", color: "#c2410c", bgClass: "bg-orange-600" },
+      blue: { name: "Blue (Divya Neelam)", color: "#153969", bgClass: "bg-blue-700" },
+      red: { name: "Red (Sacred Sindhoor)", color: "#7b1e19", bgClass: "bg-red-700" },
+      gold: { name: "Gold (Suvarna Swarna)", color: "#854d0e", bgClass: "bg-amber-700" }
+    };
+
+    function renderThemeUI(activeTheme) {
+      const themes = ['orange', 'blue', 'red', 'gold'];
+      const data = THEME_DISPLAY_DATA[activeTheme] || THEME_DISPLAY_DATA.orange;
+
+      const badge = document.getElementById('tabThemeBadge');
+      if (badge) {
+        badge.textContent = activeTheme;
+      }
+
+      const swatch = document.getElementById('currentThemeSwatch');
+      if (swatch) {
+        swatch.style.backgroundColor = data.color;
+      }
+
+      const nameLabel = document.getElementById('currentThemeNameLabel');
+      if (nameLabel) {
+        nameLabel.textContent = data.name;
+      }
+
+      themes.forEach(t => {
+        const card = document.getElementById(`themeCard-${t}`);
+        const activeBadge = document.getElementById(`badgeActive-${t}`);
+        const btn = document.getElementById(`btnSelect-${t}`);
+
+        if (t === activeTheme) {
+          if (card) {
+            card.classList.add('ring-4', 'ring-emerald-500/40', 'border-emerald-500');
+            card.classList.remove('border-slate-200');
+          }
+          if (activeBadge) {
+            activeBadge.classList.remove('hidden');
+            activeBadge.classList.add('inline-flex');
+          }
+          if (btn) {
+            btn.className = "w-full py-3 rounded-xl font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 bg-emerald-600 text-white shadow-md cursor-default pointer-events-none";
+            btn.innerHTML = "<span>✓ Currently Active Worldwide</span>";
+          }
+        } else {
+          if (card) {
+            card.classList.remove('ring-4', 'ring-emerald-500/40', 'border-emerald-500');
+            card.classList.add('border-slate-200');
+          }
+          if (activeBadge) {
+            activeBadge.classList.add('hidden');
+            activeBadge.classList.remove('inline-flex');
+          }
+          if (btn) {
+            btn.className = `w-full py-3 rounded-xl font-bold text-xs uppercase tracking-wider transition-all duration-200 flex items-center justify-center gap-2 ${THEME_DISPLAY_DATA[t].bgClass} hover:opacity-90 text-white shadow-md active:scale-95 cursor-pointer`;
+            btn.innerHTML = "<span>Set as Global Live Theme &rarr;</span>";
+          }
+        }
+      });
+    }
+
+    async function handleSelectSiteTheme(themeName) {
+      if (themeName === currentGlobalTheme) return;
+
+      try {
+        showToast(`Broadcasting ${themeName.toUpperCase()} theme live across all visitors worldwide...`);
+        await setGlobalSiteTheme(themeName);
+        renderThemeUI(themeName);
+        showToast(`✨ ${themeName.toUpperCase()} theme is now live globally!`);
+      } catch (err) {
+        alert("Theme update error: " + err.message);
       }
     }
   </script>

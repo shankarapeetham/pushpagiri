@@ -6,6 +6,15 @@ service cloud.firestore {
     // Assumed Data Model
     // ===============================================================
     //
+    // Collection: peetham_settings
+    // Document ID: {settingId} (e.g. 'site_theme')
+    //
+    // Fields for settingId == 'site_theme':
+    //   - theme: string (required, 'orange' | 'blue' | 'red' | 'gold') - Active global site theme
+    //   - updatedAt: string | timestamp (required) - Timestamp when theme was selected
+    //   - updatedByUid: string (required, 1..128 chars) - Firebase Auth UID of admin
+    //   - updatedByEmail: string (required, valid email) - Admin email address
+    //
     // Collection: peethadipathi_photos
     // Document ID: {photoId} (Auto-generated Firestore ID or custom string)
     //
@@ -102,6 +111,20 @@ service cloud.firestore {
     // Domain Validators
     // ===============================================================
 
+    // Validate structural schema and bounds for site theme settings
+    function isValidSiteTheme(data) {
+      return hasOnlyAllowedFields(data, ['theme', 'updatedAt', 'updatedByUid', 'updatedByEmail']) &&
+             hasRequiredFields(data, ['theme', 'updatedAt', 'updatedByUid', 'updatedByEmail']) &&
+             data.theme is string &&
+             data.theme in ['orange', 'blue', 'red', 'gold'] &&
+             isValidDate(data.updatedAt) &&
+             data.updatedByUid is string &&
+             data.updatedByUid.size() > 0 &&
+             data.updatedByUid.size() <= 128 &&
+             data.updatedByEmail is string &&
+             isValidEmail(data.updatedByEmail);
+    }
+
     // Validate structural schema and bounds for photo data
     function isValidPhotoData(data) {
       return hasOnlyAllowedFields(data, ['id', 'url', 'caption', 'date', 'createdAt', 'updatedAt', 'authorUid', 'authorEmail']) &&
@@ -181,6 +204,19 @@ service cloud.firestore {
     // ===============================================================
     // Collection Rules
     // ===============================================================
+
+    // Real-time global site settings (e.g. site_theme for worldwide theme synchronization)
+    match /peetham_settings/{settingId} {
+      // Devotees and visitors worldwide can retrieve site settings (such as active theme) publicly without authentication
+      allow read: if true;
+
+      // Only authenticated admin users can create or update site settings
+      allow create, update: if isAuthenticated() &&
+        (settingId == 'site_theme' ? isValidSiteTheme(request.resource.data) : false);
+
+      // Only authenticated admin users can delete settings
+      allow delete: if isAuthenticated();
+    }
 
     // 48th Peetadhipatulu live darshan gallery photo stream
     match /peethadipathi_photos/{photoId} {
